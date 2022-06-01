@@ -30,5 +30,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:623846889944:ios:ae2072c1f30face8c5faad</string>
+	<key>DATABASE_URL</key>
+	<string>https://diplom-project-b263c-default-rtdb.europe-west1.firebasedatabase.app</string>
 </dict>
 </plist>
