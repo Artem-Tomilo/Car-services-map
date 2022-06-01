@@ -8,6 +8,8 @@
 import UIKit
 import FirebaseAuth
 import FirebaseCore
+import GoogleMaps
+import GoogleSignIn
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,8 +18,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        GMSServices.provideAPIKey("AIzaSyAR3IFkBAeELyGIPbeS5cP3pgpRwAcQi1s")
         FirebaseApp.configure()
         return true
+    }
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+      var handled: Bool
+      handled = GIDSignIn.sharedInstance.handle(url)
+      if handled {
+        return true
+      }
+        return false
     }
 
     // MARK: UISceneSession Lifecycle

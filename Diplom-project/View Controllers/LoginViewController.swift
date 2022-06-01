@@ -8,6 +8,8 @@
 import UIKit
 import FirebaseAuth
 import FirebaseCore
+import GoogleSignIn
+import FirebaseDatabase
 
 class LoginViewController: UIViewController {
 
@@ -34,46 +36,46 @@ class LoginViewController: UIViewController {
     
     //MARK: - Sign in with Google
     
-    @IBAction func signInWithGoogle(_ sender: GIDSignInButton) {
-        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
-        
-        let config = GIDConfiguration(clientID: clientID)
-        
-        GIDSignIn.sharedInstance.signIn(with: config, presenting: self) { [unowned self] user, error in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            }
-            
-            guard let authentication = user?.authentication,
-                  let idToken = authentication.idToken
-            else { return }
-           
-            let credential = GoogleAuthProvider.credential(withIDToken: idToken,
-                                                           accessToken: authentication.accessToken)
-            
-            Auth.auth().signIn(with: credential) { authResult, error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
-                guard let user = authResult?.user else { return }
-                print(user.displayName ?? "Success")
-                
-                let ref = Database.database().reference().child("users")
-                ref.child(user.uid).setValue([
-                    "username": user.displayName,
-                    "email": user.email
-                ])
-                
-                UIView.transition(with: self.view.window!,
-                                  duration: 0.2, options: .transitionFlipFromRight) {
-                    self.view.window!.rootViewController = self.storyboard!.instantiateViewController(withIdentifier: "mapViewController")
-                } completion: { _ in
-                }
-            }
-        }
-    }
+//    @IBAction func signInWithGoogle(_ sender: GIDSignInButton) {
+//        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+//        
+//        let config = GIDConfiguration(clientID: clientID)
+//        
+//        GIDSignIn.sharedInstance.signIn(with: config, presenting: self) { [unowned self] user, error in
+//            if let error = error {
+//                print(error.localizedDescription)
+//                return
+//            }
+//            
+//            guard let authentication = user?.authentication,
+//                  let idToken = authentication.idToken
+//            else { return }
+//           
+//            let credential = GoogleAuthProvider.credential(withIDToken: idToken,
+//                                                           accessToken: authentication.accessToken)
+//            
+//            Auth.auth().signIn(with: credential) { authResult, error in
+//                if let error = error {
+//                    print(error.localizedDescription)
+//                    return
+//                }
+//                guard let user = authResult?.user else { return }
+//                print(user.displayName ?? "Success")
+//                
+//                let ref = Database.database().reference().child("users")
+//                ref.child(user.uid).setValue([
+//                    "username": user.displayName,
+//                    "email": user.email
+//                ])
+//                
+//                UIView.transition(with: self.view.window!,
+//                                  duration: 0.2, options: .transitionFlipFromRight) {
+//                    self.view.window!.rootViewController = self.storyboard!.instantiateViewController(withIdentifier: "mapViewController")
+//                } completion: { _ in
+//                }
+//            }
+//        }
+//    }
     
     //MARK: - Log in
     
