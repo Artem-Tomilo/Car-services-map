@@ -9,21 +9,31 @@
 /* Begin PBXBuildFile section */
 		3896BC012847BBE40043BD6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3896BC002847BBE40043BD6A /* AppDelegate.swift */; };
 		3896BC032847BBE40043BD6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3896BC022847BBE40043BD6A /* SceneDelegate.swift */; };
-		3896BC052847BBE40043BD6A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3896BC042847BBE40043BD6A /* ViewController.swift */; };
+		3896BC052847BBE40043BD6A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3896BC042847BBE40043BD6A /* LoginViewController.swift */; };
 		3896BC082847BBE40043BD6A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3896BC062847BBE40043BD6A /* Main.storyboard */; };
 		3896BC0A2847BBE60043BD6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3896BC092847BBE60043BD6A /* Assets.xcassets */; };
 		3896BC0D2847BBE60043BD6A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3896BC0B2847BBE60043BD6A /* LaunchScreen.storyboard */; };
+		3896BC152847C03E0043BD6A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3896BC142847C03E0043BD6A /* GoogleService-Info.plist */; };
+		3896BC182847C2B00043BD6A /* CreateAccViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3896BC172847C2B00043BD6A /* CreateAccViewController.swift */; };
+		3896BC1A2847C2CD0043BD6A /* PasswordRecoveryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3896BC192847C2CD0043BD6A /* PasswordRecoveryViewController.swift */; };
+		7B6F6170C2A3951F978787E4 /* Pods_Diplom_project.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28BA31D8DEB70B594B725DDF /* Pods_Diplom_project.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		28BA31D8DEB70B594B725DDF /* Pods_Diplom_project.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Diplom_project.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3896BBFD2847BBE40043BD6A /* Diplom-project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Diplom-project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3896BC002847BBE40043BD6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3896BC022847BBE40043BD6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		3896BC042847BBE40043BD6A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		3896BC042847BBE40043BD6A /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		3896BC072847BBE40043BD6A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3896BC092847BBE60043BD6A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3896BC0C2847BBE60043BD6A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3896BC0E2847BBE60043BD6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3896BC142847C03E0043BD6A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		3896BC172847C2B00043BD6A /* CreateAccViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccViewController.swift; sourceTree = "<group>"; };
+		3896BC192847C2CD0043BD6A /* PasswordRecoveryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordRecoveryViewController.swift; sourceTree = "<group>"; };
+		704F35CCE4221318E82C376F /* Pods-Diplom-project.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Diplom-project.release.xcconfig"; path = "Target Support Files/Pods-Diplom-project/Pods-Diplom-project.release.xcconfig"; sourceTree = "<group>"; };
+		D8BC5AF1388142431BF01899 /* Pods-Diplom-project.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Diplom-project.debug.xcconfig"; path = "Target Support Files/Pods-Diplom-project/Pods-Diplom-project.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B6F6170C2A3951F978787E4 /* Pods_Diplom_project.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +53,8 @@
 			children = (
 				3896BBFF2847BBE40043BD6A /* Diplom-project */,
 				3896BBFE2847BBE40043BD6A /* Products */,
+				E5B22C299D036A5E9358E1DE /* Pods */,
+				CD69C83CD67A8B469EFF549E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,15 +69,43 @@
 		3896BBFF2847BBE40043BD6A /* Diplom-project */ = {
 			isa = PBXGroup;
 			children = (
+				3896BC162847C14D0043BD6A /* View Controllers */,
 				3896BC002847BBE40043BD6A /* AppDelegate.swift */,
 				3896BC022847BBE40043BD6A /* SceneDelegate.swift */,
-				3896BC042847BBE40043BD6A /* ViewController.swift */,
 				3896BC062847BBE40043BD6A /* Main.storyboard */,
 				3896BC092847BBE60043BD6A /* Assets.xcassets */,
 				3896BC0B2847BBE60043BD6A /* LaunchScreen.storyboard */,
+				3896BC142847C03E0043BD6A /* GoogleService-Info.plist */,
 				3896BC0E2847BBE60043BD6A /* Info.plist */,
 			);
 			path = "Diplom-project";
+			sourceTree = "<group>";
+		};
+		3896BC162847C14D0043BD6A /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				3896BC042847BBE40043BD6A /* LoginViewController.swift */,
+				3896BC172847C2B00043BD6A /* CreateAccViewController.swift */,
+				3896BC192847C2CD0043BD6A /* PasswordRecoveryViewController.swift */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		CD69C83CD67A8B469EFF549E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				28BA31D8DEB70B594B725DDF /* Pods_Diplom_project.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E5B22C299D036A5E9358E1DE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D8BC5AF1388142431BF01899 /* Pods-Diplom-project.debug.xcconfig */,
+				704F35CCE4221318E82C376F /* Pods-Diplom-project.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,9 +115,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3896BC112847BBE60043BD6A /* Build configuration list for PBXNativeTarget "Diplom-project" */;
 			buildPhases = (
+				14E14C07E40B0DB74464909B /* [CP] Check Pods Manifest.lock */,
 				3896BBF92847BBE40043BD6A /* Sources */,
 				3896BBFA2847BBE40043BD6A /* Frameworks */,
 				3896BBFB2847BBE40043BD6A /* Resources */,
+				B15E7B53634646FC92C748A4 /* [CP] Embed Pods Frameworks */,
+				EB12D1988B67EC96509558FF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -126,6 +170,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3896BC0D2847BBE60043BD6A /* LaunchScreen.storyboard in Resources */,
+				3896BC152847C03E0043BD6A /* GoogleService-Info.plist in Resources */,
 				3896BC0A2847BBE60043BD6A /* Assets.xcassets in Resources */,
 				3896BC082847BBE40043BD6A /* Main.storyboard in Resources */,
 			);
@@ -133,13 +178,74 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		14E14C07E40B0DB74464909B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Diplom-project-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B15E7B53634646FC92C748A4 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Diplom-project/Pods-Diplom-project-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Diplom-project/Pods-Diplom-project-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Diplom-project/Pods-Diplom-project-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EB12D1988B67EC96509558FF /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Diplom-project/Pods-Diplom-project-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Diplom-project/Pods-Diplom-project-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Diplom-project/Pods-Diplom-project-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		3896BBF92847BBE40043BD6A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3896BC052847BBE40043BD6A /* ViewController.swift in Sources */,
+				3896BC052847BBE40043BD6A /* LoginViewController.swift in Sources */,
 				3896BC012847BBE40043BD6A /* AppDelegate.swift in Sources */,
+				3896BC182847C2B00043BD6A /* CreateAccViewController.swift in Sources */,
+				3896BC1A2847C2CD0043BD6A /* PasswordRecoveryViewController.swift in Sources */,
 				3896BC032847BBE40043BD6A /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -282,6 +388,7 @@
 		};
 		3896BC122847BBE60043BD6A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D8BC5AF1388142431BF01899 /* Pods-Diplom-project.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -310,6 +417,7 @@
 		};
 		3896BC132847BBE60043BD6A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 704F35CCE4221318E82C376F /* Pods-Diplom-project.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
