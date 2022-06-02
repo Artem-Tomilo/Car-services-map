@@ -68,11 +68,7 @@ class LoginViewController: UIViewController {
                     "email": user.email
                 ])
                 
-                UIView.transition(with: self.view.window!,
-                                  duration: 0.2, options: .transitionFlipFromRight) {
-                    self.view.window!.rootViewController = self.storyboard!.instantiateViewController(withIdentifier: "mapViewController")
-                } completion: { _ in
-                }
+                self.navigationController?.setViewControllers([self.storyboard!.instantiateViewController(withIdentifier: "mapViewController")], animated: true)
             }
         }
     }
@@ -106,11 +102,7 @@ class LoginViewController: UIViewController {
                 return
             }
             
-            UIView.transition(with: self.view.window!,
-                              duration: 0.2, options: .transitionFlipFromRight) {
-                self.view.window!.rootViewController = self.storyboard!.instantiateViewController(withIdentifier: "mapViewController")
-            } completion: { _ in
-            }
+            self.navigationController?.setViewControllers([self.storyboard!.instantiateViewController(withIdentifier: "mapViewController")], animated: true)
         }
     }
     
@@ -125,8 +117,7 @@ class LoginViewController: UIViewController {
     
     @IBAction func createAccount(_ sender: UIButton) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "createAccViewController") as! CreateAccViewController
-//        navigationController?.pushViewController(vc, animated: true)
-        present(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     //MARK: - Done button

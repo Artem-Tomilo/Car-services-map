@@ -74,11 +74,7 @@ class CreateAccViewController: UIViewController {
                 "email": self.emailTextField.text ?? ""
             ])
             
-            UIView.transition(with: self.view.window!,
-                              duration: 0.2, options: .transitionFlipFromRight) {
-                self.view.window!.rootViewController = self.storyboard!.instantiateViewController(withIdentifier: "mapViewController")
-            } completion: { _ in
-            }
+            self.navigationController?.setViewControllers([self.storyboard!.instantiateViewController(withIdentifier: "mapViewController")], animated: true)
         }
     }
     

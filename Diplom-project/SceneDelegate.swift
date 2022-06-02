@@ -22,11 +22,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
 
         window = UIWindow(windowScene: windowScene)
+        
+        let navVC = UINavigationController()
+        
+        window?.rootViewController = navVC
 
         if Auth.auth().currentUser != nil {
-            window?.rootViewController = storyboard.instantiateViewController(withIdentifier: "mapViewController")
+            navVC.setViewControllers([storyboard.instantiateViewController(withIdentifier: "mapViewController")], animated: true)
         } else {
-            window?.rootViewController = storyboard.instantiateViewController(withIdentifier: "loginViewController")
+            navVC.setViewControllers([storyboard.instantiateViewController(withIdentifier: "loginViewController")], animated: true)
         }
 
         window?.makeKeyAndVisible()

@@ -13,6 +13,8 @@ import GoogleMapsUtils
 import FirebaseCore
 import GoogleSignIn
 import FirebaseDatabase
+import FirebaseStorage
+import PhotosUI
 
 class MapViewController: UIViewController {
     
@@ -46,11 +48,15 @@ class MapViewController: UIViewController {
     let tableView = UITableView()
     let nameLabel = UILabel()
     let avatarView = UIImageView()
-    let viewForDataUser = UIView()
+    let viewForUserData = UIView()
     
     let ref = Database.database().reference().child("users")
     
     var users: [Person] = []
+    
+    let storage = Storage.storage()
+
+    lazy var avatarsRef = storage.reference().child("avatars/")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,7 +73,22 @@ class MapViewController: UIViewController {
         decode()
         
         tableViewSettings()
-        print(users)
+        
+        selectAvatar()
+    }
+    
+    @objc func avatarTapped(_ sender: UITapGestureRecognizer) {
+        let configuration = PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())
+        let pickerController = PHPickerViewController(configuration: configuration)
+        pickerController.delegate = self
+        present(pickerController, animated: true, completion: nil)
+    }
+    
+    func selectAvatar() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(avatarTapped(_:)))
+        avatarView.addGestureRecognizer(tapGesture)
+        avatarView.isUserInteractionEnabled = true
+        tapGesture.delegate = self
     }
     
     //MARK: - Table view settings
@@ -88,27 +109,27 @@ class MapViewController: UIViewController {
         someView.backgroundColor = .white
         someView.alpha = 0.8
         
-        //MARK: - viewForDataUser
+        //MARK: - viewForUserData
         
-        someView.addSubview(viewForDataUser)
-        viewForDataUser.translatesAutoresizingMaskIntoConstraints = false
+        someView.addSubview(viewForUserData)
+        viewForUserData.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            viewForDataUser.topAnchor.constraint(equalTo: someView.safeAreaLayoutGuide.topAnchor),
-            viewForDataUser.trailingAnchor.constraint(equalTo: someView.trailingAnchor),
-            viewForDataUser.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 0),
-            viewForDataUser.heightAnchor.constraint(equalToConstant: 50)
+            viewForUserData.topAnchor.constraint(equalTo: someView.safeAreaLayoutGuide.topAnchor),
+            viewForUserData.trailingAnchor.constraint(equalTo: someView.trailingAnchor),
+            viewForUserData.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 0),
+            viewForUserData.heightAnchor.constraint(equalToConstant: 50)
         ])
-        viewForDataUser.backgroundColor = .systemMint
+        viewForUserData.backgroundColor = .systemMint
         
         //MARK: - nameLabel
         
-        viewForDataUser.addSubview(nameLabel)
+        viewForUserData.addSubview(nameLabel)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            nameLabel.topAnchor.constraint(equalTo: viewForDataUser.topAnchor),
-            nameLabel.trailingAnchor.constraint(equalTo: viewForDataUser.trailingAnchor),
-            nameLabel.bottomAnchor.constraint(equalTo: viewForDataUser.bottomAnchor),
-            nameLabel.leadingAnchor.constraint(equalTo: viewForDataUser.leadingAnchor, constant: 120)
+            nameLabel.topAnchor.constraint(equalTo: viewForUserData.topAnchor),
+            nameLabel.trailingAnchor.constraint(equalTo: viewForUserData.trailingAnchor),
+            nameLabel.bottomAnchor.constraint(equalTo: viewForUserData.bottomAnchor),
+            nameLabel.leadingAnchor.constraint(equalTo: viewForUserData.leadingAnchor, constant: 120)
         ])
         nameLabel.numberOfLines = 0
         nameLabel.font = UIFont.italicSystemFont(ofSize: 20)
@@ -155,7 +176,7 @@ class MapViewController: UIViewController {
         
         //MARK: - avatarView
         
-        viewForDataUser.addSubview(avatarView)
+        viewForUserData.addSubview(avatarView)
         avatarView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             avatarView.trailingAnchor.constraint(equalTo: nameLabel.leadingAnchor, constant: -25),
@@ -188,7 +209,7 @@ class MapViewController: UIViewController {
         someView.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: viewForDataUser.bottomAnchor, constant: 30),
+            tableView.topAnchor.constraint(equalTo: viewForUserData.bottomAnchor, constant: 30),
             tableView.leadingAnchor.constraint(equalTo: someView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: someView.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: signOutButton.topAnchor)
@@ -313,8 +334,7 @@ class MapViewController: UIViewController {
         try? Auth.auth().signOut()
         if Auth.auth().currentUser == nil {
             let loginVC = storyboard?.instantiateViewController(withIdentifier: "loginViewController") as! LoginViewController
-            present(loginVC, animated: true, completion: nil)
-//            navigationController?.pushViewController(loginVC, animated: true)
+            navigationController?.setViewControllers([loginVC], animated: true)
         }
     }
     
