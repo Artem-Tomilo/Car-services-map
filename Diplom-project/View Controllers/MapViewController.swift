@@ -201,12 +201,12 @@ class MapViewController: UIViewController {
         NSLayoutConstraint.activate([
             avatarView.trailingAnchor.constraint(equalTo: nameLabel.leadingAnchor, constant: -25),
             avatarView.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
-            avatarView.widthAnchor.constraint(equalToConstant: 30),
-            avatarView.heightAnchor.constraint(equalToConstant: 30)
+            avatarView.widthAnchor.constraint(equalToConstant: 40),
+            avatarView.heightAnchor.constraint(equalToConstant: 40)
             ])
-        avatarView.backgroundColor = .white
-        avatarView.layer.cornerRadius = 15
-        avatarView.image = UIImage(named: "plus")
+//        avatarView.backgroundColor = .white
+//        avatarView.layer.cornerRadius = 15
+        avatarView.image = UIImage(named: "photo")
         
         //MARK: - signOutButton
         
@@ -351,11 +351,20 @@ class MapViewController: UIViewController {
     }
     
     @objc func signOut(_ sender: UIButton) {
-        try? Auth.auth().signOut()
-        if Auth.auth().currentUser == nil {
-            let loginVC = storyboard?.instantiateViewController(withIdentifier: "loginViewController") as! LoginViewController
-            navigationController?.setViewControllers([loginVC], animated: true)
+        let alert = UIAlertController(title: "Logout", message: "Are you sure you want to log out?", preferredStyle: .actionSheet)
+        let action = UIAlertAction(title: "Yes, logout", style: .destructive) { _ in
+            try? Auth.auth().signOut()
+            if Auth.auth().currentUser == nil {
+                let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "loginViewController") as! LoginViewController
+                self.navigationController?.setViewControllers([loginVC], animated: true)
+            }
         }
+        let secondAction = UIAlertAction(title: "Cancel", style: .default) { _ in
+            self.dismiss(animated: true)
+        }
+        alert.addAction(action)
+        alert.addAction(secondAction)
+        present(alert, animated: true)
     }
     
     //MARK: - Style
