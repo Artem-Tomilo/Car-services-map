@@ -14,7 +14,6 @@ import FirebaseCore
 import GoogleSignIn
 import FirebaseDatabase
 import FirebaseStorage
-import PhotosUI
 
 class MapViewController: UIViewController {
     
@@ -75,13 +74,58 @@ class MapViewController: UIViewController {
         tableViewSettings()
         
         selectAvatar()
+        
+        getData()
     }
     
+    //MARK: - Get data function
+    
+    func getData() {
+        ref.getData(completion:  { error, snapshot in
+            guard error == nil else {
+                print(error!.localizedDescription)
+                return
+            }
+            guard let allUsers = snapshot?.value as? Dictionary<String, Any> else {
+                return
+            }
+            let users = allUsers.compactMap { k, v -> Person? in
+                guard let values = v as? Dictionary<String, String>,
+                      let username = values["username"],
+                      let email = values["email"] else { return nil }
+                if Auth.auth().currentUser?.uid == k {
+                    self.nameLabel.text = "Hello, \(username)"
+                    
+                    let myImageReference = self.avatarsRef.child(Auth.auth().currentUser!.uid + ".jpg")
+                    myImageReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                        if let error = error {
+                            print(error.localizedDescription)
+                        } else {
+                            let image = UIImage(data: data!)
+                            
+                            DispatchQueue.main.async {
+                                self.avatarView.image = image
+                            }
+                        }
+                    }
+                }
+                let user = Person(uid: k, username: username, email: email)
+                self.users.append(user)
+                return Person(uid: k, username: username, email: email)
+            }
+            self.users = users
+            print(users)
+        })
+    }
+    
+    //MARK: - Image picker
+    
     @objc func avatarTapped(_ sender: UITapGestureRecognizer) {
-        let configuration = PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())
-        let pickerController = PHPickerViewController(configuration: configuration)
-        pickerController.delegate = self
-        present(pickerController, animated: true, completion: nil)
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.sourceType = .photoLibrary
+        present(picker, animated: true)
+        picker.allowsEditing = true
     }
     
     func selectAvatar() {
@@ -133,30 +177,6 @@ class MapViewController: UIViewController {
         ])
         nameLabel.numberOfLines = 0
         nameLabel.font = UIFont.italicSystemFont(ofSize: 20)
-        
-        ref.getData(completion:  { error, snapshot in
-            guard error == nil else {
-                print(error!.localizedDescription)
-                return
-            }
-            guard let allUsers = snapshot?.value as? Dictionary<String, Any> else {
-                return
-            }
-            let users = allUsers.compactMap { k, v -> Person? in
-                guard let values = v as? Dictionary<String, String>,
-                      let username = values["username"],
-                      let email = values["email"] else {
-                    return nil
-                }
-                if Auth.auth().currentUser?.uid == k {
-                    self.nameLabel.text = "Hello, \(username)"
-                }
-                let user = Person(uid: k, username: username, email: email)
-                self.users.append(user)
-                return Person(uid: k, username: username, email: email)
-            }
-            self.users = users
-        })
         
         //MARK: - showMenuButton
         
@@ -365,6 +385,7 @@ class MapViewController: UIViewController {
         mapView.isMyLocationEnabled = true
         style(for: "darkStyle", withExtension: ".json")
         view = mapView
+        navigationController?.setNavigationBarHidden(true, animated: false)
 
         mapView.delegate = self
 
