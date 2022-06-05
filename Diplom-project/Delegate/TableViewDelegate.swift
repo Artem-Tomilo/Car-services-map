@@ -31,5 +31,20 @@ extension MapViewController: UITableViewDelegate, UITableViewDataSource {
     75
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            print("\(indexPath.row)")
+        case 1 :
+            print("\(indexPath.row)")
+        case 2:
+            navigationController?.setViewControllers([storyboard!.instantiateViewController(withIdentifier: "accountViewController")], animated: true)
+        case 3 :
+            print("\(indexPath.row)")
+        default:
+            break
+        }
+    }
+    
     
 }
