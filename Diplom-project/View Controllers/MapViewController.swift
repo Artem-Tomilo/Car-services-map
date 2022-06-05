@@ -7,30 +7,28 @@
 
 import UIKit
 import GoogleMaps
+import GoogleMapsUtils
+import GoogleSignIn
 import CoreLocation
 import FirebaseAuth
-import GoogleMapsUtils
 import FirebaseCore
-import GoogleSignIn
 import FirebaseDatabase
+import FirebaseStorage
 
 class MapViewController: UIViewController {
     
     var mapView: GMSMapView!
-
-    var text: String!
-
-    var jsonMarker: [MyAnnotations] = []
-
-    static let path = try! FileManager.default.url(for: .cachesDirectory, in: .allDomainsMask, appropriateFor: nil, create: true)
-
-    static let jsonPath = path.appendingPathComponent("marker.json")
+    let someView = UIView()
+    let viewForUserData = UIView()
+    let avatarView = UIImageView()
+    let clearView = UIView()
+    let tableView = UITableView()
+    let nameLabel = UILabel()
     
-    let manager = CLLocationManager()
-    
-    var cluster: GMUClusterManager!
-    
-    var lightStyle = false
+    var showMenuConstraint: NSLayoutConstraint!
+    var hiddenMenuConstraint: NSLayoutConstraint!
+    var showClearViewConstraint: NSLayoutConstraint!
+    var hiddenClearViewConstraint: NSLayoutConstraint!
     
     let changeStyleButton = UIButton()
     let minusZoomButton = UIButton()
@@ -39,18 +37,26 @@ class MapViewController: UIViewController {
     let showMenuButton = UIButton()
     let signOutButton = UIButton()
     
-    let someView = UIView()
+    static let path = try! FileManager.default.url(for: .cachesDirectory, in: .allDomainsMask, appropriateFor: nil, create: true)
+    static let jsonPath = path.appendingPathComponent("marker.json")
+    
+    var lightStyle = false
     var showTableView = false
-    var showMenuConstraint: NSLayoutConstraint!
-    var hiddenMenuConstraint: NSLayoutConstraint!
-    let tableView = UITableView()
-    let nameLabel = UILabel()
-    let avatarView = UIImageView()
-    let viewForDataUser = UIView()
-    
+
     let ref = Database.database().reference().child("users")
+    let storage = Storage.storage()
+    lazy var avatarsRef = storage.reference().child("avatars/")
     
+    var jsonMarker: [MyAnnotations] = []
     var users: [Person] = []
+    
+    var text: String!
+
+    let manager = CLLocationManager()
+    
+    var cluster: GMUClusterManager!
+    
+    let listTableViewMenu = ["Advanced filter", "My addresses", "Account", "About app"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,52 +73,15 @@ class MapViewController: UIViewController {
         decode()
         
         tableViewSettings()
-        print(users)
+        
+        selectAvatar()
+        
+        getData()
     }
     
-    //MARK: - Table view settings
+    //MARK: - Get data function
     
-    func tableViewSettings() {
-        
-        //MARK: - someview
-        
-        view.addSubview(someView)
-        someView.translatesAutoresizingMaskIntoConstraints = false
-        showMenuConstraint = someView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
-        hiddenMenuConstraint = someView.leadingAnchor.constraint(equalTo: view.trailingAnchor)
-        NSLayoutConstraint.activate([
-            someView.topAnchor.constraint(equalTo: view.topAnchor),
-            someView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            someView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.7),
-            hiddenMenuConstraint])
-        someView.backgroundColor = .white
-        someView.alpha = 0.8
-        
-        //MARK: - viewForDataUser
-        
-        someView.addSubview(viewForDataUser)
-        viewForDataUser.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            viewForDataUser.topAnchor.constraint(equalTo: someView.safeAreaLayoutGuide.topAnchor),
-            viewForDataUser.trailingAnchor.constraint(equalTo: someView.trailingAnchor),
-            viewForDataUser.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 0),
-            viewForDataUser.heightAnchor.constraint(equalToConstant: 50)
-        ])
-        viewForDataUser.backgroundColor = .systemMint
-        
-        //MARK: - nameLabel
-        
-        viewForDataUser.addSubview(nameLabel)
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            nameLabel.topAnchor.constraint(equalTo: viewForDataUser.topAnchor),
-            nameLabel.trailingAnchor.constraint(equalTo: viewForDataUser.trailingAnchor),
-            nameLabel.bottomAnchor.constraint(equalTo: viewForDataUser.bottomAnchor),
-            nameLabel.leadingAnchor.constraint(equalTo: viewForDataUser.leadingAnchor, constant: 120)
-        ])
-        nameLabel.numberOfLines = 0
-        nameLabel.font = UIFont.italicSystemFont(ofSize: 20)
-        
+    func getData() {
         ref.getData(completion:  { error, snapshot in
             guard error == nil else {
                 print(error!.localizedDescription)
@@ -124,18 +93,91 @@ class MapViewController: UIViewController {
             let users = allUsers.compactMap { k, v -> Person? in
                 guard let values = v as? Dictionary<String, String>,
                       let username = values["username"],
-                      let email = values["email"] else {
-                    return nil
-                }
+                      let email = values["email"] else { return nil }
                 if Auth.auth().currentUser?.uid == k {
                     self.nameLabel.text = "Hello, \(username)"
+                    
+                    let myImageReference = self.avatarsRef.child(Auth.auth().currentUser!.uid + ".jpg")
+                    myImageReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                        if let error = error {
+                            print(error.localizedDescription)
+                        } else {
+                            let image = UIImage(data: data!)
+                            
+                            DispatchQueue.main.async {
+                                self.avatarView.image = image
+                            }
+                        }
+                    }
                 }
                 let user = Person(uid: k, username: username, email: email)
                 self.users.append(user)
                 return Person(uid: k, username: username, email: email)
             }
             self.users = users
+            print(users)
         })
+    }
+    
+    //MARK: - Image picker
+    
+    func selectAvatar() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(avatarTapped(_:)))
+        avatarView.addGestureRecognizer(tapGesture)
+        avatarView.isUserInteractionEnabled = true
+        tapGesture.delegate = self
+    }
+    
+    @objc func avatarTapped(_ sender: UITapGestureRecognizer) {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.sourceType = .photoLibrary
+        present(picker, animated: true)
+        picker.allowsEditing = true
+    }
+    
+    //MARK: - Table view settings
+    
+    func tableViewSettings() {
+        
+        //MARK: - someview
+        
+        view.addSubview(someView)
+        someView.translatesAutoresizingMaskIntoConstraints = false
+        showMenuConstraint = someView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        hiddenMenuConstraint = someView.trailingAnchor.constraint(equalTo: view.leadingAnchor)
+        NSLayoutConstraint.activate([
+            someView.topAnchor.constraint(equalTo: view.topAnchor),
+            someView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            someView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.7),
+            hiddenMenuConstraint])
+        someView.backgroundColor = .systemGray4
+        someView.alpha = 1
+        
+        //MARK: - viewForUserData
+        
+        someView.addSubview(viewForUserData)
+        viewForUserData.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            viewForUserData.topAnchor.constraint(equalTo: someView.safeAreaLayoutGuide.topAnchor, constant: 20),
+            viewForUserData.trailingAnchor.constraint(equalTo: someView.trailingAnchor),
+            viewForUserData.leadingAnchor.constraint(equalTo: someView.leadingAnchor),
+            viewForUserData.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        viewForUserData.backgroundColor = .systemMint
+        
+        //MARK: - nameLabel
+        
+        viewForUserData.addSubview(nameLabel)
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            nameLabel.topAnchor.constraint(equalTo: viewForUserData.topAnchor),
+            nameLabel.trailingAnchor.constraint(equalTo: viewForUserData.trailingAnchor),
+            nameLabel.bottomAnchor.constraint(equalTo: viewForUserData.bottomAnchor),
+            nameLabel.leadingAnchor.constraint(equalTo: viewForUserData.leadingAnchor, constant: 120)
+        ])
+        nameLabel.numberOfLines = 0
+        nameLabel.font = UIFont.italicSystemFont(ofSize: 20)
         
         //MARK: - showMenuButton
         
@@ -155,17 +197,18 @@ class MapViewController: UIViewController {
         
         //MARK: - avatarView
         
-        viewForDataUser.addSubview(avatarView)
+        viewForUserData.addSubview(avatarView)
         avatarView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             avatarView.trailingAnchor.constraint(equalTo: nameLabel.leadingAnchor, constant: -25),
             avatarView.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
-            avatarView.widthAnchor.constraint(equalToConstant: 30),
-            avatarView.heightAnchor.constraint(equalToConstant: 30)
+            avatarView.widthAnchor.constraint(equalToConstant: 40),
+            avatarView.heightAnchor.constraint(equalToConstant: 40)
             ])
-        avatarView.backgroundColor = .white
-        avatarView.layer.cornerRadius = 15
-        avatarView.image = UIImage(named: "plus")
+        avatarView.frame.size = CGSize(width: 40, height: 40)
+        avatarView.layer.cornerRadius = 20
+        avatarView.clipsToBounds = true
+        avatarView.image = UIImage(named: "photo")
         
         //MARK: - signOutButton
         
@@ -188,17 +231,51 @@ class MapViewController: UIViewController {
         someView.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: viewForDataUser.bottomAnchor, constant: 30),
+            tableView.topAnchor.constraint(equalTo: viewForUserData.bottomAnchor, constant: 30),
             tableView.leadingAnchor.constraint(equalTo: someView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: someView.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: signOutButton.topAnchor)
         ])
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .systemGray4
         
         tableView.delegate = self
         tableView.dataSource = self
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "table-cell")
+        
+        //MARK: - Clear view
+        
+        view.addSubview(clearView)
+        clearView.translatesAutoresizingMaskIntoConstraints = false
+        showClearViewConstraint = clearView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        hiddenClearViewConstraint = clearView.leadingAnchor.constraint(equalTo: view.trailingAnchor)
+        
+        NSLayoutConstraint.activate([
+            clearView.topAnchor.constraint(equalTo: view.topAnchor),
+            clearView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            clearView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.3),
+            hiddenClearViewConstraint
+        ])
+        clearView.backgroundColor = .systemGray6
+        clearView.alpha = 0.5
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
+        clearView.addGestureRecognizer(tapGesture)
+        clearView.isUserInteractionEnabled = true
+        tapGesture.delegate = self
+    }
+    
+    @objc func tap(_ sender: UITapGestureRecognizer) {
+        NSLayoutConstraint.deactivate([showMenuConstraint, showClearViewConstraint])
+        NSLayoutConstraint.activate([hiddenMenuConstraint, hiddenClearViewConstraint])
+        view.setNeedsLayout()
+        UIView.animate(withDuration: 0.2) {
+            self.view.layoutIfNeeded()
+        }
+        
+        showMenuButton.backgroundColor = .white
+        showMenuButton.alpha = 0.5
+        showTableView = false
     }
     
     //MARK: - Location Settings
@@ -259,7 +336,9 @@ class MapViewController: UIViewController {
             style(for: "darkStyle", withExtension: ".json")
             changeStyleButton.setImage(UIImage(named: "sun"), for: .normal)
             lightStyle = false
-            showMenuButton.backgroundColor = .white
+            if lightStyle == false && hiddenMenuConstraint.isActive == true {
+                showMenuButton.backgroundColor = .white
+            }
         } else {
             style(for: "lightStyle", withExtension: ".json")
             changeStyleButton.setImage(UIImage(named: "dark"), for: .normal)
@@ -295,27 +374,45 @@ class MapViewController: UIViewController {
     @objc func showTableView(_ sender: UIButton) {
         switch showTableView {
         case false:
-            NSLayoutConstraint.deactivate([hiddenMenuConstraint])
-            NSLayoutConstraint.activate([showMenuConstraint])
+            NSLayoutConstraint.deactivate([hiddenMenuConstraint, hiddenClearViewConstraint])
+            NSLayoutConstraint.activate([showMenuConstraint, showClearViewConstraint])
+            view.setNeedsLayout()
+            UIView.animate(withDuration: 0.2) {
+                self.view.layoutIfNeeded()
+            }
             showMenuButton.backgroundColor = .clear
             showMenuButton.alpha = 1
+            
             showTableView = true
         case true:
-            NSLayoutConstraint.deactivate([showMenuConstraint])
-            NSLayoutConstraint.activate([hiddenMenuConstraint])
+            NSLayoutConstraint.deactivate([showMenuConstraint, showClearViewConstraint])
+            NSLayoutConstraint.activate([hiddenMenuConstraint, hiddenClearViewConstraint])
+            view.setNeedsLayout()
+            UIView.animate(withDuration: 0.2) {
+                self.view.layoutIfNeeded()
+            }
             showMenuButton.backgroundColor = .white
             showMenuButton.alpha = 0.5
+            
             showTableView = false
         }
     }
     
     @objc func signOut(_ sender: UIButton) {
-        try? Auth.auth().signOut()
-        if Auth.auth().currentUser == nil {
-            let loginVC = storyboard?.instantiateViewController(withIdentifier: "loginViewController") as! LoginViewController
-            present(loginVC, animated: true, completion: nil)
-//            navigationController?.pushViewController(loginVC, animated: true)
+        let alert = UIAlertController(title: "Logout", message: "Are you sure you want to log out?", preferredStyle: .actionSheet)
+        let action = UIAlertAction(title: "Yes, logout", style: .destructive) { _ in
+            try? Auth.auth().signOut()
+            if Auth.auth().currentUser == nil {
+                let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "loginViewController") as! LoginViewController
+                self.navigationController?.setViewControllers([loginVC], animated: true)
+            }
         }
+        let secondAction = UIAlertAction(title: "Cancel", style: .default) { _ in
+            self.dismiss(animated: true)
+        }
+        alert.addAction(action)
+        alert.addAction(secondAction)
+        present(alert, animated: true)
     }
     
     //MARK: - Style
@@ -345,6 +442,7 @@ class MapViewController: UIViewController {
         mapView.isMyLocationEnabled = true
         style(for: "darkStyle", withExtension: ".json")
         view = mapView
+        navigationController?.setNavigationBarHidden(true, animated: false)
 
         mapView.delegate = self
 
