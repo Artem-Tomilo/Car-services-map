@@ -73,10 +73,14 @@ class MapViewController: UIViewController {
         decode()
         
         tableViewSettings()
-        
-        selectAvatar()
-        
+                
         getData()
+    }
+    
+    //MARK: - View did appear
+    
+    override func viewDidAppear(_ animated: Bool) {
+        getDataImage()
     }
     
     //MARK: - Get data function
@@ -96,19 +100,7 @@ class MapViewController: UIViewController {
                       let email = values["email"] else { return nil }
                 if Auth.auth().currentUser?.uid == k {
                     self.nameLabel.text = "Hello, \(username)"
-                    
-                    let myImageReference = self.avatarsRef.child(Auth.auth().currentUser!.uid + ".jpg")
-                    myImageReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
-                        if let error = error {
-                            print(error.localizedDescription)
-                        } else {
-                            let image = UIImage(data: data!)
-                            
-                            DispatchQueue.main.async {
-                                self.avatarView.image = image
-                            }
-                        }
-                    }
+                    self.getDataImage()
                 }
                 let user = Person(uid: k, username: username, email: email)
                 self.users.append(user)
@@ -119,21 +111,26 @@ class MapViewController: UIViewController {
         })
     }
     
-    //MARK: - Image picker
-    
-    func selectAvatar() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(avatarTapped(_:)))
-        avatarView.addGestureRecognizer(tapGesture)
-        avatarView.isUserInteractionEnabled = true
-        tapGesture.delegate = self
-    }
-    
-    @objc func avatarTapped(_ sender: UITapGestureRecognizer) {
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        picker.sourceType = .photoLibrary
-        present(picker, animated: true)
-        picker.allowsEditing = true
+    func getDataImage() {
+        let myImageReference = self.avatarsRef.child(Auth.auth().currentUser!.uid + ".jpg")
+        print(myImageReference)
+        myImageReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
+            if let error = error {
+                print(error.localizedDescription)
+                switch error {
+                case let nsError as NSError where nsError.domain == StorageErrorDomain && nsError.code == StorageErrorCode.objectNotFound.rawValue:
+                    self.avatarView.image = UIImage(named: "photo")
+                default:
+                    break
+                }
+            } else {
+                let image = UIImage(data: data!)
+                
+                DispatchQueue.main.async {
+                    self.avatarView.image = image
+                }
+            }
+        }
     }
     
     //MARK: - Table view settings

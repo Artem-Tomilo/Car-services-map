@@ -38,7 +38,9 @@ extension MapViewController: UITableViewDelegate, UITableViewDataSource {
         case 1 :
             print("\(indexPath.row)")
         case 2:
-            navigationController?.setViewControllers([storyboard!.instantiateViewController(withIdentifier: "accountViewController")], animated: true)
+//            navigationController?.setViewControllers([storyboard!.instantiateViewController(withIdentifier: "accountViewController")], animated: true)
+            let vc = storyboard?.instantiateViewController(withIdentifier: "accountViewController") as! AccountViewController
+            navigationController?.pushViewController(vc, animated: true)
         case 3 :
             print("\(indexPath.row)")
         default:

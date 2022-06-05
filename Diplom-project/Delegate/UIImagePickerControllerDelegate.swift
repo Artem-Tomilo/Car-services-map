@@ -9,7 +9,7 @@ import UIKit
 import FirebaseAuth
 import FirebaseStorage
 
-extension MapViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension AccountViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         guard let image = info[.originalImage] as? UIImage else { return }
@@ -18,7 +18,7 @@ extension MapViewController: UIImagePickerControllerDelegate, UINavigationContro
         
         let data = image.jpegData(compressionQuality: 0.7)!
         
-        let uploadTask = myImageReference.putData(data, metadata: nil) { (metadata, error) in
+        let _ = myImageReference.putData(data, metadata: nil) { (metadata, error) in
             guard let metadata = metadata else { return }
             let size = metadata.size
             print(size)
@@ -27,9 +27,9 @@ extension MapViewController: UIImagePickerControllerDelegate, UINavigationContro
         
         guard let imageURL = info[.imageURL] as? URL,
               let imageData = try? Data(contentsOf: imageURL) else { return }
-            self.avatarView.image = UIImage(data: imageData)
-        
-        
+        avatarView.image = UIImage(data: imageData)
+        avatarView.layer.cornerRadius = 50
+        avatarView.clipsToBounds = true
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
