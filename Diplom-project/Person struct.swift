@@ -11,5 +11,6 @@ struct Person {
     var uid: String
     var username: String
     var email: String
+    var telNumber: Int?
     var avatar: UIImage?
 }

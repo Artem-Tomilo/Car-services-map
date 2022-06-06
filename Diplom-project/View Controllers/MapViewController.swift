@@ -77,9 +77,9 @@ class MapViewController: UIViewController {
         getData()
     }
     
-    //MARK: - View did appear
+    //MARK: - View will appear
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         getDataImage()
     }
     
@@ -205,6 +205,7 @@ class MapViewController: UIViewController {
         avatarView.frame.size = CGSize(width: 40, height: 40)
         avatarView.layer.cornerRadius = 20
         avatarView.clipsToBounds = true
+        avatarView.contentMode = .scaleAspectFill
         avatarView.image = UIImage(named: "photo")
         
         //MARK: - signOutButton

@@ -47,6 +47,4 @@ extension MapViewController: UITableViewDelegate, UITableViewDataSource {
             break
         }
     }
-    
-    
 }
