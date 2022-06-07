@@ -18,6 +18,12 @@ class AccountViewController: UIViewController {
     @IBOutlet var emailLabel: UILabel!
     @IBOutlet var telNumberLabel: UILabel!
     @IBOutlet var deleteAvatarButton: UIButton!
+    @IBOutlet var userNameEditButton: UIButton!
+    @IBOutlet var emailEditButton: UIButton!
+    @IBOutlet var telNumberNameEditButton: UIButton!
+    @IBOutlet var changePasswordButton: UIButton!
+    
+    var editButtonsIsHide = true
     
     let ref = Database.database().reference().child("users")
     let storage = Storage.storage()
@@ -31,48 +37,11 @@ class AccountViewController: UIViewController {
         avatarView.layer.cornerRadius = 50
         deleteAvatarButton.layer.cornerRadius = 20
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(changeTelNumber(_:)))
-        telNumberLabel.addGestureRecognizer(tapGesture)
-        telNumberLabel.isUserInteractionEnabled = true
-        tapGesture.delegate = self
-    }
-    
-    //MARK: - Change tel number function
-    
-    @objc func changeTelNumber(_ sender: UITapGestureRecognizer) {
-        let alert = UIAlertController(title: "Do you want to edit your number?", message: "", preferredStyle: .actionSheet)
-        let firstAction = UIAlertAction(title: "Yes", style: .default) { action in
-            let alert = UIAlertController(title: "Enter your number", message: "", preferredStyle: .alert)
-            alert.addTextField { (textField : UITextField!) -> Void in
-                textField.placeholder = "Your number"
-                textField.delegate = self
-            }
-            
-            let action = UIAlertAction(title: "Add number", style: .default) { action in
-                if let textField = alert.textFields?[0] {
-                    let userID = Auth.auth().currentUser?.uid
-                    let userRef = self.ref.child(userID!)
-                    userRef.updateChildValues(["telNumber" : textField.text ?? ""])
-                    self.telNumberLabel.text = """
-                    Your number:
-                    \(textField.text ?? "-  -")
-                    """
-                }
-            }
-            let secondAction = UIAlertAction(title: "Cancel", style: .default) { _ in
-                self.dismiss(animated: true)
-            }
-            
-            alert.addAction(action)
-            alert.addAction(secondAction)
-            self.present(alert, animated: true)
-        }
-        let secondAction = UIAlertAction(title: "No", style: .destructive) { _ in
-            self.dismiss(animated: true)
-        }
-        alert.addAction(firstAction)
-        alert.addAction(secondAction)
-        present(alert, animated: true)
+        userNameEditButton.isHidden = true
+        emailEditButton.isHidden = true
+        telNumberNameEditButton.isHidden = true
+        changePasswordButton.isHidden = true
+        changePasswordButton.layer.cornerRadius = 15
     }
     
     //MARK: - Get data function
@@ -186,5 +155,165 @@ class AccountViewController: UIViewController {
             }
         }
         return result
+    }
+    
+    //MARK: - Show edit buttons function
+    
+    @IBAction func showEditButtons(_ sender: UIButton) {
+        switch editButtonsIsHide {
+        case true:
+            userNameEditButton.isHidden = false
+            emailEditButton.isHidden = false
+            telNumberNameEditButton.isHidden = false
+            changePasswordButton.isHidden = false
+            sender.setTitle("Done", for: .normal)
+            editButtonsIsHide = false
+        case false:
+            userNameEditButton.isHidden = true
+            emailEditButton.isHidden = true
+            telNumberNameEditButton.isHidden = true
+            changePasswordButton.isHidden = true
+            sender.setTitle("Edit", for: .normal)
+            editButtonsIsHide = true
+        }
+    }
+    
+    //MARK: - Editing username function
+    
+    @IBAction func editUsername(_ sender: UIButton) {
+        let alert = UIAlertController(title: "Do you want to change your username?", message: "", preferredStyle: .actionSheet)
+        let firstAction = UIAlertAction(title: "Yes", style: .default) { action in
+            let alert = UIAlertController(title: "Enter your username", message: "", preferredStyle: .alert)
+            alert.addTextField { (textField : UITextField!) -> Void in
+                textField.placeholder = "Your name"
+            }
+            
+            let action = UIAlertAction(title: "Add username", style: .default) { action in
+                if let textField = alert.textFields?[0] {
+                    
+                    let userID = Auth.auth().currentUser?.uid
+                    let userRef = self.ref.child(userID!)
+                    userRef.updateChildValues(["username" : textField.text ?? ""])
+                    
+                    self.nameLabel.text = """
+                    Your username:
+                    \(textField.text ?? "")
+                    """
+                }
+            }
+            let secondAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                self.dismiss(animated: true)
+            }
+            
+            alert.addAction(action)
+            alert.addAction(secondAction)
+            self.present(alert, animated: true)
+        }
+        let secondAction = UIAlertAction(title: "No", style: .destructive) { _ in
+            self.dismiss(animated: true)
+        }
+        alert.addAction(firstAction)
+        alert.addAction(secondAction)
+        present(alert, animated: true)
+    }
+    
+    //MARK: - Editing email function
+    
+    @IBAction func editEmail(_ sender: UIButton) {
+        let alert = UIAlertController(title: "Do you want to change your email?", message: "", preferredStyle: .actionSheet)
+        let firstAction = UIAlertAction(title: "Yes", style: .default) { action in
+            let alert = UIAlertController(title: "Enter your email", message: "", preferredStyle: .alert)
+            alert.addTextField { (textField : UITextField!) -> Void in
+                textField.placeholder = "Your email"
+            }
+            
+            let action = UIAlertAction(title: "Add email", style: .default) { action in
+                if let textField = alert.textFields?[0] {
+                    Auth.auth().currentUser?.updateEmail(to: textField.text!) { error in
+                        guard error == nil else {
+                            switch error {
+                            case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.emailAlreadyInUse.rawValue:
+                                let alert = UIAlertController(title: "Error:", message: "The email address is already in use by another account!", preferredStyle: .alert)
+                                let action = UIAlertAction(title: "Cancel", style: .cancel)
+                                alert.addAction(action)
+                                self.present(alert, animated: true)
+                            case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.invalidEmail.rawValue:
+                                let alert = UIAlertController(title: "Error", message: "The email address is badly formatted!", preferredStyle: .alert)
+                                let action = UIAlertAction(title: "Cancel", style: .cancel)
+                                alert.addAction(action)
+                                self.present(alert, animated: true)
+                            default:
+                                print("Unknown error \(String(describing: error))")
+                            }
+                            return
+                        }
+                        let userID = Auth.auth().currentUser?.uid
+                        let userRef = self.ref.child(userID!)
+                        userRef.updateChildValues(["email" : textField.text ?? ""])
+                        
+                        self.emailLabel.text = """
+                        Your email:
+                        \(textField.text ?? "")
+                        """
+                    }
+                }
+            }
+            let secondAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                self.dismiss(animated: true)
+            }
+            
+            alert.addAction(action)
+            alert.addAction(secondAction)
+            self.present(alert, animated: true)
+        }
+        let secondAction = UIAlertAction(title: "No", style: .destructive) { _ in
+            self.dismiss(animated: true)
+        }
+        alert.addAction(firstAction)
+        alert.addAction(secondAction)
+        present(alert, animated: true)
+    }
+    
+    //MARK: - Editing tel number function
+    
+    @IBAction func editTelNumber(_ sender: UIButton) {
+        let alert = UIAlertController(title: "Do you want to edit your number?", message: "", preferredStyle: .actionSheet)
+        let firstAction = UIAlertAction(title: "Yes", style: .default) { action in
+            let alert = UIAlertController(title: "Enter your number", message: "", preferredStyle: .alert)
+            alert.addTextField { (textField : UITextField!) -> Void in
+                textField.placeholder = "Your number"
+                textField.delegate = self
+            }
+            
+            let action = UIAlertAction(title: "Add number", style: .default) { action in
+                if let textField = alert.textFields?[0] {
+                    let userID = Auth.auth().currentUser?.uid
+                    let userRef = self.ref.child(userID!)
+                    userRef.updateChildValues(["telNumber" : textField.text ?? ""])
+                    self.telNumberLabel.text = """
+                    Your number:
+                    \(textField.text ?? "-  -")
+                    """
+                }
+            }
+            let secondAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                self.dismiss(animated: true)
+            }
+            
+            alert.addAction(action)
+            alert.addAction(secondAction)
+            self.present(alert, animated: true)
+        }
+        let secondAction = UIAlertAction(title: "No", style: .destructive) { _ in
+            self.dismiss(animated: true)
+        }
+        alert.addAction(firstAction)
+        alert.addAction(secondAction)
+        present(alert, animated: true)
+    }
+    
+    @IBAction func changePassword(_ sender: UIButton) {
+        let newVC = (storyboard?.instantiateViewController(withIdentifier: "changePasswordViewController")) as! ChangePasswordViewController
+        present(newVC, animated: true)
     }
 }

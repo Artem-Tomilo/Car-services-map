@@ -108,12 +108,3 @@ class CreateAccViewController: UIViewController {
         }
     }
 }
-
-extension CreateAccViewController: UITextFieldDelegate {
-    
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-        guard textField.text!.count >= 1 else { return }
-        let image = UIImage(named: "noEye")
-        eyeButton.setImage(image, for: .normal)
-    }
-}
