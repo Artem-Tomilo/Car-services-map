@@ -36,12 +36,10 @@ extension ChangePasswordViewController: UITextFieldDelegate {
         guard textField.text!.count >= 1 else { return }
         let image = UIImage(named: "noEye")
         switch textField {
-        case oldPassField:
-            firstEyeButton.setImage(image, for: .normal)
         case newPassField:
-            secondEyeButton.setImage(image, for: .normal)
+            firstEyeButton.setImage(image, for: .normal)
         case repeatNewPassField:
-            thirdEyeButton.setImage(image, for: .normal)
+            secondEyeButton.setImage(image, for: .normal)
         default: break
         }
         

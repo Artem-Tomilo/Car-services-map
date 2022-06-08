@@ -17,6 +17,7 @@ class AccountViewController: UIViewController {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var emailLabel: UILabel!
     @IBOutlet var telNumberLabel: UILabel!
+    @IBOutlet var passwordLabel: UILabel!
     @IBOutlet var deleteAvatarButton: UIButton!
     @IBOutlet var userNameEditButton: UIButton!
     @IBOutlet var emailEditButton: UIButton!
@@ -33,7 +34,7 @@ class AccountViewController: UIViewController {
         super.viewDidLoad()
         getData()
         selectAvatar()
-
+        
         avatarView.layer.cornerRadius = 50
         deleteAvatarButton.layer.cornerRadius = 20
         
@@ -41,7 +42,11 @@ class AccountViewController: UIViewController {
         emailEditButton.isHidden = true
         telNumberNameEditButton.isHidden = true
         changePasswordButton.isHidden = true
-        changePasswordButton.layer.cornerRadius = 15
+        passwordLabel.isHidden = true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     //MARK: - Get data function
@@ -166,6 +171,7 @@ class AccountViewController: UIViewController {
             emailEditButton.isHidden = false
             telNumberNameEditButton.isHidden = false
             changePasswordButton.isHidden = false
+            passwordLabel.isHidden = false
             sender.setTitle("Done", for: .normal)
             editButtonsIsHide = false
         case false:
@@ -173,6 +179,7 @@ class AccountViewController: UIViewController {
             emailEditButton.isHidden = true
             telNumberNameEditButton.isHidden = true
             changePasswordButton.isHidden = true
+            passwordLabel.isHidden = true
             sender.setTitle("Edit", for: .normal)
             editButtonsIsHide = true
         }
@@ -227,7 +234,7 @@ class AccountViewController: UIViewController {
                 textField.placeholder = "Your email"
             }
             
-            let action = UIAlertAction(title: "Add email", style: .default) { action in
+            let action = UIAlertAction(title: "Enter", style: .default) { action in
                 if let textField = alert.textFields?[0] {
                     Auth.auth().currentUser?.updateEmail(to: textField.text!) { error in
                         guard error == nil else {
@@ -241,6 +248,16 @@ class AccountViewController: UIViewController {
                                 let alert = UIAlertController(title: "Error", message: "The email address is badly formatted!", preferredStyle: .alert)
                                 let action = UIAlertAction(title: "Cancel", style: .cancel)
                                 alert.addAction(action)
+                                self.present(alert, animated: true)
+                            case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.requiresRecentLogin.rawValue:
+                                let alert = UIAlertController(title: "Error:", message: "This operation is sensitive and requires recent authentication. Log in again before retrying this request.", preferredStyle: .alert)
+                                let action = UIAlertAction(title: "Retry login", style: .default) { _ in
+                                    let vc = self.storyboard?.instantiateViewController(withIdentifier: "loginViewController") as! LoginViewController
+                                    self.navigationController?.pushViewController(vc, animated: true)
+                                }
+                                let secondAction = UIAlertAction(title: "Cancel", style: .cancel)
+                                alert.addAction(action)
+                                alert.addAction(secondAction)
                                 self.present(alert, animated: true)
                             default:
                                 print("Unknown error \(String(describing: error))")
@@ -312,8 +329,10 @@ class AccountViewController: UIViewController {
         present(alert, animated: true)
     }
     
+    //MARK: - Editing password function
+    
     @IBAction func changePassword(_ sender: UIButton) {
-        let newVC = (storyboard?.instantiateViewController(withIdentifier: "changePasswordViewController")) as! ChangePasswordViewController
-        present(newVC, animated: true)
+        let vc = storyboard?.instantiateViewController(withIdentifier: "changePasswordViewController") as! ChangePasswordViewController
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }
