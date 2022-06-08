@@ -13,3 +13,9 @@ extension MapViewController: UIGestureRecognizerDelegate {
         return true
     }
 }
+
+extension AccountViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+}

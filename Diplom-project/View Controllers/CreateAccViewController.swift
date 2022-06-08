@@ -29,6 +29,7 @@ class CreateAccViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.setNavigationBarHidden(false, animated: false)
         createAccButton.layer.cornerRadius = 25
         nameView.layer.cornerRadius = 5
         emailView.layer.cornerRadius = 5
@@ -105,14 +106,5 @@ class CreateAccViewController: UIViewController {
             let image = UIImage(named: "noEye")
             eyeButton.setImage(image, for: .normal)
         }
-    }
-}
-
-extension CreateAccViewController: UITextFieldDelegate {
-    
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-        guard textField.text!.count >= 1 else { return }
-        let image = UIImage(named: "noEye")
-        eyeButton.setImage(image, for: .normal)
     }
 }
