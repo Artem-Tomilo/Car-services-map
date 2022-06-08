@@ -334,6 +334,7 @@ class MapViewController: UIViewController {
             style(for: "darkStyle", withExtension: ".json")
             changeStyleButton.setImage(UIImage(named: "sun"), for: .normal)
             lightStyle = false
+            clearView.backgroundColor = .systemGray6
             if lightStyle == false && hiddenMenuConstraint.isActive == true {
                 showMenuButton.backgroundColor = .white
             }
@@ -341,6 +342,7 @@ class MapViewController: UIViewController {
             style(for: "lightStyle", withExtension: ".json")
             changeStyleButton.setImage(UIImage(named: "dark"), for: .normal)
             lightStyle = true
+            clearView.backgroundColor = .systemGray
             showMenuButton.backgroundColor = .clear
         }
     }

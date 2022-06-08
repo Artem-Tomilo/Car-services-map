@@ -195,7 +195,7 @@ class AccountViewController: UIViewController {
                 textField.placeholder = "Your name"
             }
             
-            let action = UIAlertAction(title: "Add username", style: .default) { action in
+            let action = UIAlertAction(title: "Enter", style: .default) { action in
                 if let textField = alert.textFields?[0] {
                     
                     let userID = Auth.auth().currentUser?.uid
@@ -302,7 +302,7 @@ class AccountViewController: UIViewController {
                 textField.delegate = self
             }
             
-            let action = UIAlertAction(title: "Add number", style: .default) { action in
+            let action = UIAlertAction(title: "Enter", style: .default) { action in
                 if let textField = alert.textFields?[0] {
                     let userID = Auth.auth().currentUser?.uid
                     let userRef = self.ref.child(userID!)

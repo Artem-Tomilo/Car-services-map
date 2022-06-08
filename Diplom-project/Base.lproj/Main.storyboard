@@ -735,7 +735,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cDM-i2-dDS">
-                                <rect key="frame" x="60" y="249" width="270" height="29"/>
+                                <rect key="frame" x="60" y="224" width="270" height="29"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Label">
                                         <attributes>
@@ -748,7 +748,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fUP-b3-GIF">
-                                <rect key="frame" x="60" y="353" width="270" height="29"/>
+                                <rect key="frame" x="60" y="318" width="270" height="29"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Label">
                                         <attributes>
@@ -761,7 +761,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CfU-Es-Z7R">
-                                <rect key="frame" x="60" y="457" width="270" height="29"/>
+                                <rect key="frame" x="60" y="412" width="270" height="29"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Label">
                                         <attributes>
@@ -774,7 +774,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n7w-OC-7rc">
-                                <rect key="frame" x="20" y="754" width="350" height="40"/>
+                                <rect key="frame" x="20" y="721" width="350" height="40"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="rr1-JR-Lrp"/>
@@ -796,7 +796,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Ty-gj-7ig">
-                                <rect key="frame" x="340" y="248" width="30" height="31"/>
+                                <rect key="frame" x="340" y="223" width="30" height="31"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="pencil" catalog="system"/>
@@ -805,7 +805,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YAF-UE-gaI">
-                                <rect key="frame" x="340" y="352" width="30" height="31"/>
+                                <rect key="frame" x="340" y="317" width="30" height="31"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="pencil" catalog="system"/>
@@ -814,7 +814,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ri6-Dp-ark">
-                                <rect key="frame" x="340" y="456" width="30" height="31"/>
+                                <rect key="frame" x="340" y="411" width="30" height="31"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="pencil" catalog="system"/>
@@ -822,8 +822,8 @@
                                     <action selector="editTelNumber:" destination="u2H-ii-bW0" eventType="primaryActionTriggered" id="Hhs-Ar-SlJ"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JEY-8r-BA5">
-                                <rect key="frame" x="60" y="561" width="270" height="29"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JEY-8r-BA5">
+                                <rect key="frame" x="60" y="506" width="270" height="29"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Change your password">
                                         <attributes>
@@ -836,7 +836,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JK2-V8-rG5">
-                                <rect key="frame" x="340" y="560.66666666666663" width="30" height="30"/>
+                                <rect key="frame" x="340" y="505.66666666666674" width="30" height="30"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="HlE-Dh-gfV"/>
@@ -859,17 +859,18 @@
                             <constraint firstItem="GnP-AR-oX5" firstAttribute="trailing" secondItem="cDM-i2-dDS" secondAttribute="trailing" constant="60" id="5H2-4S-qGP"/>
                             <constraint firstItem="GnP-AR-oX5" firstAttribute="trailing" secondItem="JK2-V8-rG5" secondAttribute="trailing" constant="20" id="7af-hP-MHL"/>
                             <constraint firstItem="JEY-8r-BA5" firstAttribute="leading" secondItem="GnP-AR-oX5" secondAttribute="leading" constant="60" id="8Wh-f4-PMf"/>
-                            <constraint firstItem="fUP-b3-GIF" firstAttribute="top" secondItem="cDM-i2-dDS" secondAttribute="bottom" constant="75" id="B4N-LL-bV8"/>
+                            <constraint firstItem="fUP-b3-GIF" firstAttribute="top" secondItem="cDM-i2-dDS" secondAttribute="bottom" constant="65" id="B4N-LL-bV8"/>
                             <constraint firstItem="1Cj-Wr-yIQ" firstAttribute="top" secondItem="GnP-AR-oX5" secondAttribute="top" constant="30" id="CWg-me-uKx"/>
                             <constraint firstItem="GnP-AR-oX5" firstAttribute="trailing" secondItem="JK2-V8-rG5" secondAttribute="trailing" constant="20" id="Cfx-Hj-u4d"/>
-                            <constraint firstItem="CfU-Es-Z7R" firstAttribute="top" secondItem="fUP-b3-GIF" secondAttribute="bottom" constant="75" id="DUK-sy-6a9"/>
                             <constraint firstItem="dwA-bc-edt" firstAttribute="top" secondItem="cnk-oK-aCw" secondAttribute="top" id="DVz-RH-hPb"/>
                             <constraint firstItem="1Cj-Wr-yIQ" firstAttribute="leading" relation="lessThanOrEqual" secondItem="8A3-ec-gUO" secondAttribute="trailing" constant="76.670000000000002" id="GNC-f4-daI"/>
                             <constraint firstItem="CfU-Es-Z7R" firstAttribute="leading" secondItem="GnP-AR-oX5" secondAttribute="leading" constant="60" id="JE0-Ee-CkQ"/>
                             <constraint firstItem="6mk-Hk-zOJ" firstAttribute="top" secondItem="GnP-AR-oX5" secondAttribute="top" id="L9V-cD-qvo"/>
+                            <constraint firstItem="n7w-OC-7rc" firstAttribute="top" relation="greaterThanOrEqual" secondItem="JEY-8r-BA5" secondAttribute="bottom" constant="50" id="MgX-5i-pPu"/>
+                            <constraint firstItem="JEY-8r-BA5" firstAttribute="top" secondItem="CfU-Es-Z7R" secondAttribute="bottom" constant="65" id="NLo-rk-oA9"/>
                             <constraint firstItem="ri6-Dp-ark" firstAttribute="leading" secondItem="CfU-Es-Z7R" secondAttribute="trailing" constant="10" id="Qh2-lH-ioW"/>
                             <constraint firstItem="JK2-V8-rG5" firstAttribute="leading" secondItem="JEY-8r-BA5" secondAttribute="trailing" constant="10" id="Qzr-57-0kt"/>
-                            <constraint firstItem="cDM-i2-dDS" firstAttribute="top" secondItem="1Cj-Wr-yIQ" secondAttribute="bottom" constant="75" id="RJK-24-iJg"/>
+                            <constraint firstItem="cDM-i2-dDS" firstAttribute="top" secondItem="1Cj-Wr-yIQ" secondAttribute="bottom" constant="50" id="RJK-24-iJg"/>
                             <constraint firstItem="GnP-AR-oX5" firstAttribute="trailing" secondItem="JEY-8r-BA5" secondAttribute="trailing" constant="60" id="RiS-Gv-8Le"/>
                             <constraint firstItem="GnP-AR-oX5" firstAttribute="trailing" secondItem="CfU-Es-Z7R" secondAttribute="trailing" constant="60" id="TM3-RB-aLg"/>
                             <constraint firstItem="4Ty-gj-7ig" firstAttribute="centerY" secondItem="cDM-i2-dDS" secondAttribute="centerY" id="Tup-y6-IcY"/>
@@ -884,7 +885,6 @@
                             <constraint firstItem="6mk-Hk-zOJ" firstAttribute="leading" relation="lessThanOrEqual" secondItem="1Cj-Wr-yIQ" secondAttribute="trailing" constant="62.670000000000002" id="bzf-Jh-oU9"/>
                             <constraint firstItem="GnP-AR-oX5" firstAttribute="trailing" secondItem="6mk-Hk-zOJ" secondAttribute="trailing" constant="10" id="dXh-62-5UY"/>
                             <constraint firstItem="8A3-ec-gUO" firstAttribute="top" secondItem="GnP-AR-oX5" secondAttribute="top" id="eSL-cO-oL2"/>
-                            <constraint firstItem="JEY-8r-BA5" firstAttribute="top" secondItem="CfU-Es-Z7R" secondAttribute="bottom" constant="75" id="hgB-k3-g2X"/>
                             <constraint firstItem="8A3-ec-gUO" firstAttribute="leading" secondItem="GnP-AR-oX5" secondAttribute="leading" id="iKF-ID-R6N"/>
                             <constraint firstItem="cDM-i2-dDS" firstAttribute="leading" secondItem="GnP-AR-oX5" secondAttribute="leading" constant="60" id="jmj-eA-3Ko"/>
                             <constraint firstItem="mc5-67-lYc" firstAttribute="trailing" secondItem="GnP-AR-oX5" secondAttribute="trailing" id="lOA-vI-ccm"/>
@@ -892,10 +892,11 @@
                             <constraint firstItem="GnP-AR-oX5" firstAttribute="trailing" secondItem="YAF-UE-gaI" secondAttribute="trailing" constant="20" id="lpx-vg-vSF"/>
                             <constraint firstAttribute="bottom" secondItem="mc5-67-lYc" secondAttribute="bottom" id="n9T-qs-MUe"/>
                             <constraint firstItem="YAF-UE-gaI" firstAttribute="centerY" secondItem="fUP-b3-GIF" secondAttribute="centerY" id="p9f-wQ-dcp"/>
+                            <constraint firstItem="CfU-Es-Z7R" firstAttribute="top" secondItem="fUP-b3-GIF" secondAttribute="bottom" constant="65" id="rK3-Ua-CeR"/>
                             <constraint firstItem="ri6-Dp-ark" firstAttribute="centerY" secondItem="CfU-Es-Z7R" secondAttribute="centerY" id="vea-QJ-2BJ"/>
                             <constraint firstItem="GnP-AR-oX5" firstAttribute="trailing" secondItem="ri6-Dp-ark" secondAttribute="trailing" constant="20" id="vgL-4m-V0U"/>
                             <constraint firstItem="GnP-AR-oX5" firstAttribute="trailing" secondItem="fUP-b3-GIF" secondAttribute="trailing" constant="60" id="zFi-23-k9w"/>
-                            <constraint firstAttribute="bottom" secondItem="n7w-OC-7rc" secondAttribute="bottom" constant="50" id="zg8-4s-AiU"/>
+                            <constraint firstItem="GnP-AR-oX5" firstAttribute="bottom" secondItem="n7w-OC-7rc" secondAttribute="bottom" id="zg8-4s-AiU"/>
                             <constraint firstItem="1Cj-Wr-yIQ" firstAttribute="centerX" secondItem="cnk-oK-aCw" secondAttribute="centerX" id="zi8-6b-RGW"/>
                         </constraints>
                     </view>
