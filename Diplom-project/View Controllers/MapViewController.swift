@@ -374,26 +374,28 @@ class MapViewController: UIViewController {
     @objc func showTableView(_ sender: UIButton) {
         switch showTableView {
         case false:
+            showMenuButton.alpha = 0
             NSLayoutConstraint.deactivate([hiddenMenuConstraint, hiddenClearViewConstraint])
             NSLayoutConstraint.activate([showMenuConstraint, showClearViewConstraint])
             view.setNeedsLayout()
             UIView.animate(withDuration: 0.2) {
                 self.view.layoutIfNeeded()
+            } completion: { _ in
+                self.showMenuButton.backgroundColor = .clear
+                self.showMenuButton.alpha = 1
             }
-            showMenuButton.backgroundColor = .clear
-            showMenuButton.alpha = 1
-            
             showTableView = true
         case true:
+            self.showMenuButton.alpha = 0
             NSLayoutConstraint.deactivate([showMenuConstraint, showClearViewConstraint])
             NSLayoutConstraint.activate([hiddenMenuConstraint, hiddenClearViewConstraint])
             view.setNeedsLayout()
             UIView.animate(withDuration: 0.2) {
                 self.view.layoutIfNeeded()
+            } completion: { _ in
+                self.showMenuButton.backgroundColor = .white
+                self.showMenuButton.alpha = 0.5
             }
-            showMenuButton.backgroundColor = .white
-            showMenuButton.alpha = 0.5
-            
             showTableView = false
         }
     }
