@@ -26,11 +26,14 @@ class MapViewController: UIViewController {
     let clearView = UIView()
     let tableView = UITableView()
     let nameLabel = UILabel()
+    var infoView = MarkerInfoView()
     
     var showMenuConstraint: NSLayoutConstraint!
     var hiddenMenuConstraint: NSLayoutConstraint!
     var showClearViewConstraint: NSLayoutConstraint!
     var hiddenClearViewConstraint: NSLayoutConstraint!
+    var infoViewConHid = NSLayoutConstraint()
+    var infoViewConShow = NSLayoutConstraint()
     
     let changeStyleButton = UIButton()
     let minusZoomButton = UIButton()
@@ -61,9 +64,6 @@ class MapViewController: UIViewController {
     let listTableViewMenu = ["Advanced filter", "My addresses", "Account", "About app"]
     
     var placesClient: GMSPlacesClient!
-    var infoView = MarkerInfoView()
-    var infoViewConHid = NSLayoutConstraint()
-    var infoViewConShow = NSLayoutConstraint()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,8 +86,6 @@ class MapViewController: UIViewController {
         getData()
         
         viewWithMArkerInfo()
-        
-//        tapGesture()
     }
     
     //MARK: - View will appear
@@ -99,13 +97,17 @@ class MapViewController: UIViewController {
     //MARK: - New objects
     
     func newObjectFunc() {
-        let firstPlace = MyAnnotations(latitude: 53.873961, longitude: 27.499368, name: "Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY")
-        let secondPlace = MyAnnotations(latitude: 53.892702, longitude: 27.646785, name: "Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo")
-        let thirdPlace = MyAnnotations(latitude: 53.852154, longitude: 27.676753, name: "Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo")
+        let firstPlace = MyAnnotations(latitude: 53.873961, longitude: 27.499368, name: "Автосеть Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY")
+        let secondPlace = MyAnnotations(latitude: 53.892702, longitude: 27.646785, name: "Автосеть Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo")
+        let thirdPlace = MyAnnotations(latitude: 53.852154, longitude: 27.676753, name: "Автосеть Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo")
+        
         jsonMarker.append(firstPlace)
         jsonMarker.append(secondPlace)
         jsonMarker.append(thirdPlace)
-        print(jsonMarker)
+        
+        for i in jsonMarker {
+            addMarker(i)
+        }
     }
     
     //MARK: - View with marker info
@@ -123,29 +125,6 @@ class MapViewController: UIViewController {
         ])
         
         infoView.isUserInteractionEnabled = true
-    }
-    
-    //MARK: - Tap gesture
-    
-    func tapGesture() {
-        let tapGesture = UITapGestureRecognizer()
-        tapGesture.addTarget(self, action: #selector(tapOnMapView(_:)))
-        mapView.addGestureRecognizer(tapGesture)
-        tapGesture.delegate = self
-    }
-    
-    @objc func tapOnMapView(_ sender: UITapGestureRecognizer) {
-        NSLayoutConstraint.deactivate([
-            infoViewConShow
-        ])
-        NSLayoutConstraint.activate([
-            infoViewConHid
-        ])
-        view.setNeedsLayout()
-        
-        UIView.animate(withDuration: 0.2) {
-            self.view.layoutIfNeeded()
-        }
     }
     
     //MARK: - Get data function
@@ -414,14 +393,10 @@ class MapViewController: UIViewController {
     //MARK: - Decode
     
     func decode() {
-        let decoder = JSONDecoder()
-        guard let data = try? Data(contentsOf: MapViewController.jsonPath) else { return }
-        guard let results = try? decoder.decode([MyAnnotations].self, from: data) else { return }
-        jsonMarker += results
-        
-        for i in jsonMarker {
-            addMarker(i)
-        }
+//        let decoder = JSONDecoder()
+//        guard let data = try? Data(contentsOf: MapViewController.jsonPath) else { return }
+//        guard let results = try? decoder.decode([MyAnnotations].self, from: data) else { return }
+//        jsonMarker += results
     }
     
     func encode() {
