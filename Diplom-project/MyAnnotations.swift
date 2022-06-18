@@ -9,4 +9,5 @@ struct MyAnnotations: Codable {
     var latitude: Double
     var longitude: Double
     var name: String
+    var placeID: String
 }

@@ -9,6 +9,7 @@ import UIKit
 import GoogleMaps
 import GoogleMapsUtils
 import GoogleSignIn
+import GooglePlaces
 import CoreLocation
 import FirebaseAuth
 import FirebaseCore
@@ -43,7 +44,7 @@ class MapViewController: UIViewController {
     
     var lightStyle = false
     var showTableView = false
-
+    
     let ref = Database.database().reference().child("users")
     let storage = Storage.storage()
     lazy var avatarsRef = storage.reference().child("avatars/")
@@ -52,13 +53,18 @@ class MapViewController: UIViewController {
     var users: [Person] = []
     
     var text: String!
-
+    
     let manager = CLLocationManager()
     
     var cluster: GMUClusterManager!
     
     let listTableViewMenu = ["Advanced filter", "My addresses", "Account", "About app"]
-
+    
+    var placesClient: GMSPlacesClient!
+    var infoView = MarkerInfoView()
+    var infoViewConHid = NSLayoutConstraint()
+    var infoViewConShow = NSLayoutConstraint()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -68,20 +74,78 @@ class MapViewController: UIViewController {
         clusterFunc()
         
         createButtons()
-                
+        
         locationSettings()
+        
+        newObjectFunc()
         
         decode()
         
         tableViewSettings()
-                
+        
         getData()
+        
+        viewWithMArkerInfo()
+        
+//        tapGesture()
     }
     
     //MARK: - View will appear
     
     override func viewWillAppear(_ animated: Bool) {
         getDataImage()
+    }
+    
+    //MARK: - New objects
+    
+    func newObjectFunc() {
+        let firstPlace = MyAnnotations(latitude: 53.873961, longitude: 27.499368, name: "Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY")
+        let secondPlace = MyAnnotations(latitude: 53.892702, longitude: 27.646785, name: "Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo")
+        let thirdPlace = MyAnnotations(latitude: 53.852154, longitude: 27.676753, name: "Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo")
+        jsonMarker.append(firstPlace)
+        jsonMarker.append(secondPlace)
+        jsonMarker.append(thirdPlace)
+        print(jsonMarker)
+    }
+    
+    //MARK: - View with marker info
+    
+    func viewWithMArkerInfo() {
+        view.addSubview(infoView)
+        infoView.translatesAutoresizingMaskIntoConstraints = false
+        infoViewConHid = infoView.topAnchor.constraint(equalTo: view.bottomAnchor)
+        infoViewConShow = infoView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        
+        NSLayoutConstraint.activate([
+            infoViewConHid,
+            infoView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            infoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+        
+        infoView.isUserInteractionEnabled = true
+    }
+    
+    //MARK: - Tap gesture
+    
+    func tapGesture() {
+        let tapGesture = UITapGestureRecognizer()
+        tapGesture.addTarget(self, action: #selector(tapOnMapView(_:)))
+        mapView.addGestureRecognizer(tapGesture)
+        tapGesture.delegate = self
+    }
+    
+    @objc func tapOnMapView(_ sender: UITapGestureRecognizer) {
+        NSLayoutConstraint.deactivate([
+            infoViewConShow
+        ])
+        NSLayoutConstraint.activate([
+            infoViewConHid
+        ])
+        view.setNeedsLayout()
+        
+        UIView.animate(withDuration: 0.2) {
+            self.view.layoutIfNeeded()
+        }
     }
     
     //MARK: - Get data function
@@ -134,157 +198,47 @@ class MapViewController: UIViewController {
         }
     }
     
-    //MARK: - Table view settings
-    
-    func tableViewSettings() {
+    func getInfoAboutPlace(placeID: String, coordinate: CLLocationCoordinate2D) {
+        placesClient = GMSPlacesClient.shared()
         
-        //MARK: - someview
-        
-        view.addSubview(someView)
-        someView.translatesAutoresizingMaskIntoConstraints = false
-        showMenuConstraint = someView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
-        hiddenMenuConstraint = someView.trailingAnchor.constraint(equalTo: view.leadingAnchor)
-        NSLayoutConstraint.activate([
-            someView.topAnchor.constraint(equalTo: view.topAnchor),
-            someView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            someView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.7),
-            hiddenMenuConstraint])
-        someView.backgroundColor = .systemGray4
-        someView.alpha = 1
-        
-        //MARK: - viewForUserData
-        
-        someView.addSubview(viewForUserData)
-        viewForUserData.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            viewForUserData.topAnchor.constraint(equalTo: someView.safeAreaLayoutGuide.topAnchor, constant: 20),
-            viewForUserData.trailingAnchor.constraint(equalTo: someView.trailingAnchor),
-            viewForUserData.leadingAnchor.constraint(equalTo: someView.leadingAnchor),
-            viewForUserData.heightAnchor.constraint(equalToConstant: 50)
-        ])
-        viewForUserData.backgroundColor = .systemMint
-        
-        //MARK: - nameLabel
-        
-        viewForUserData.addSubview(nameLabel)
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            nameLabel.topAnchor.constraint(equalTo: viewForUserData.topAnchor),
-            nameLabel.trailingAnchor.constraint(equalTo: viewForUserData.trailingAnchor),
-            nameLabel.bottomAnchor.constraint(equalTo: viewForUserData.bottomAnchor),
-            nameLabel.leadingAnchor.constraint(equalTo: viewForUserData.leadingAnchor, constant: 120)
-        ])
-        nameLabel.numberOfLines = 0
-        nameLabel.font = UIFont.italicSystemFont(ofSize: 20)
-        
-        //MARK: - showMenuButton
-        
-        view.addSubview(showMenuButton)
-        showMenuButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            showMenuButton.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
-            showMenuButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            showMenuButton.widthAnchor.constraint(equalToConstant: 30),
-            showMenuButton.heightAnchor.constraint(equalToConstant: 30)
-        ])
-        showMenuButton.setImage(UIImage(named: "menu"), for: .normal)
-        showMenuButton.backgroundColor = .white
-        showMenuButton.alpha = 0.5
-        showMenuButton.layer.cornerRadius = 15
-        showMenuButton.addTarget(self, action: #selector(showTableView(_:)), for: .primaryActionTriggered)
-        
-        //MARK: - avatarView
-        
-        viewForUserData.addSubview(avatarView)
-        avatarView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            avatarView.trailingAnchor.constraint(equalTo: nameLabel.leadingAnchor, constant: -25),
-            avatarView.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
-            avatarView.widthAnchor.constraint(equalToConstant: 40),
-            avatarView.heightAnchor.constraint(equalToConstant: 40)
-            ])
-        avatarView.frame.size = CGSize(width: 40, height: 40)
-        avatarView.layer.cornerRadius = 20
-        avatarView.clipsToBounds = true
-        avatarView.contentMode = .scaleAspectFill
-        avatarView.image = UIImage(named: "photo")
-        
-        //MARK: - signOutButton
-        
-        someView.addSubview(signOutButton)
-        signOutButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            signOutButton.bottomAnchor.constraint(equalTo: someView.safeAreaLayoutGuide.bottomAnchor),
-            signOutButton.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 40),
-            signOutButton.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -40),
-            signOutButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
-        signOutButton.backgroundColor = .black
-        signOutButton.layer.cornerRadius = 20
-        signOutButton.setTitle("Sign Out", for: .normal)
-        signOutButton.tintColor = .white
-        signOutButton.addTarget(self, action: #selector(signOut(_:)), for: .primaryActionTriggered)
-        
-        //MARK: - tableView
-        
-        someView.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: viewForUserData.bottomAnchor, constant: 30),
-            tableView.leadingAnchor.constraint(equalTo: someView.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: someView.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: signOutButton.topAnchor)
-        ])
-        tableView.backgroundColor = .systemGray4
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "table-cell")
-        
-        //MARK: - Clear view
-        
-        view.addSubview(clearView)
-        clearView.translatesAutoresizingMaskIntoConstraints = false
-        showClearViewConstraint = clearView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        hiddenClearViewConstraint = clearView.leadingAnchor.constraint(equalTo: view.trailingAnchor)
-        
-        NSLayoutConstraint.activate([
-            clearView.topAnchor.constraint(equalTo: view.topAnchor),
-            clearView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            clearView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.3),
-            hiddenClearViewConstraint
-        ])
-        clearView.backgroundColor = .systemGray6
-        clearView.alpha = 0.5
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
-        clearView.addGestureRecognizer(tapGesture)
-        clearView.isUserInteractionEnabled = true
-        tapGesture.delegate = self
-    }
-    
-    @objc func tap(_ sender: UITapGestureRecognizer) {
-        NSLayoutConstraint.deactivate([showMenuConstraint, showClearViewConstraint])
-        NSLayoutConstraint.activate([hiddenMenuConstraint, hiddenClearViewConstraint])
-        view.setNeedsLayout()
-        UIView.animate(withDuration: 0.2) {
-            self.view.layoutIfNeeded()
+        let fields: GMSPlaceField = [.name, .formattedAddress, .phoneNumber, .rating, .website, .photos]
+        placesClient.fetchPlace(fromPlaceID: placeID, placeFields: fields, sessionToken: nil) { place, error in
+            if let error = error {
+                print("An error occurred: \(error.localizedDescription)")
+                return
+            }
+            if let place = place {
+                self.infoView.nameLabel.text = place.name
+                self.infoView.addressLabel.text = place.formattedAddress
+                self.infoView.telLabel.text = place.phoneNumber
+                self.infoView.ratingLabel.text = "Rating: " + String(place.rating)
+                
+                let url = place.website
+                let str = url?.absoluteString
+                self.infoView.webLabel.text = str
+                
+                let photoMetadata: GMSPlacePhotoMetadata = place.photos![0]
+                self.placesClient?.loadPlacePhoto(photoMetadata, callback: { (photo, error) -> Void in
+                    if let error = error {
+                        print("Error loading photo metadata: \(error.localizedDescription)")
+                        return
+                    } else {
+                        self.infoView.photoImage.image = photo;
+                    }
+                })
+            }
         }
-        
-        showMenuButton.backgroundColor = .white
-        showMenuButton.alpha = 0.5
-        showTableView = false
     }
+    
     
     //MARK: - Location Settings
     
     func locationSettings() {
-//        manager.desiredAccuracy = kCLLocationAccuracyBest
-//        manager.requestWhenInUseAuthorization()
-//        manager.distanceFilter = 50
-//        manager.startUpdatingLocation()
-
+        //        manager.desiredAccuracy = kCLLocationAccuracyBest
+        //        manager.requestWhenInUseAuthorization()
+        //        manager.distanceFilter = 50
+        //        manager.startUpdatingLocation()
+        
         manager.delegate = self
         if CLLocationManager.locationServicesEnabled() {
             manager.requestLocation()
@@ -314,11 +268,11 @@ class MapViewController: UIViewController {
         buttonSettings(button: changeStyleButton, viewV: view, nameImage: "sun", constant: -112)
         buttonSettings(button: minusZoomButton, viewV: changeStyleButton, nameImage: "minus", constant: -69)
         buttonSettings(button: plusZoomButton, viewV: minusZoomButton, nameImage: "plus", constant: -69)
-//        buttonSettings(button: hiddenButton, viewV: view, nameImage: "", constant: -42)
+        //        buttonSettings(button: hiddenButton, viewV: view, nameImage: "", constant: -42)
         
-//        styleButton.isHidden = true
-//        minusZoomButton.isHidden = true
-//        plusZoomButton.isHidden = true
+        //        styleButton.isHidden = true
+        //        minusZoomButton.isHidden = true
+        //        plusZoomButton.isHidden = true
         
         changeStyleButton.addTarget(self, action: #selector(styleButtonTapped(_:)), for: .primaryActionTriggered)
         minusZoomButton.addTarget(self, action: #selector(minusOneZoom(_:)), for: .primaryActionTriggered)
@@ -373,6 +327,10 @@ class MapViewController: UIViewController {
     }
     
     @objc func showTableView(_ sender: UIButton) {
+        
+        //        let vc = storyboard?.instantiateViewController(withIdentifier: "newViewController") as! NewViewController
+        //        navigationController?.pushViewController(vc, animated: true)
+        
         switch showTableView {
         case false:
             showMenuButton.alpha = 0
@@ -431,40 +389,48 @@ class MapViewController: UIViewController {
             NSLog("One or more of the map styles failed to load. \(error)")
         }
     }
-
+    
     //MARK: - Map settings
-
+    
     func mapSettings() {
         let camera = GMSCameraPosition.camera(withLatitude: 53.90, longitude: 27.56, zoom: 5)
-//        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 10)
+        //        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 10)
         mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
-//        mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        //        mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         mapView.settings.compassButton = true
         mapView.settings.myLocationButton = true
-//        mapView.isTrafficEnabled = true
+        //        mapView.isTrafficEnabled = true
         mapView.isMyLocationEnabled = true
         style(for: "darkStyle", withExtension: ".json")
         view = mapView
         navigationController?.setNavigationBarHidden(true, animated: false)
-
+        
         mapView.delegate = self
-
+        
         let zoom = GMSCameraUpdate.zoom(to: 10.7)
         mapView.animate(with: zoom)
     }
-
+    
     //MARK: - Decode
-
+    
     func decode() {
         let decoder = JSONDecoder()
         guard let data = try? Data(contentsOf: MapViewController.jsonPath) else { return }
         guard let results = try? decoder.decode([MyAnnotations].self, from: data) else { return }
         jsonMarker += results
-
+        
         for i in jsonMarker {
-            let coor = CLLocationCoordinate2D(latitude: i.latitude, longitude: i.longitude)
-            addMarker(in: coor, name: i.name)
+            addMarker(i)
         }
+    }
+    
+    func encode() {
+        //        let marker = MyAnnotations(latitude: coordinate.latitude, longitude: coordinate.longitude, name: place.name!, placeID: placeID)
+        
+        //        self.jsonMarker.append(marker)
+        //        let encoder = JSONEncoder()
+        //        let data = try! encoder.encode(self.jsonMarker)
+        //        try! data.write(to: MapViewController.jsonPath)
     }
     
     //MARK: - Cluster markers
@@ -475,29 +441,18 @@ class MapViewController: UIViewController {
         let renderer = GMUDefaultClusterRenderer(mapView: mapView,
                                                  clusterIconGenerator: iconGenerator)
         cluster = GMUClusterManager(map: mapView, algorithm: algorithm,
-                                           renderer: renderer)
+                                    renderer: renderer)
         cluster.setMapDelegate(self)
     }
-
-    //MARK: - Home annotation
-
-    func homeAnnotation() {
-        let marker = GMSMarker()
-        marker.position = CLLocationCoordinate2D(latitude: 53.85464, longitude: 27.48490)
-        marker.title = "Artem"
-        marker.snippet = "House"
-        marker.map = mapView
-        marker.isFlat = true
-        marker.icon = GMSMarker.markerImage(with: .blue)
-    }
-
+    
     //MARK: - Add marker
-
-    func addMarker(in position: CLLocationCoordinate2D, name: String) {
+    
+    func addMarker(_ object: MyAnnotations) {
         let marker = GMSMarker()
-        marker.position = position
+        marker.position = CLLocationCoordinate2D(latitude: object.latitude, longitude: object.longitude)
         marker.map = mapView
-        marker.title = name
+        marker.title = object.name
+        marker.userData = object
         cluster.add(marker)
         cluster.cluster()
     }
