@@ -19,12 +19,17 @@ extension MapViewController: GMSMapViewDelegate {
         guard let data = marker.userData as? MyAnnotations else { return true }
         getInfoAboutPlace(placeID: data.placeID, coordinate: CLLocationCoordinate2D(latitude: data.latitude, longitude: data.longitude))
         
+        markerInfoView.lockView()
+        UIView.animate(withDuration: 1.5) {
+            self.markerInfoView.unlockView()
+        }
+        
         NSLayoutConstraint.deactivate([
-            infoViewConHid
+            hiddenMarkerInfoViewConstraint
         ])
         
         NSLayoutConstraint.activate([
-            infoViewConShow
+            showMarkerInfoViewConstraint
         ])
         view.setNeedsLayout()
         
@@ -46,17 +51,21 @@ extension MapViewController: GMSMapViewDelegate {
         return false
     }
     
+    //MARK: - Did tap at coordinate
+    
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
         hideInfoView()
     }
     
+    //MARK: - Hide infoView func
+    
     func hideInfoView() {
         NSLayoutConstraint.deactivate([
-            infoViewConShow
+            showMarkerInfoViewConstraint
         ])
         
         NSLayoutConstraint.activate([
-            infoViewConHid
+            hiddenMarkerInfoViewConstraint
         ])
         view.setNeedsLayout()
         

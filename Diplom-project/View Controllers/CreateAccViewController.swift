@@ -30,6 +30,7 @@ class CreateAccViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.setNavigationBarHidden(false, animated: false)
+        navigationController?.navigationBar.tintColor = .black
         createAccButton.layer.cornerRadius = 25
         nameView.layer.cornerRadius = 5
         emailView.layer.cornerRadius = 5

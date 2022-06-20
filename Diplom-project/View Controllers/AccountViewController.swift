@@ -23,6 +23,7 @@ class AccountViewController: UIViewController {
     @IBOutlet var emailEditButton: UIButton!
     @IBOutlet var telNumberNameEditButton: UIButton!
     @IBOutlet var changePasswordButton: UIButton!
+    @IBOutlet var backToMapViewButton: UIButton!
     
     var editButtonsIsHide = true
     
@@ -37,6 +38,11 @@ class AccountViewController: UIViewController {
         
         avatarView.layer.cornerRadius = 50
         deleteAvatarButton.layer.cornerRadius = 20
+        
+        avatarView.lockView()
+        UIView.animate(withDuration: 4) {
+            self.avatarView.unlockView()
+        }
         
         userNameEditButton.isHidden = true
         emailEditButton.isHidden = true
@@ -86,7 +92,6 @@ class AccountViewController: UIViewController {
                     myImageReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
                         if let error = error {
                             print(error.localizedDescription)
-                            self.avatarView.layer.cornerRadius = 0
                         } else {
                             let image = UIImage(data: data!)
                             
@@ -109,8 +114,11 @@ class AccountViewController: UIViewController {
             if let error = error {
                 print(error.localizedDescription)
             } else {
+                self.avatarView.lockView()
+                UIView.animate(withDuration: 1) {
+                    self.avatarView.unlockView()
+                }
                 self.avatarView.image = UIImage(named: "photo")
-                self.avatarView.layer.cornerRadius = 0
             }
         }
     }
@@ -174,6 +182,7 @@ class AccountViewController: UIViewController {
             passwordLabel.isHidden = false
             sender.setTitle("Done", for: .normal)
             editButtonsIsHide = false
+            backToMapViewButton.isEnabled = false
         case false:
             userNameEditButton.isHidden = true
             emailEditButton.isHidden = true
@@ -182,6 +191,7 @@ class AccountViewController: UIViewController {
             passwordLabel.isHidden = true
             sender.setTitle("Edit", for: .normal)
             editButtonsIsHide = true
+            backToMapViewButton.isEnabled = true
         }
     }
     

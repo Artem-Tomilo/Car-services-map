@@ -26,14 +26,14 @@ class MapViewController: UIViewController {
     let clearView = UIView()
     let tableView = UITableView()
     let nameLabel = UILabel()
-    var infoView = MarkerInfoView()
+    var markerInfoView = MarkerInfoView()
     
     var showMenuConstraint: NSLayoutConstraint!
     var hiddenMenuConstraint: NSLayoutConstraint!
     var showClearViewConstraint: NSLayoutConstraint!
     var hiddenClearViewConstraint: NSLayoutConstraint!
-    var infoViewConHid = NSLayoutConstraint()
-    var infoViewConShow = NSLayoutConstraint()
+    var showMarkerInfoViewConstraint: NSLayoutConstraint!
+    var hiddenMarkerInfoViewConstraint: NSLayoutConstraint!
     
     let changeStyleButton = UIButton()
     let minusZoomButton = UIButton()
@@ -85,7 +85,7 @@ class MapViewController: UIViewController {
         
         getData()
         
-        viewWithMArkerInfo()
+        viewWithMarkerInfo()
     }
     
     //MARK: - View will appear
@@ -110,24 +110,24 @@ class MapViewController: UIViewController {
         }
     }
     
-    //MARK: - View with marker info
+    //MARK: - Marker info view
     
-    func viewWithMArkerInfo() {
-        view.addSubview(infoView)
-        infoView.translatesAutoresizingMaskIntoConstraints = false
-        infoViewConHid = infoView.topAnchor.constraint(equalTo: view.bottomAnchor)
-        infoViewConShow = infoView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+    func viewWithMarkerInfo() {
+        view.addSubview(markerInfoView)
+        markerInfoView.translatesAutoresizingMaskIntoConstraints = false
+        hiddenMarkerInfoViewConstraint = markerInfoView.topAnchor.constraint(equalTo: view.bottomAnchor)
+        showMarkerInfoViewConstraint = markerInfoView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         
         NSLayoutConstraint.activate([
-            infoViewConHid,
-            infoView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            infoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            hiddenMarkerInfoViewConstraint,
+            markerInfoView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            markerInfoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
         
-        infoView.isUserInteractionEnabled = true
+        markerInfoView.isUserInteractionEnabled = true
     }
     
-    //MARK: - Get data function
+    //MARK: - Get data functions
     
     func getData() {
         ref.getData(completion:  { error, snapshot in
@@ -187,14 +187,14 @@ class MapViewController: UIViewController {
                 return
             }
             if let place = place {
-                self.infoView.nameLabel.text = place.name
-                self.infoView.addressLabel.text = place.formattedAddress
-                self.infoView.telLabel.text = place.phoneNumber
-                self.infoView.ratingLabel.text = "Rating: " + String(place.rating)
+                self.markerInfoView.nameLabel.text = place.name
+                self.markerInfoView.addressLabel.text = place.formattedAddress
+                self.markerInfoView.telLabel.text = place.phoneNumber
+                self.markerInfoView.ratingLabel.text = "Rating: " + String(place.rating)
                 
                 let url = place.website
                 let str = url?.absoluteString
-                self.infoView.webLabel.text = str
+                self.markerInfoView.webLabel.text = str
                 
                 let photoMetadata: GMSPlacePhotoMetadata = place.photos![0]
                 self.placesClient?.loadPlacePhoto(photoMetadata, callback: { (photo, error) -> Void in
@@ -202,7 +202,7 @@ class MapViewController: UIViewController {
                         print("Error loading photo metadata: \(error.localizedDescription)")
                         return
                     } else {
-                        self.infoView.photoImage.image = photo;
+                        self.markerInfoView.photoImage.image = photo;
                     }
                 })
             }
@@ -313,8 +313,10 @@ class MapViewController: UIViewController {
         switch showTableView {
         case false:
             showMenuButton.alpha = 0
+            hideInfoView()
             NSLayoutConstraint.deactivate([hiddenMenuConstraint, hiddenClearViewConstraint])
             NSLayoutConstraint.activate([showMenuConstraint, showClearViewConstraint])
+            
             view.setNeedsLayout()
             UIView.animate(withDuration: 0.2) {
                 self.view.layoutIfNeeded()
