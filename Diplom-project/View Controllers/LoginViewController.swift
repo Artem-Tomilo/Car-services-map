@@ -27,7 +27,7 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+
         signInButton.layer.cornerRadius = 25
         googleButton.style = .wide
         emailView.layer.cornerRadius = 5
@@ -81,21 +81,25 @@ class LoginViewController: UIViewController {
             guard let self = self else { return }
             guard authResult != nil else {
                 switch error {
+                    
                 case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.wrongPassword.rawValue:
                     let alert = UIAlertController(title: "Error:", message: "Wrong password", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Cancel", style: .cancel)
                     alert.addAction(action)
                     self.present(alert, animated: true)
+                
                 case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.userNotFound.rawValue:
                     let alert = UIAlertController(title: "Error:", message: "User with this e-mail address is not registered", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Cancel", style: .cancel)
                     alert.addAction(action)
                     self.present(alert, animated: true)
+                
                 case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.invalidEmail.rawValue:
                     let alert = UIAlertController(title: "Error", message: "The email address is badly formatted!", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Cancel", style: .cancel)
                     alert.addAction(action)
                     self.present(alert, animated: true)
+                
                 default:
                     print("Unknown error \(String(describing: error))")
                 }

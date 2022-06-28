@@ -42,6 +42,5 @@ extension ChangePasswordViewController: UITextFieldDelegate {
             secondEyeButton.setImage(image, for: .normal)
         default: break
         }
-        
     }
 }

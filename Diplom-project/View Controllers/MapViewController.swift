@@ -19,6 +19,7 @@ import FirebaseStorage
 
 class MapViewController: UIViewController {
     
+    @IBOutlet var markerInfoView: MarkerInfoView!
     var mapView: GMSMapView!
     let someView = UIView()
     let viewForUserData = UIView()
@@ -26,7 +27,6 @@ class MapViewController: UIViewController {
     let clearView = UIView()
     let tableView = UITableView()
     let nameLabel = UILabel()
-    var markerInfoView = MarkerInfoView()
     
     var showMenuConstraint: NSLayoutConstraint!
     var hiddenMenuConstraint: NSLayoutConstraint!
@@ -41,6 +41,7 @@ class MapViewController: UIViewController {
     let hiddenButton = UIButton()
     let showMenuButton = UIButton()
     let signOutButton = UIButton()
+    let filterButton = UIButton()
     
     static let path = try! FileManager.default.url(for: .cachesDirectory, in: .allDomainsMask, appropriateFor: nil, create: true)
     static let jsonPath = path.appendingPathComponent("marker.json")
@@ -52,10 +53,9 @@ class MapViewController: UIViewController {
     let storage = Storage.storage()
     lazy var avatarsRef = storage.reference().child("avatars/")
     
-    var jsonMarker: [MyAnnotations] = []
+    var placesArray: [Places] = []
     var users: [Person] = []
-    
-    var text: String!
+    var markerArray: [GMSMarker] = []
     
     let manager = CLLocationManager()
     
@@ -67,7 +67,6 @@ class MapViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         
         mapSettings()
         
@@ -79,13 +78,13 @@ class MapViewController: UIViewController {
         
         newObjectFunc()
         
-        decode()
-        
         tableViewSettings()
+        
+        addFilterButton()
         
         getData()
         
-        viewWithMarkerInfo()
+        addMarkerInfoView()
     }
     
     //MARK: - View will appear
@@ -97,22 +96,23 @@ class MapViewController: UIViewController {
     //MARK: - New objects
     
     func newObjectFunc() {
-        let firstPlace = MyAnnotations(latitude: 53.873961, longitude: 27.499368, name: "Автосеть Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY")
-        let secondPlace = MyAnnotations(latitude: 53.892702, longitude: 27.646785, name: "Автосеть Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo")
-        let thirdPlace = MyAnnotations(latitude: 53.852154, longitude: 27.676753, name: "Автосеть Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo")
+        let firstPlace = Places(latitude: 53.873961, longitude: 27.499368, name: "Автосеть Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
+        let secondPlace = Places(latitude: 53.892702, longitude: 27.646785, name: "Автосеть Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
+        let thirdPlace = Places(latitude: 53.852154, longitude: 27.676753, name: "Автосеть Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
         
-        jsonMarker.append(firstPlace)
-        jsonMarker.append(secondPlace)
-        jsonMarker.append(thirdPlace)
+        placesArray.append(firstPlace)
+        placesArray.append(secondPlace)
+        placesArray.append(thirdPlace)
         
-        for i in jsonMarker {
+        for i in placesArray {
             addMarker(i)
         }
     }
     
     //MARK: - Marker info view
     
-    func viewWithMarkerInfo() {
+    func addMarkerInfoView() {
+        Bundle.main.loadNibNamed("MarkerInfoView", owner: self)
         view.addSubview(markerInfoView)
         markerInfoView.translatesAutoresizingMaskIntoConstraints = false
         hiddenMarkerInfoViewConstraint = markerInfoView.topAnchor.constraint(equalTo: view.bottomAnchor)
@@ -125,6 +125,51 @@ class MapViewController: UIViewController {
         ])
         
         markerInfoView.isUserInteractionEnabled = true
+    }
+    
+    //MARK: - Filter
+    
+    func addFilterButton() {
+        view.addSubview(filterButton)
+        filterButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            filterButton.topAnchor.constraint(equalTo: showMenuButton.bottomAnchor, constant: 30),
+            filterButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            filterButton.widthAnchor.constraint(equalToConstant: 50),
+            filterButton.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        filterButton.backgroundColor = .white
+        filterButton.alpha = 0.75
+        filterButton.layer.cornerRadius = 25
+        filterButton.setImage(UIImage(named: "filter"), for: .normal)
+        filterButton.addTarget(self, action: #selector(filter(_:)), for: .primaryActionTriggered)
+    }
+    
+    //MARK: - Filter actions
+    
+    @objc func filter(_ sender: UIButton) {
+        let newVC = (storyboard?.instantiateViewController(withIdentifier: "filterViewController")) as! FilterViewController
+        present(newVC, animated: true)
+        
+        newVC.delegate = self
+    }
+    
+    func filterFunc(service: Set<ProfServices>) {
+        var placeId: Set<String> = []
+
+        for place in placesArray {
+            if service.isSubset(of: place.services) {
+                placeId.insert(place.name)
+            }
+        }
+
+        for marker in markerArray {
+            if !placeId.contains(marker.title!) {
+                marker.map = nil
+            } else {
+                marker.map = mapView
+            }
+        }
     }
     
     //MARK: - Get data functions
@@ -151,13 +196,11 @@ class MapViewController: UIViewController {
                 return Person(uid: k, username: username, email: email)
             }
             self.users = users
-            print(users)
         })
     }
     
     func getDataImage() {
         let myImageReference = self.avatarsRef.child(Auth.auth().currentUser!.uid + ".jpg")
-        print(myImageReference)
         myImageReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
             if let error = error {
                 print(error.localizedDescription)
@@ -209,7 +252,6 @@ class MapViewController: UIViewController {
         }
     }
     
-    
     //MARK: - Location Settings
     
     func locationSettings() {
@@ -259,25 +301,31 @@ class MapViewController: UIViewController {
         hiddenButton.addTarget(self, action: #selector(hiddenButtons(_:)), for: .primaryActionTriggered)
     }
     
-    
-    
     //MARK: - Button actions
     
     @objc func styleButtonTapped(_ sender: UIButton) {
         if lightStyle {
             style(for: "darkStyle", withExtension: ".json")
             changeStyleButton.setImage(UIImage(named: "sun"), for: .normal)
-            lightStyle = false
+            lightStyle.toggle()
             clearView.backgroundColor = .systemGray6
             if lightStyle == false && hiddenMenuConstraint.isActive == true {
                 showMenuButton.backgroundColor = .white
+                showMenuButton.alpha = 0.75
+                filterButton.setImage(UIImage(named: "filter"), for: .normal)
+                filterButton.backgroundColor = .white
+                filterButton.alpha = 0.75
             }
         } else {
             style(for: "lightStyle", withExtension: ".json")
             changeStyleButton.setImage(UIImage(named: "dark"), for: .normal)
-            lightStyle = true
+            lightStyle.toggle()
             clearView.backgroundColor = .systemGray
-            showMenuButton.backgroundColor = .clear
+            showMenuButton.backgroundColor = .systemGray3
+            showMenuButton.alpha = 1
+            filterButton.setImage(UIImage(named: "blackFilter"), for: .normal)
+            filterButton.backgroundColor = .systemGray3
+            filterButton.alpha = 1
         }
     }
     
@@ -306,37 +354,11 @@ class MapViewController: UIViewController {
     }
     
     @objc func showTableView(_ sender: UIButton) {
-        
-        //        let vc = storyboard?.instantiateViewController(withIdentifier: "newViewController") as! NewViewController
-        //        navigationController?.pushViewController(vc, animated: true)
-        
         switch showTableView {
         case false:
-            showMenuButton.alpha = 0
-            hideInfoView()
-            NSLayoutConstraint.deactivate([hiddenMenuConstraint, hiddenClearViewConstraint])
-            NSLayoutConstraint.activate([showMenuConstraint, showClearViewConstraint])
-            
-            view.setNeedsLayout()
-            UIView.animate(withDuration: 0.2) {
-                self.view.layoutIfNeeded()
-            } completion: { _ in
-                self.showMenuButton.backgroundColor = .clear
-                self.showMenuButton.alpha = 1
-            }
-            showTableView = true
+            showMenuFunc()
         case true:
-            self.showMenuButton.alpha = 0
-            NSLayoutConstraint.deactivate([showMenuConstraint, showClearViewConstraint])
-            NSLayoutConstraint.activate([hiddenMenuConstraint, hiddenClearViewConstraint])
-            view.setNeedsLayout()
-            UIView.animate(withDuration: 0.2) {
-                self.view.layoutIfNeeded()
-            } completion: { _ in
-                self.showMenuButton.backgroundColor = .white
-                self.showMenuButton.alpha = 0.5
-            }
-            showTableView = false
+            hideMenuFunc()
         }
     }
     
@@ -397,17 +419,17 @@ class MapViewController: UIViewController {
     func decode() {
 //        let decoder = JSONDecoder()
 //        guard let data = try? Data(contentsOf: MapViewController.jsonPath) else { return }
-//        guard let results = try? decoder.decode([MyAnnotations].self, from: data) else { return }
-//        jsonMarker += results
+//        guard let results = try? decoder.decode([Places].self, from: data) else { return }
+//        placesArray += results
     }
     
     func encode() {
-        //        let marker = MyAnnotations(latitude: coordinate.latitude, longitude: coordinate.longitude, name: place.name!, placeID: placeID)
-        
-        //        self.jsonMarker.append(marker)
-        //        let encoder = JSONEncoder()
-        //        let data = try! encoder.encode(self.jsonMarker)
-        //        try! data.write(to: MapViewController.jsonPath)
+//        let marker = MyAnnotations(latitude: coordinate.latitude, longitude: coordinate.longitude, name: place.name!, placeID: placeID)
+//        
+//        self.jsonMarker.append(marker)
+//        let encoder = JSONEncoder()
+//        let data = try! encoder.encode(self.jsonMarker)
+//        try! data.write(to: MapViewController.jsonPath)
     }
     
     //MARK: - Cluster markers
@@ -424,7 +446,7 @@ class MapViewController: UIViewController {
     
     //MARK: - Add marker
     
-    func addMarker(_ object: MyAnnotations) {
+    func addMarker(_ object: Places) {
         let marker = GMSMarker()
         marker.position = CLLocationCoordinate2D(latitude: object.latitude, longitude: object.longitude)
         marker.map = mapView
@@ -432,5 +454,13 @@ class MapViewController: UIViewController {
         marker.userData = object
         cluster.add(marker)
         cluster.cluster()
+        markerArray.append(marker)
+    }
+}
+
+extension MapViewController: FilterViewControllerDelegate {
+    
+    func filterMap(with set: Set<ProfServices>) {
+        filterFunc(service: set)
     }
 }

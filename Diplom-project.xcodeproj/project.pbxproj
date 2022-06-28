@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3844CEF72857ABFD000427C6 /* NewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3844CEF62857ABFD000427C6 /* NewViewController.swift */; };
 		3844CEF92858CE8D000427C6 /* Table view.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3844CEF82858CE8D000427C6 /* Table view.swift */; };
 		3844CEFD2859DE7B000427C6 /* MarkerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3844CEFC2859DE7B000427C6 /* MarkerInfoView.swift */; };
 		3844CF012859E04D000427C6 /* MarkerInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3844CF002859E04D000427C6 /* MarkerInfoView.xib */; };
+		3864407528647CAE0059939B /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3864407428647CAE0059939B /* FilterViewController.swift */; };
+		38644077286486040059939B /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38644076286486040059939B /* CustomCell.swift */; };
 		3867230A284CC688000EAD14 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38672309284CC688000EAD14 /* AccountViewController.swift */; };
 		3867230E284E7433000EAD14 /* UITextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867230D284E7433000EAD14 /* UITextFieldDelegate.swift */; };
 		38672310284F88A7000EAD14 /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867230F284F88A7000EAD14 /* ChangePasswordViewController.swift */; };
@@ -19,12 +20,13 @@
 		389110832847D4E500EA462B /* CLLocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110822847D4E500EA462B /* CLLocationManagerDelegate.swift */; };
 		389110852847D50200EA462B /* UIGestureRecognizerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110842847D50200EA462B /* UIGestureRecognizerDelegate.swift */; };
 		389110872847D51500EA462B /* TableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110862847D51500EA462B /* TableViewDelegate.swift */; };
-		389110892847D52800EA462B /* MyAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110882847D52800EA462B /* MyAnnotations.swift */; };
-		3891108B2847D53A00EA462B /* Person struct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3891108A2847D53A00EA462B /* Person struct.swift */; };
+		389110892847D52800EA462B /* Places.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110882847D52800EA462B /* Places.swift */; };
+		3891108B2847D53A00EA462B /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3891108A2847D53A00EA462B /* Person.swift */; };
 		389110912847D6EC00EA462B /* darkStyle.json in Resources */ = {isa = PBXBuildFile; fileRef = 389110902847D6EC00EA462B /* darkStyle.json */; };
 		389110932847D72C00EA462B /* lightStyle.json in Resources */ = {isa = PBXBuildFile; fileRef = 389110922847D72C00EA462B /* lightStyle.json */; };
 		389110952847D7D800EA462B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 389110942847D7D800EA462B /* GoogleService-Info.plist */; };
 		389110972848A22C00EA462B /* UIImagePickerControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110962848A22C00EA462B /* UIImagePickerControllerDelegate.swift */; };
+		3894DEDD286A204D00D52345 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3894DEDC286A204D00D52345 /* DataManager.swift */; };
 		3896BC012847BBE40043BD6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3896BC002847BBE40043BD6A /* AppDelegate.swift */; };
 		3896BC032847BBE40043BD6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3896BC022847BBE40043BD6A /* SceneDelegate.swift */; };
 		3896BC052847BBE40043BD6A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3896BC042847BBE40043BD6A /* LoginViewController.swift */; };
@@ -39,10 +41,11 @@
 
 /* Begin PBXFileReference section */
 		28BA31D8DEB70B594B725DDF /* Pods_Diplom_project.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Diplom_project.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3844CEF62857ABFD000427C6 /* NewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewViewController.swift; sourceTree = "<group>"; };
 		3844CEF82858CE8D000427C6 /* Table view.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Table view.swift"; sourceTree = "<group>"; };
 		3844CEFC2859DE7B000427C6 /* MarkerInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerInfoView.swift; sourceTree = "<group>"; };
 		3844CF002859E04D000427C6 /* MarkerInfoView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MarkerInfoView.xib; sourceTree = "<group>"; };
+		3864407428647CAE0059939B /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		38644076286486040059939B /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		38672309284CC688000EAD14 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		3867230D284E7433000EAD14 /* UITextFieldDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextFieldDelegate.swift; sourceTree = "<group>"; };
 		3867230F284F88A7000EAD14 /* ChangePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewController.swift; sourceTree = "<group>"; };
@@ -51,12 +54,13 @@
 		389110822847D4E500EA462B /* CLLocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationManagerDelegate.swift; sourceTree = "<group>"; };
 		389110842847D50200EA462B /* UIGestureRecognizerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIGestureRecognizerDelegate.swift; sourceTree = "<group>"; };
 		389110862847D51500EA462B /* TableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewDelegate.swift; sourceTree = "<group>"; };
-		389110882847D52800EA462B /* MyAnnotations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAnnotations.swift; sourceTree = "<group>"; };
-		3891108A2847D53A00EA462B /* Person struct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person struct.swift"; sourceTree = "<group>"; };
+		389110882847D52800EA462B /* Places.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Places.swift; sourceTree = "<group>"; };
+		3891108A2847D53A00EA462B /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		389110902847D6EC00EA462B /* darkStyle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = darkStyle.json; sourceTree = "<group>"; };
 		389110922847D72C00EA462B /* lightStyle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = lightStyle.json; sourceTree = "<group>"; };
 		389110942847D7D800EA462B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		389110962848A22C00EA462B /* UIImagePickerControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImagePickerControllerDelegate.swift; sourceTree = "<group>"; };
+		3894DEDC286A204D00D52345 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		3896BBFD2847BBE40043BD6A /* Diplom-project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Diplom-project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3896BC002847BBE40043BD6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3896BC022847BBE40043BD6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -93,8 +97,8 @@
 				389110862847D51500EA462B /* TableViewDelegate.swift */,
 				389110962848A22C00EA462B /* UIImagePickerControllerDelegate.swift */,
 				3867230D284E7433000EAD14 /* UITextFieldDelegate.swift */,
-				3844CEF82858CE8D000427C6 /* Table view.swift */,
 				38D4A231286085B500A435CB /* UIView + extensions.swift */,
+				3894DEDC286A204D00D52345 /* DataManager.swift */,
 			);
 			path = Delegate;
 			sourceTree = "<group>";
@@ -129,20 +133,18 @@
 		3896BBFF2847BBE40043BD6A /* Diplom-project */ = {
 			isa = PBXGroup;
 			children = (
+				3896BC162847C14D0043BD6A /* View Controllers */,
+				3891107F2847D4B300EA462B /* Delegate */,
+				38D4A23B28624D7700A435CB /* CustomView + xib */,
+				38D4A23C28624E0200A435CB /* Struct */,
 				3896BC002847BBE40043BD6A /* AppDelegate.swift */,
 				3896BC022847BBE40043BD6A /* SceneDelegate.swift */,
-				3896BC162847C14D0043BD6A /* View Controllers */,
 				3896BC062847BBE40043BD6A /* Main.storyboard */,
-				3891107F2847D4B300EA462B /* Delegate */,
 				3896BC092847BBE60043BD6A /* Assets.xcassets */,
 				3896BC0B2847BBE60043BD6A /* LaunchScreen.storyboard */,
 				389110942847D7D800EA462B /* GoogleService-Info.plist */,
 				3896BC0E2847BBE60043BD6A /* Info.plist */,
 				3891108C2847D62B00EA462B /* jsonStyle */,
-				389110882847D52800EA462B /* MyAnnotations.swift */,
-				3891108A2847D53A00EA462B /* Person struct.swift */,
-				3844CEFC2859DE7B000427C6 /* MarkerInfoView.swift */,
-				3844CF002859E04D000427C6 /* MarkerInfoView.xib */,
 			);
 			path = "Diplom-project";
 			sourceTree = "<group>";
@@ -156,9 +158,29 @@
 				3891107D2847D49C00EA462B /* MapViewController.swift */,
 				38672309284CC688000EAD14 /* AccountViewController.swift */,
 				3867230F284F88A7000EAD14 /* ChangePasswordViewController.swift */,
-				3844CEF62857ABFD000427C6 /* NewViewController.swift */,
+				3864407428647CAE0059939B /* FilterViewController.swift */,
 			);
 			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		38D4A23B28624D7700A435CB /* CustomView + xib */ = {
+			isa = PBXGroup;
+			children = (
+				3844CEF82858CE8D000427C6 /* Table view.swift */,
+				3844CEFC2859DE7B000427C6 /* MarkerInfoView.swift */,
+				3844CF002859E04D000427C6 /* MarkerInfoView.xib */,
+				38644076286486040059939B /* CustomCell.swift */,
+			);
+			path = "CustomView + xib";
+			sourceTree = "<group>";
+		};
+		38D4A23C28624E0200A435CB /* Struct */ = {
+			isa = PBXGroup;
+			children = (
+				389110882847D52800EA462B /* Places.swift */,
+				3891108A2847D53A00EA462B /* Person.swift */,
+			);
+			path = Struct;
 			sourceTree = "<group>";
 		};
 		CD69C83CD67A8B469EFF549E /* Frameworks */ = {
@@ -315,25 +337,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3864407528647CAE0059939B /* FilterViewController.swift in Sources */,
 				389110872847D51500EA462B /* TableViewDelegate.swift in Sources */,
+				38644077286486040059939B /* CustomCell.swift in Sources */,
 				389110832847D4E500EA462B /* CLLocationManagerDelegate.swift in Sources */,
 				3844CEF92858CE8D000427C6 /* Table view.swift in Sources */,
+				3894DEDD286A204D00D52345 /* DataManager.swift in Sources */,
 				3844CEFD2859DE7B000427C6 /* MarkerInfoView.swift in Sources */,
-				3844CEF72857ABFD000427C6 /* NewViewController.swift in Sources */,
 				3867230A284CC688000EAD14 /* AccountViewController.swift in Sources */,
 				3896BC052847BBE40043BD6A /* LoginViewController.swift in Sources */,
 				3891107E2847D49D00EA462B /* MapViewController.swift in Sources */,
 				389110972848A22C00EA462B /* UIImagePickerControllerDelegate.swift in Sources */,
 				3896BC012847BBE40043BD6A /* AppDelegate.swift in Sources */,
 				389110812847D4D100EA462B /* GMSMapViewDelegate.swift in Sources */,
-				3891108B2847D53A00EA462B /* Person struct.swift in Sources */,
+				3891108B2847D53A00EA462B /* Person.swift in Sources */,
 				38D4A232286085B500A435CB /* UIView + extensions.swift in Sources */,
 				38672310284F88A7000EAD14 /* ChangePasswordViewController.swift in Sources */,
 				389110852847D50200EA462B /* UIGestureRecognizerDelegate.swift in Sources */,
 				3867230E284E7433000EAD14 /* UITextFieldDelegate.swift in Sources */,
 				3896BC182847C2B00043BD6A /* CreateAccViewController.swift in Sources */,
 				3896BC1A2847C2CD0043BD6A /* PasswordRecoveryViewController.swift in Sources */,
-				389110892847D52800EA462B /* MyAnnotations.swift in Sources */,
+				389110892847D52800EA462B /* Places.swift in Sources */,
 				3896BC032847BBE40043BD6A /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -491,7 +515,6 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your geolocation is used to display your location on the map, build routes, display selected places closest to you.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -522,7 +545,6 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your geolocation is used to display your location on the map, build routes, display selected places closest to you.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -29,6 +29,7 @@ class CreateAccViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         navigationController?.setNavigationBarHidden(false, animated: false)
         navigationController?.navigationBar.tintColor = .black
         createAccButton.layer.cornerRadius = 25
@@ -50,21 +51,25 @@ class CreateAccViewController: UIViewController {
             
             guard let authResult = authResult else {
                 switch error {
+                
                 case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.emailAlreadyInUse.rawValue:
                     let alert = UIAlertController(title: "Error:", message: "The email address is already in use by another account!", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Cancel", style: .cancel)
                     alert.addAction(action)
                     self.present(alert, animated: true)
+                
                 case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.weakPassword.rawValue:
                     let alert = UIAlertController(title: "Error:", message: "The password must be 6 characters long or more!", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Cancel", style: .cancel)
                     alert.addAction(action)
                     self.present(alert, animated: true)
+                
                 case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.invalidEmail.rawValue:
                     let alert = UIAlertController(title: "Error", message: "The email address is badly formatted!", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Cancel", style: .cancel)
                     alert.addAction(action)
                     self.present(alert, animated: true)
+                
                 default:
                     print("Unknown error \(String(describing: error))")
                 }

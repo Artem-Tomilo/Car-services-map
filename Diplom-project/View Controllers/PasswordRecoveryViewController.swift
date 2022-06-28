@@ -17,7 +17,7 @@ class PasswordRecoveryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
         sendEmailButton.layer.cornerRadius = 25
         emailView.layer.cornerRadius = 5
     }
@@ -34,16 +34,19 @@ class PasswordRecoveryViewController: UIViewController {
                 return
             }
             switch error {
+            
             case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.userNotFound.rawValue:
                 let alert = UIAlertController(title: "Error", message: "Users with this email are not registered", preferredStyle: .alert)
                 let action = UIAlertAction(title: "Cancel", style: .cancel)
                 alert.addAction(action)
                 self.present(alert, animated: true)
+           
             case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.invalidEmail.rawValue:
                 let alert = UIAlertController(title: "Error", message: "The email address is badly formatted!", preferredStyle: .alert)
                 let action = UIAlertAction(title: "Cancel", style: .cancel)
                 alert.addAction(action)
                 self.present(alert, animated: true)
+           
             default:
                 print(error.localizedDescription)
                 print(error)

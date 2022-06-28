@@ -16,8 +16,11 @@ extension MapViewController: GMSMapViewDelegate {
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         
-        guard let data = marker.userData as? MyAnnotations else { return true }
+        guard let data = marker.userData as? Places else { return true }
         getInfoAboutPlace(placeID: data.placeID, coordinate: CLLocationCoordinate2D(latitude: data.latitude, longitude: data.longitude))
+        
+        markerInfoView.place = data
+        print(markerInfoView.place.favoriteStatus)
         
         markerInfoView.lockView()
         UIView.animate(withDuration: 1.5) {
@@ -71,6 +74,9 @@ extension MapViewController: GMSMapViewDelegate {
         
         UIView.animate(withDuration: 0.2) {
             self.view.layoutIfNeeded()
+        } completion: { _ in
+            self.markerInfoView.removeFromSuperview()
+            self.addMarkerInfoView()
         }
     }
 }

@@ -59,13 +59,13 @@ extension MapViewController {
         NSLayoutConstraint.activate([
             showMenuButton.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
             showMenuButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            showMenuButton.widthAnchor.constraint(equalToConstant: 30),
-            showMenuButton.heightAnchor.constraint(equalToConstant: 30)
+            showMenuButton.widthAnchor.constraint(equalToConstant: 50),
+            showMenuButton.heightAnchor.constraint(equalToConstant: 50)
         ])
         showMenuButton.setImage(UIImage(named: "menu"), for: .normal)
         showMenuButton.backgroundColor = .white
-        showMenuButton.alpha = 0.5
-        showMenuButton.layer.cornerRadius = 15
+        showMenuButton.alpha = 0.75
+        showMenuButton.layer.cornerRadius = 25
         showMenuButton.addTarget(self, action: #selector(showTableView(_:)), for: .primaryActionTriggered)
         
         //MARK: - avatarView
@@ -139,18 +139,47 @@ extension MapViewController {
         tapGesture.delegate = self
     }
     
-    //MARK: - Tap gesture func
+    //MARK: - Table view actions
     
-    @objc func tap(_ sender: UITapGestureRecognizer) {
+    func showMenuFunc() {
+        showMenuButton.alpha = 0
+        filterButton.isHidden = true
+        hideInfoView()
+        
+        NSLayoutConstraint.deactivate([hiddenMenuConstraint, hiddenClearViewConstraint])
+        NSLayoutConstraint.activate([showMenuConstraint, showClearViewConstraint])
+        view.setNeedsLayout()
+        UIView.animate(withDuration: 0.2) {
+            self.view.layoutIfNeeded()
+        } completion: { _ in
+            self.showMenuButton.backgroundColor = .clear
+            self.showMenuButton.alpha = 1
+        }
+        showTableView = true
+    }
+    
+    func hideMenuFunc() {
+        showMenuButton.alpha = 0
+        
         NSLayoutConstraint.deactivate([showMenuConstraint, showClearViewConstraint])
         NSLayoutConstraint.activate([hiddenMenuConstraint, hiddenClearViewConstraint])
         view.setNeedsLayout()
         UIView.animate(withDuration: 0.2) {
             self.view.layoutIfNeeded()
+        } completion: { _ in
+            if self.lightStyle  {
+                self.showMenuButton.backgroundColor = .systemGray3
+                self.showMenuButton.alpha = 1
+            } else {
+                self.showMenuButton.backgroundColor = .white
+                self.showMenuButton.alpha = 0.75
+                self.filterButton.isHidden = false
+            }
         }
-        
-        showMenuButton.backgroundColor = .white
-        showMenuButton.alpha = 0.5
         showTableView = false
+    }
+    
+    @objc func tap(_ sender: UITapGestureRecognizer) {
+        hideMenuFunc()
     }
 }
