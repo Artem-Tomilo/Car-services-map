@@ -23,6 +23,7 @@ class AccountViewController: UIViewController {
     @IBOutlet var emailEditButton: UIButton!
     @IBOutlet var telNumberNameEditButton: UIButton!
     @IBOutlet var changePasswordButton: UIButton!
+    @IBOutlet var backToMapViewButton: UIButton!
     
     var editButtonsIsHide = true
     
@@ -32,11 +33,17 @@ class AccountViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         getData()
         selectAvatar()
         
         avatarView.layer.cornerRadius = 50
         deleteAvatarButton.layer.cornerRadius = 20
+        
+        avatarView.lockView()
+        UIView.animate(withDuration: 4) {
+            self.avatarView.unlockView()
+        }
         
         userNameEditButton.isHidden = true
         emailEditButton.isHidden = true
@@ -86,7 +93,6 @@ class AccountViewController: UIViewController {
                     myImageReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
                         if let error = error {
                             print(error.localizedDescription)
-                            self.avatarView.layer.cornerRadius = 0
                         } else {
                             let image = UIImage(data: data!)
                             
@@ -109,8 +115,11 @@ class AccountViewController: UIViewController {
             if let error = error {
                 print(error.localizedDescription)
             } else {
+                self.avatarView.lockView()
+                UIView.animate(withDuration: 1) {
+                    self.avatarView.unlockView()
+                }
                 self.avatarView.image = UIImage(named: "photo")
-                self.avatarView.layer.cornerRadius = 0
             }
         }
     }
@@ -174,6 +183,7 @@ class AccountViewController: UIViewController {
             passwordLabel.isHidden = false
             sender.setTitle("Done", for: .normal)
             editButtonsIsHide = false
+            backToMapViewButton.isEnabled = false
         case false:
             userNameEditButton.isHidden = true
             emailEditButton.isHidden = true
@@ -182,6 +192,7 @@ class AccountViewController: UIViewController {
             passwordLabel.isHidden = true
             sender.setTitle("Edit", for: .normal)
             editButtonsIsHide = true
+            backToMapViewButton.isEnabled = true
         }
     }
     
@@ -239,16 +250,19 @@ class AccountViewController: UIViewController {
                     Auth.auth().currentUser?.updateEmail(to: textField.text!) { error in
                         guard error == nil else {
                             switch error {
+                            
                             case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.emailAlreadyInUse.rawValue:
                                 let alert = UIAlertController(title: "Error:", message: "The email address is already in use by another account!", preferredStyle: .alert)
                                 let action = UIAlertAction(title: "Cancel", style: .cancel)
                                 alert.addAction(action)
                                 self.present(alert, animated: true)
+                            
                             case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.invalidEmail.rawValue:
                                 let alert = UIAlertController(title: "Error", message: "The email address is badly formatted!", preferredStyle: .alert)
                                 let action = UIAlertAction(title: "Cancel", style: .cancel)
                                 alert.addAction(action)
                                 self.present(alert, animated: true)
+                            
                             case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.requiresRecentLogin.rawValue:
                                 let alert = UIAlertController(title: "Error:", message: "This operation is sensitive and requires recent authentication. Log in again before retrying this request.", preferredStyle: .alert)
                                 let action = UIAlertAction(title: "Retry login", style: .default) { _ in
@@ -259,6 +273,7 @@ class AccountViewController: UIViewController {
                                 alert.addAction(action)
                                 alert.addAction(secondAction)
                                 self.present(alert, animated: true)
+                            
                             default:
                                 print("Unknown error \(String(describing: error))")
                             }
@@ -295,6 +310,7 @@ class AccountViewController: UIViewController {
     
     @IBAction func editTelNumber(_ sender: UIButton) {
         let alert = UIAlertController(title: "Do you want to edit your number?", message: "", preferredStyle: .actionSheet)
+        
         let firstAction = UIAlertAction(title: "Yes", style: .default) { action in
             let alert = UIAlertController(title: "Enter your number", message: "", preferredStyle: .alert)
             alert.addTextField { (textField : UITextField!) -> Void in
