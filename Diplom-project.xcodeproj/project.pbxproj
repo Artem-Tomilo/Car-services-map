@@ -15,16 +15,16 @@
 		3867230A284CC688000EAD14 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38672309284CC688000EAD14 /* AccountViewController.swift */; };
 		3867230E284E7433000EAD14 /* UITextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867230D284E7433000EAD14 /* UITextFieldDelegate.swift */; };
 		38672310284F88A7000EAD14 /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867230F284F88A7000EAD14 /* ChangePasswordViewController.swift */; };
+		38809148287315B6001F56BE /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38809147287315B6001F56BE /* Person.swift */; };
+		3880914A287315EA001F56BE /* Places.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38809149287315EA001F56BE /* Places.swift */; };
+		3880915A28743E3F001F56BE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3880915928743E3F001F56BE /* GoogleService-Info.plist */; };
 		3891107E2847D49D00EA462B /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3891107D2847D49C00EA462B /* MapViewController.swift */; };
 		389110812847D4D100EA462B /* GMSMapViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110802847D4D100EA462B /* GMSMapViewDelegate.swift */; };
 		389110832847D4E500EA462B /* CLLocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110822847D4E500EA462B /* CLLocationManagerDelegate.swift */; };
 		389110852847D50200EA462B /* UIGestureRecognizerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110842847D50200EA462B /* UIGestureRecognizerDelegate.swift */; };
 		389110872847D51500EA462B /* TableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110862847D51500EA462B /* TableViewDelegate.swift */; };
-		389110892847D52800EA462B /* Places.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110882847D52800EA462B /* Places.swift */; };
-		3891108B2847D53A00EA462B /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3891108A2847D53A00EA462B /* Person.swift */; };
 		389110912847D6EC00EA462B /* darkStyle.json in Resources */ = {isa = PBXBuildFile; fileRef = 389110902847D6EC00EA462B /* darkStyle.json */; };
 		389110932847D72C00EA462B /* lightStyle.json in Resources */ = {isa = PBXBuildFile; fileRef = 389110922847D72C00EA462B /* lightStyle.json */; };
-		389110952847D7D800EA462B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 389110942847D7D800EA462B /* GoogleService-Info.plist */; };
 		389110972848A22C00EA462B /* UIImagePickerControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110962848A22C00EA462B /* UIImagePickerControllerDelegate.swift */; };
 		3894DEDD286A204D00D52345 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3894DEDC286A204D00D52345 /* DataManager.swift */; };
 		3896BC012847BBE40043BD6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3896BC002847BBE40043BD6A /* AppDelegate.swift */; };
@@ -49,16 +49,16 @@
 		38672309284CC688000EAD14 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		3867230D284E7433000EAD14 /* UITextFieldDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextFieldDelegate.swift; sourceTree = "<group>"; };
 		3867230F284F88A7000EAD14 /* ChangePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewController.swift; sourceTree = "<group>"; };
+		38809147287315B6001F56BE /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		38809149287315EA001F56BE /* Places.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Places.swift; sourceTree = "<group>"; };
+		3880915928743E3F001F56BE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		3891107D2847D49C00EA462B /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		389110802847D4D100EA462B /* GMSMapViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMSMapViewDelegate.swift; sourceTree = "<group>"; };
 		389110822847D4E500EA462B /* CLLocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationManagerDelegate.swift; sourceTree = "<group>"; };
 		389110842847D50200EA462B /* UIGestureRecognizerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIGestureRecognizerDelegate.swift; sourceTree = "<group>"; };
 		389110862847D51500EA462B /* TableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewDelegate.swift; sourceTree = "<group>"; };
-		389110882847D52800EA462B /* Places.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Places.swift; sourceTree = "<group>"; };
-		3891108A2847D53A00EA462B /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		389110902847D6EC00EA462B /* darkStyle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = darkStyle.json; sourceTree = "<group>"; };
 		389110922847D72C00EA462B /* lightStyle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = lightStyle.json; sourceTree = "<group>"; };
-		389110942847D7D800EA462B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		389110962848A22C00EA462B /* UIImagePickerControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImagePickerControllerDelegate.swift; sourceTree = "<group>"; };
 		3894DEDC286A204D00D52345 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		3896BBFD2847BBE40043BD6A /* Diplom-project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Diplom-project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,6 +88,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3880914628731597001F56BE /* Struct */ = {
+			isa = PBXGroup;
+			children = (
+				38809147287315B6001F56BE /* Person.swift */,
+				38809149287315EA001F56BE /* Places.swift */,
+			);
+			path = Struct;
+			sourceTree = "<group>";
+		};
 		3891107F2847D4B300EA462B /* Delegate */ = {
 			isa = PBXGroup;
 			children = (
@@ -136,13 +145,13 @@
 				3896BC162847C14D0043BD6A /* View Controllers */,
 				3891107F2847D4B300EA462B /* Delegate */,
 				38D4A23B28624D7700A435CB /* CustomView + xib */,
-				38D4A23C28624E0200A435CB /* Struct */,
+				3880914628731597001F56BE /* Struct */,
 				3896BC002847BBE40043BD6A /* AppDelegate.swift */,
 				3896BC022847BBE40043BD6A /* SceneDelegate.swift */,
 				3896BC062847BBE40043BD6A /* Main.storyboard */,
 				3896BC092847BBE60043BD6A /* Assets.xcassets */,
 				3896BC0B2847BBE60043BD6A /* LaunchScreen.storyboard */,
-				389110942847D7D800EA462B /* GoogleService-Info.plist */,
+				3880915928743E3F001F56BE /* GoogleService-Info.plist */,
 				3896BC0E2847BBE60043BD6A /* Info.plist */,
 				3891108C2847D62B00EA462B /* jsonStyle */,
 			);
@@ -172,15 +181,6 @@
 				38644076286486040059939B /* CustomCell.swift */,
 			);
 			path = "CustomView + xib";
-			sourceTree = "<group>";
-		};
-		38D4A23C28624E0200A435CB /* Struct */ = {
-			isa = PBXGroup;
-			children = (
-				389110882847D52800EA462B /* Places.swift */,
-				3891108A2847D53A00EA462B /* Person.swift */,
-			);
-			path = Struct;
 			sourceTree = "<group>";
 		};
 		CD69C83CD67A8B469EFF549E /* Frameworks */ = {
@@ -267,7 +267,7 @@
 				389110932847D72C00EA462B /* lightStyle.json in Resources */,
 				3896BC082847BBE40043BD6A /* Main.storyboard in Resources */,
 				3844CF012859E04D000427C6 /* MarkerInfoView.xib in Resources */,
-				389110952847D7D800EA462B /* GoogleService-Info.plist in Resources */,
+				3880915A28743E3F001F56BE /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,15 +350,15 @@
 				389110972848A22C00EA462B /* UIImagePickerControllerDelegate.swift in Sources */,
 				3896BC012847BBE40043BD6A /* AppDelegate.swift in Sources */,
 				389110812847D4D100EA462B /* GMSMapViewDelegate.swift in Sources */,
-				3891108B2847D53A00EA462B /* Person.swift in Sources */,
+				38809148287315B6001F56BE /* Person.swift in Sources */,
 				38D4A232286085B500A435CB /* UIView + extensions.swift in Sources */,
 				38672310284F88A7000EAD14 /* ChangePasswordViewController.swift in Sources */,
 				389110852847D50200EA462B /* UIGestureRecognizerDelegate.swift in Sources */,
 				3867230E284E7433000EAD14 /* UITextFieldDelegate.swift in Sources */,
 				3896BC182847C2B00043BD6A /* CreateAccViewController.swift in Sources */,
 				3896BC1A2847C2CD0043BD6A /* PasswordRecoveryViewController.swift in Sources */,
-				389110892847D52800EA462B /* Places.swift in Sources */,
 				3896BC032847BBE40043BD6A /* SceneDelegate.swift in Sources */,
+				3880914A287315EA001F56BE /* Places.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

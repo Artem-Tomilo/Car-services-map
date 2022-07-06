@@ -16,7 +16,6 @@ import FirebaseCore
 import FirebaseDatabase
 import FirebaseStorage
 
-
 class MapViewController: UIViewController {
     
     @IBOutlet var markerInfoView: MarkerInfoView!
@@ -43,9 +42,6 @@ class MapViewController: UIViewController {
     let signOutButton = UIButton()
     let filterButton = UIButton()
     
-    static let path = try! FileManager.default.url(for: .cachesDirectory, in: .allDomainsMask, appropriateFor: nil, create: true)
-    static let jsonPath = path.appendingPathComponent("marker.json")
-    
     var lightStyle = false
     var showTableView = false
     
@@ -64,6 +60,10 @@ class MapViewController: UIViewController {
     let listTableViewMenu = ["Advanced filter", "My addresses", "Account", "About app"]
     
     var placesClient: GMSPlacesClient!
+    
+    var place: Places!
+    
+    var placeKey = "place"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -96,13 +96,18 @@ class MapViewController: UIViewController {
     //MARK: - New objects
     
     func newObjectFunc() {
-        let firstPlace = Places(latitude: 53.873961, longitude: 27.499368, name: "Автосеть Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
-        let secondPlace = Places(latitude: 53.892702, longitude: 27.646785, name: "Автосеть Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
-        let thirdPlace = Places(latitude: 53.852154, longitude: 27.676753, name: "Автосеть Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
         
-        placesArray.append(firstPlace)
-        placesArray.append(secondPlace)
-        placesArray.append(thirdPlace)
+        placesArray = decode()
+        
+        if placesArray.isEmpty {
+            let firstPlace = Places(latitude: 53.873961, longitude: 27.499368, name: "Автосеть Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
+            let secondPlace = Places(latitude: 53.892702, longitude: 27.646785, name: "Автосеть Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
+            let thirdPlace = Places(latitude: 53.852154, longitude: 27.676753, name: "Автосеть Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
+            
+            placesArray.append(firstPlace)
+            placesArray.append(secondPlace)
+            placesArray.append(thirdPlace)
+        }
         
         for i in placesArray {
             addMarker(i)
@@ -125,6 +130,7 @@ class MapViewController: UIViewController {
         ])
         
         markerInfoView.isUserInteractionEnabled = true
+        markerInfoView.delegate = self
     }
     
     //MARK: - Filter
@@ -156,13 +162,13 @@ class MapViewController: UIViewController {
     
     func filterFunc(service: Set<ProfServices>) {
         var placeId: Set<String> = []
-
+        
         for place in placesArray {
             if service.isSubset(of: place.services) {
                 placeId.insert(place.name)
             }
         }
-
+        
         for marker in markerArray {
             if !placeId.contains(marker.title!) {
                 marker.map = nil
@@ -416,20 +422,16 @@ class MapViewController: UIViewController {
     
     //MARK: - Decode
     
-    func decode() {
-//        let decoder = JSONDecoder()
-//        guard let data = try? Data(contentsOf: MapViewController.jsonPath) else { return }
-//        guard let results = try? decoder.decode([Places].self, from: data) else { return }
-//        placesArray += results
+    func decode() -> [Places] {
+        guard let data = UserDefaults.standard.object(forKey: placeKey) as? Data else { return [] }
+        guard let places = try? JSONDecoder().decode([Places].self, from: data) else { return [] }
+        
+        return places
     }
     
-    func encode() {
-//        let marker = MyAnnotations(latitude: coordinate.latitude, longitude: coordinate.longitude, name: place.name!, placeID: placeID)
-//        
-//        self.jsonMarker.append(marker)
-//        let encoder = JSONEncoder()
-//        let data = try! encoder.encode(self.jsonMarker)
-//        try! data.write(to: MapViewController.jsonPath)
+    func encode(type: [Places], key: String) {
+        guard let data = try? JSONEncoder().encode(type) else { return }
+        UserDefaults.standard.set(data, forKey: key)
     }
     
     //MARK: - Cluster markers
@@ -462,5 +464,27 @@ extension MapViewController: FilterViewControllerDelegate {
     
     func filterMap(with set: Set<ProfServices>) {
         filterFunc(service: set)
+    }
+}
+
+extension MapViewController: MarkerInfoViewDelegate {
+    
+    func favoritesPlaces(_ sender: UIButton) {
+        
+        placesArray.removeAll { place in
+            place.name == self.place.name
+        }
+        
+        place.favoriteStatus.toggle()
+        
+        placesArray.append(place)
+        
+        encode(type: placesArray, key: placeKey)
+        
+        if place.favoriteStatus {
+            sender.setImage(UIImage(named: "heartRed"), for: .normal)
+        } else {
+            sender.setImage(UIImage(named: "heartClear"), for: .normal)
+        }
     }
 }

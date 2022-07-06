@@ -726,7 +726,7 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Accept"/>
                                 <connections>
-                                    <action selector="accept:" destination="aAN-HM-SGr" eventType="primaryActionTriggered" id="DjF-D1-kqI"/>
+                                    <action selector="acceptFilterFunc:" destination="aAN-HM-SGr" eventType="primaryActionTriggered" id="GQk-C7-3wp"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s9G-oS-1iO">

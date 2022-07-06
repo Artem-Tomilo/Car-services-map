@@ -14,7 +14,7 @@ struct Places: Codable {
     var favoriteStatus: Bool
 }
 
-enum ProfServices: Hashable, Equatable, Codable, CaseIterable {
+enum ProfServices: Int, Hashable, Equatable, Codable, CaseIterable {
     case passengerTireFitting
     case truckTireFitting
     case carMaintenance
@@ -22,4 +22,42 @@ enum ProfServices: Hashable, Equatable, Codable, CaseIterable {
     case oilChange
     case carWash
     case seasonalTireStorage
+    
+    var title: String {
+        switch self {
+        case .passengerTireFitting:
+            return "Passenger tire fitting"
+        case .truckTireFitting:
+            return "Truck tire fitting"
+        case .carMaintenance:
+            return "Car maintenance"
+        case .breakRepair:
+            return "Break repair"
+        case .oilChange:
+            return "Oil change"
+        case .carWash:
+            return "Car wash"
+        case .seasonalTireStorage:
+            return "Seasonal tire storage"
+        }
+    }
+    
+    var image: String {
+        switch self {
+        case .passengerTireFitting:
+            return "tyre"
+        case .truckTireFitting:
+            return "tyre"
+        case .carMaintenance:
+            return "suspension"
+        case .breakRepair:
+            return "break"
+        case .oilChange:
+            return "oil"
+        case .carWash:
+            return "wash"
+        case .seasonalTireStorage:
+            return "tyreStorage"
+        }
+    }
 }

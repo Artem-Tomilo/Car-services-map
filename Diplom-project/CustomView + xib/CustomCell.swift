@@ -11,9 +11,7 @@ class CustomCell: UITableViewCell {
     
     private let label = UILabel(frame: .zero)
     var picture = UIImageView(frame: .zero)
-    let button = UIButton(frame: .zero)
-    
-    var condition: Bool!
+    let condition = UIImageView(frame: .zero)
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -33,11 +31,11 @@ class CustomCell: UITableViewCell {
         
         contentView.addSubview(label)
         contentView.addSubview(picture)
-        contentView.addSubview(button)
+        contentView.addSubview(condition)
         
         label.translatesAutoresizingMaskIntoConstraints = false
         picture.translatesAutoresizingMaskIntoConstraints = false
-        button.translatesAutoresizingMaskIntoConstraints = false
+        condition.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             picture.widthAnchor.constraint(equalToConstant: 50),
@@ -45,23 +43,15 @@ class CustomCell: UITableViewCell {
             picture.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             picture.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
-            button.widthAnchor.constraint(equalToConstant: 50),
-            button.heightAnchor.constraint(equalToConstant: 50),
-            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            button.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            condition.widthAnchor.constraint(equalToConstant: 30),
+            condition.heightAnchor.constraint(equalToConstant: 30),
+            condition.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            condition.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
         
             label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             label.heightAnchor.constraint(equalToConstant: 30)
         ])
-    }
-    
-    func buttonImage(condition: Bool, button: UIButton) {
-        if condition {
-            button.setImage(UIImage(named: "plus"), for: .normal)
-        } else {
-            button.setImage(UIImage(named: "minus"), for: .normal)
-        }
     }
     
     var text: String = "" {
@@ -71,6 +61,14 @@ class CustomCell: UITableViewCell {
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
-        contentView.backgroundColor = .white
+        super.setSelected(selected, animated: animated)
+        
+        if selected {
+            condition.image = UIImage(named: "plus")
+            contentView.backgroundColor = .green
+        } else {
+            condition.image = UIImage(named: "minus")
+            contentView.backgroundColor = .white
+        }
     }
 }

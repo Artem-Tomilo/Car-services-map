@@ -19,8 +19,13 @@ extension MapViewController: GMSMapViewDelegate {
         guard let data = marker.userData as? Places else { return true }
         getInfoAboutPlace(placeID: data.placeID, coordinate: CLLocationCoordinate2D(latitude: data.latitude, longitude: data.longitude))
         
-        markerInfoView.place = data
-        print(markerInfoView.place.favoriteStatus)
+        place = data
+        
+        if place == nil || place.favoriteStatus == false {
+            markerInfoView.heartButton.setImage(UIImage(named: "heartClear"), for: .normal)
+        } else {
+            markerInfoView.heartButton.setImage(UIImage(named: "heartRed"), for: .normal)
+        }
         
         markerInfoView.lockView()
         UIView.animate(withDuration: 1.5) {

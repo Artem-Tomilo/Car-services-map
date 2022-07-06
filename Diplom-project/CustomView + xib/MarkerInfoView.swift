@@ -17,7 +17,7 @@ class MarkerInfoView: UIView {
     @IBOutlet weak var photoImage: UIImageView!
     @IBOutlet weak var heartButton: UIButton!
     
-    var place: Places!
+    weak var delegate: MarkerInfoViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,17 +31,6 @@ class MarkerInfoView: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
         commonInit()
-    }
-    
-    @IBAction func heartButtonTapped(_ sender: UIButton) {
-        place.favoriteStatus.toggle()
-        
-        if place.favoriteStatus {
-            sender.setImage(UIImage(named: "heartRed"), for: .normal)
-        } else {
-            sender.setImage(UIImage(named: "heartClear"), for: .normal)
-        }
-        print(place.favoriteStatus)
     }
     
     func commonInit() {
@@ -62,31 +51,13 @@ class MarkerInfoView: UIView {
         
         webLabel.layer.borderColor = CGColor(red: 0, green: 0, blue: 0, alpha: 1)
         webLabel.layer.borderWidth = 0.5
-        
-        if place == nil || place.favoriteStatus == false {
-            heartButton.setImage(UIImage(named: "heartClear"), for: .normal)
-        } else {
-            heartButton.setImage(UIImage(named: "heartRed"), for: .normal)
-        }
     }
     
-    func fetchPlaces() -> [Places] {
-        guard let data = UserDefaults.standard.object(forKey: "place") as? Data else { return [] }
-        guard let places = try? JSONDecoder().decode([Places].self, from: data) else { return [] }
-        
-        return places
+    @IBAction func heartButtonTapped(_ sender: UIButton) {
+        delegate?.favoritesPlaces(sender)
     }
-    
-    func change(index: Int) {
-        var places = fetchPlaces()
-        
-        var place = places.remove(at: index)
-        
-        place.favoriteStatus.toggle()
-        
-        places.insert(place, at: index)
-        
-        guard let data = try? JSONEncoder().encode(places) else { return }
-        UserDefaults.standard.set(data, forKey: "place")
-    }
+}
+
+protocol MarkerInfoViewDelegate: AnyObject {
+    func favoritesPlaces(_ sender: UIButton)
 }
