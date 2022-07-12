@@ -36,7 +36,7 @@ extension MapViewController: UITableViewDelegate, UITableViewDataSource {
         case 0:
             print("\(indexPath.row)")
         case 1 :
-            let places = decode()
+            let places = DataManager.shared.decodePlace()
             
             var favPlaces: [Places] = []
             

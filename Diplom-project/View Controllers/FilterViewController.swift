@@ -14,8 +14,6 @@ class FilterViewController: UIViewController {
     @IBOutlet weak var acceptButton: UIButton!
     @IBOutlet weak var resetFilterButton: UIButton!
     
-    private let key = "key"
-    
     weak var delegate: FilterViewControllerDelegate?
     
     var servicesDictionary: Dictionary <ProfServices, Bool> = [:]
@@ -29,7 +27,7 @@ class FilterViewController: UIViewController {
         
         tableView.allowsMultipleSelection = true
         
-        servicesDictionary = decode()
+        servicesDictionary = DataManager.shared.decodeServices()
         
         if servicesDictionary.isEmpty {
             servicesDictionary = Dictionary(uniqueKeysWithValues: zip(ProfServices.allCases, repeatElement(false, count: ProfServices.allCases.count)))
@@ -43,20 +41,6 @@ class FilterViewController: UIViewController {
         }
         
         tableView.register(CustomCell.self, forCellReuseIdentifier: Self.cellIdentifier)
-    }
-    
-    //MARK: - Encode and Decode
-    
-    func encode(type: Dictionary <ProfServices, Bool>) {
-        guard let data = try? JSONEncoder().encode(type) else { return }
-        UserDefaults.standard.set(data, forKey: key)
-    }
-    
-    func decode() -> Dictionary <ProfServices, Bool> {
-        guard let data = UserDefaults.standard.object(forKey: key) as? Data else { return [:] }
-        guard let conditionsArray = try? JSONDecoder().decode(Dictionary <ProfServices, Bool>.self, from: data) else { return [:] }
-        
-        return conditionsArray
     }
     
     //MARK: - Accept func
@@ -80,7 +64,7 @@ class FilterViewController: UIViewController {
     }
     
     @IBAction func acceptFilterFunc(_ sender: UIButton) {
-        encode(type: servicesDictionary)
+        DataManager.shared.encodeServices(type: servicesDictionary)
         delegate?.filterMap(with: filterFunc())
         dismiss(animated: true)
     }
@@ -91,7 +75,7 @@ class FilterViewController: UIViewController {
                 servicesDictionary[key] = false
             }
         }
-        encode(type: servicesDictionary)
+        DataManager.shared.encodeServices(type: servicesDictionary)
         
         delegate?.filterMap(with: filterFunc())
         

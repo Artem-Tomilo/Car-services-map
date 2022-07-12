@@ -21,36 +21,27 @@ class DataManager {
         
     }
     
-    func encode(type: [Bool], key: String) {
+    func encodePlace(type: [Places]) {
         guard let data = try? JSONEncoder().encode(type) else { return }
-        UserDefaults.standard.set(data, forKey: key)
+        UserDefaults.standard.set(data, forKey: placesKey)
     }
     
-    func decode(key: String) -> [Bool] {
-        guard let data = UserDefaults.standard.object(forKey: key) as? Data else { return [] }
-        guard let conditionsArray = try? JSONDecoder().decode([Bool].self, from: data) else { return [] }
-
+    func decodePlace() -> [Places] {
+        guard let data = UserDefaults.standard.object(forKey: placesKey) as? Data else { return [] }
+        guard let places = try? JSONDecoder().decode([Places].self, from: data) else { return [] }
+        
+        return places
+    }
+    
+    func encodeServices(type: Dictionary <ProfServices, Bool>) {
+        guard let data = try? JSONEncoder().encode(type) else { return }
+        UserDefaults.standard.set(data, forKey: serviceKey)
+    }
+    
+    func decodeServices() -> Dictionary <ProfServices, Bool> {
+        guard let data = UserDefaults.standard.object(forKey: serviceKey) as? Data else { return [:] }
+        guard let conditionsArray = try? JSONDecoder().decode(Dictionary <ProfServices, Bool>.self, from: data) else { return [:] }
+        
         return conditionsArray
-    }
-    
-    func fetchServices(key: String) -> [Bool] {
-        guard let data = UserDefaults.standard.object(forKey: key) as? Data else { return [] }
-        guard let services = try? JSONDecoder().decode([Bool].self, from: data) else { return [] }
-        
-        return services
-    }
-    
-    func changeValue(index: Int) {
-        var services = fetchServices(key: serviceKey)
-        
-        var service = services.remove(at: index)
-        
-        service.toggle()
-        
-        services.insert(service, at: index)
-        
-//        save(type: services, key: serviceKey)
-        
-        print(services)
     }
 }
