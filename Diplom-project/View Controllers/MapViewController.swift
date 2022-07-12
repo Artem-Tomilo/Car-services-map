@@ -63,8 +63,6 @@ class MapViewController: UIViewController {
     
     var place: Places!
     
-    var placeKey = "place"
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -97,7 +95,7 @@ class MapViewController: UIViewController {
     
     func newObjectFunc() {
         
-        placesArray = decode()
+        placesArray = DataManager.shared.decodePlace()
         
         if placesArray.isEmpty {
             let firstPlace = Places(latitude: 53.873961, longitude: 27.499368, name: "Автосеть Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
@@ -420,20 +418,6 @@ class MapViewController: UIViewController {
         mapView.animate(with: zoom)
     }
     
-    //MARK: - Decode
-    
-    func decode() -> [Places] {
-        guard let data = UserDefaults.standard.object(forKey: placeKey) as? Data else { return [] }
-        guard let places = try? JSONDecoder().decode([Places].self, from: data) else { return [] }
-        
-        return places
-    }
-    
-    func encode(type: [Places], key: String) {
-        guard let data = try? JSONEncoder().encode(type) else { return }
-        UserDefaults.standard.set(data, forKey: key)
-    }
-    
     //MARK: - Cluster markers
     
     func clusterFunc() {
@@ -479,7 +463,7 @@ extension MapViewController: MarkerInfoViewDelegate {
         
         placesArray.append(place)
         
-        encode(type: placesArray, key: placeKey)
+        DataManager.shared.encodePlace(type: placesArray)
         
         if place.favoriteStatus {
             sender.setImage(UIImage(named: "heartRed"), for: .normal)

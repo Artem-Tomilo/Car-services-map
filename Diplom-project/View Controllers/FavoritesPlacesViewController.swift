@@ -58,19 +58,10 @@ class FavoritesPlacesViewController: UIViewController {
         verticalCollectionView.collectionViewLayout = compositionalLayout
     }
     
-    //MARK: - Decode
-    
-    func decode() -> [Places] {
-        guard let data = UserDefaults.standard.object(forKey: "place") as? Data else { return [] }
-        guard let places = try? JSONDecoder().decode([Places].self, from: data) else { return [] }
-        
-        return places
-    }
-    
     //MARK: - Favorites places
     
     func favoritesPlaceFunc() {
-        let places = decode()
+        let places = DataManager.shared.decodePlace()
         
         for i in places {
             if i.favoriteStatus {

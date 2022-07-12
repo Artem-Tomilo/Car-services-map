@@ -36,13 +36,7 @@ class PlaceViewController: UIViewController {
         
         collectionViewSettings()
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapPressed(_:)))
-        webLabel.addGestureRecognizer(tapGesture)
-        webLabel.isUserInteractionEnabled = true
-        
-        let telTapGesture = UITapGestureRecognizer(target: self, action: #selector(telPressed(_:)))
-        telNumberLabel.addGestureRecognizer(telTapGesture)
-        telNumberLabel.isUserInteractionEnabled = true
+        addTapGesture()
     }
     
     //MARK: - View will appear
@@ -53,7 +47,17 @@ class PlaceViewController: UIViewController {
     
     //MARK: - Tap gesture func's
     
-    @objc func tapPressed(_ sender: UITapGestureRecognizer) {
+    func addTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(webPressed(_:)))
+        webLabel.addGestureRecognizer(tapGesture)
+        webLabel.isUserInteractionEnabled = true
+        
+        let telTapGesture = UITapGestureRecognizer(target: self, action: #selector(telPressed(_:)))
+        telNumberLabel.addGestureRecognizer(telTapGesture)
+        telNumberLabel.isUserInteractionEnabled = true
+    }
+    
+    @objc func webPressed(_ sender: UITapGestureRecognizer) {
         if let url = URL(string: urlString) {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
@@ -137,7 +141,9 @@ class PlaceViewController: UIViewController {
 //MARK: - Extension collection view
 
 extension PlaceViewController: UICollectionViewDelegate {
-    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        1
+    }
 }
 
 extension PlaceViewController: UICollectionViewDataSource {
@@ -152,7 +158,6 @@ extension PlaceViewController: UICollectionViewDataSource {
         UIView.animate(withDuration: 1) {
             cell?.unlockView()
         }
-        
         
         fetchPlaceData(index: delegate!.index, indexPath: indexPath, cell: cell!)
         return cell!

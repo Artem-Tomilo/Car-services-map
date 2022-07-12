@@ -1118,7 +1118,9 @@
                         <outlet property="confirmPassButton" destination="mjf-65-OW9" id="xvy-wI-rjB"/>
                         <outlet property="firstEyeButton" destination="h1O-0S-HEF" id="40I-UO-Qhs"/>
                         <outlet property="newPassField" destination="Qhe-F1-Dr8" id="ZC0-17-72X"/>
+                        <outlet property="newPassView" destination="eF6-H9-Oax" id="nsj-yW-wTa"/>
                         <outlet property="repeatNewPassField" destination="ypf-9w-22Y" id="z4l-jm-7t4"/>
+                        <outlet property="repeatPassView" destination="kM5-Rh-Jjb" id="oIB-do-ORm"/>
                         <outlet property="secondEyeButton" destination="kd6-vP-oFU" id="eTn-qZ-YC8"/>
                     </connections>
                 </viewController>
@@ -1308,7 +1310,7 @@
                                 <attributedString key="attributedText">
                                     <fragment content="Label">
                                         <attributes>
-                                            <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <font key="NSFont" size="25" name="Helvetica-Bold"/>
                                             <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="truncatingTail" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>

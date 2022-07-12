@@ -13,14 +13,15 @@ import FirebaseDatabase
 class ChangePasswordViewController: UIViewController {
     
     @IBOutlet var newPassField: UITextField!
+    @IBOutlet var newPassView: UIView!
     @IBOutlet var firstEyeButton: UIButton!
     @IBOutlet var repeatNewPassField: UITextField!
+    @IBOutlet var repeatPassView: UIView!
     @IBOutlet var secondEyeButton: UIButton!
     @IBOutlet var confirmPassButton: UIButton!
     
     var firstIconClick = true
     var secondIconClick = true
-    var thirdIconClick = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,8 +29,8 @@ class ChangePasswordViewController: UIViewController {
         navigationController?.setNavigationBarHidden(false, animated: false)
         navigationController?.navigationBar.tintColor = .black
         confirmPassButton.layer.cornerRadius = 25
-        newPassField.layer.cornerRadius = 5
-        repeatNewPassField.layer.cornerRadius = 10
+        newPassView.layer.cornerRadius = 5
+        repeatPassView.layer.cornerRadius = 5
     }
     
     //MARK: - Update Password
@@ -97,26 +98,26 @@ class ChangePasswordViewController: UIViewController {
     @IBAction func iconAction(_ sender: UIButton) {
         switch sender {
         case firstEyeButton:
-            if secondIconClick == true {
+            if firstIconClick {
                 newPassField.isSecureTextEntry = false
-                secondIconClick = false
+                firstIconClick = false
                 let image = UIImage(named: "eye")
                 sender.setImage(image, for: .normal)
-            } else if secondIconClick == false {
+            } else {
                 newPassField.isSecureTextEntry = true
-                secondIconClick = true
+                firstIconClick = true
                 let image = UIImage(named: "noEye")
                 sender.setImage(image, for: .normal)
             }
         case secondEyeButton:
-            if thirdIconClick == true {
+            if secondIconClick {
                 repeatNewPassField.isSecureTextEntry = false
-                thirdIconClick = false
+                secondIconClick = false
                 let image = UIImage(named: "eye")
                 sender.setImage(image, for: .normal)
-            } else if thirdIconClick == false {
+            } else {
                 repeatNewPassField.isSecureTextEntry = true
-                thirdIconClick = true
+                secondIconClick = true
                 let image = UIImage(named: "noEye")
                 sender.setImage(image, for: .normal)
             }
