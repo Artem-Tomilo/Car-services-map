@@ -36,7 +36,25 @@ extension MapViewController: UITableViewDelegate, UITableViewDataSource {
         case 0:
             print("\(indexPath.row)")
         case 1 :
-            print("\(indexPath.row)")
+            let places = decode()
+            
+            var favPlaces: [Places] = []
+            
+            for i in places {
+                if i.favoriteStatus == true {
+                    favPlaces.append(i)
+                }
+            }
+            
+            if !favPlaces.isEmpty {
+                let vc = storyboard?.instantiateViewController(withIdentifier: "favoritesPlacesViewController") as! FavoritesPlacesViewController
+                navigationController?.pushViewController(vc, animated: true)
+            } else {
+                let alert = UIAlertController(title: "You don't have favorites places", message: "", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Cancel", style: .cancel)
+                alert.addAction(action)
+                present(alert, animated: true)
+            }
         case 2:
             let vc = storyboard?.instantiateViewController(withIdentifier: "accountViewController") as! AccountViewController
             navigationController?.pushViewController(vc, animated: true)

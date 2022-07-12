@@ -12,7 +12,7 @@ import GoogleSignIn
 import FirebaseDatabase
 
 class LoginViewController: UIViewController {
-
+    
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
     @IBOutlet var emailView: UIView!
@@ -27,7 +27,7 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         signInButton.layer.cornerRadius = 25
         googleButton.style = .wide
         emailView.layer.cornerRadius = 5
@@ -50,7 +50,7 @@ class LoginViewController: UIViewController {
             guard let authentication = user?.authentication,
                   let idToken = authentication.idToken
             else { return }
-           
+            
             let credential = GoogleAuthProvider.credential(withIDToken: idToken,
                                                            accessToken: authentication.accessToken)
             
@@ -87,19 +87,19 @@ class LoginViewController: UIViewController {
                     let action = UIAlertAction(title: "Cancel", style: .cancel)
                     alert.addAction(action)
                     self.present(alert, animated: true)
-                
+                    
                 case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.userNotFound.rawValue:
                     let alert = UIAlertController(title: "Error:", message: "User with this e-mail address is not registered", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Cancel", style: .cancel)
                     alert.addAction(action)
                     self.present(alert, animated: true)
-                
+                    
                 case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.invalidEmail.rawValue:
                     let alert = UIAlertController(title: "Error", message: "The email address is badly formatted!", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Cancel", style: .cancel)
                     alert.addAction(action)
                     self.present(alert, animated: true)
-                
+                    
                 default:
                     print("Unknown error \(String(describing: error))")
                 }

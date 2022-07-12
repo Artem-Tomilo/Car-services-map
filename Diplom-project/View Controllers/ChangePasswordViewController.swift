@@ -21,7 +21,7 @@ class ChangePasswordViewController: UIViewController {
     var firstIconClick = true
     var secondIconClick = true
     var thirdIconClick = true
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -53,7 +53,7 @@ class ChangePasswordViewController: UIViewController {
         Auth.auth().currentUser?.updatePassword(to: repeatNewPassField.text ?? "") { error in
             guard error == nil else {
                 switch error {
-                
+                    
                 case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.requiresRecentLogin.rawValue:
                     let alert = UIAlertController(title: "Error:", message: "This operation is sensitive and requires recent authentication. Log in again before retrying this request.", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Retry login", style: .default) { _ in
@@ -64,7 +64,7 @@ class ChangePasswordViewController: UIViewController {
                     alert.addAction(action)
                     alert.addAction(secondAction)
                     self.present(alert, animated: true)
-                
+                    
                 default:
                     break
                 }

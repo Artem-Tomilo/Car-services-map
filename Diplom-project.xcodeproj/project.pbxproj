@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		383D2A21287C65DE00DAC25A /* PlaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383D2A20287C65DD00DAC25A /* PlaceViewController.swift */; };
 		3844CEF92858CE8D000427C6 /* Table view.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3844CEF82858CE8D000427C6 /* Table view.swift */; };
 		3844CEFD2859DE7B000427C6 /* MarkerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3844CEFC2859DE7B000427C6 /* MarkerInfoView.swift */; };
 		3844CF012859E04D000427C6 /* MarkerInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3844CF002859E04D000427C6 /* MarkerInfoView.xib */; };
@@ -18,6 +19,9 @@
 		38809148287315B6001F56BE /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38809147287315B6001F56BE /* Person.swift */; };
 		3880914A287315EA001F56BE /* Places.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38809149287315EA001F56BE /* Places.swift */; };
 		3880915A28743E3F001F56BE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3880915928743E3F001F56BE /* GoogleService-Info.plist */; };
+		3880915C28760FE9001F56BE /* FavoritesPlacesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3880915B28760FE9001F56BE /* FavoritesPlacesViewController.swift */; };
+		3880915E2876E146001F56BE /* VerticalCustomCellForCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3880915D2876E146001F56BE /* VerticalCustomCellForCollectionView.swift */; };
+		3880916028770E00001F56BE /* HorisontalCustomCellForCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3880915F28770E00001F56BE /* HorisontalCustomCellForCollectionView.swift */; };
 		3891107E2847D49D00EA462B /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3891107D2847D49C00EA462B /* MapViewController.swift */; };
 		389110812847D4D100EA462B /* GMSMapViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110802847D4D100EA462B /* GMSMapViewDelegate.swift */; };
 		389110832847D4E500EA462B /* CLLocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389110822847D4E500EA462B /* CLLocationManagerDelegate.swift */; };
@@ -41,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		28BA31D8DEB70B594B725DDF /* Pods_Diplom_project.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Diplom_project.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		383D2A20287C65DD00DAC25A /* PlaceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceViewController.swift; sourceTree = "<group>"; };
 		3844CEF82858CE8D000427C6 /* Table view.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Table view.swift"; sourceTree = "<group>"; };
 		3844CEFC2859DE7B000427C6 /* MarkerInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerInfoView.swift; sourceTree = "<group>"; };
 		3844CF002859E04D000427C6 /* MarkerInfoView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MarkerInfoView.xib; sourceTree = "<group>"; };
@@ -52,6 +57,9 @@
 		38809147287315B6001F56BE /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		38809149287315EA001F56BE /* Places.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Places.swift; sourceTree = "<group>"; };
 		3880915928743E3F001F56BE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		3880915B28760FE9001F56BE /* FavoritesPlacesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesPlacesViewController.swift; sourceTree = "<group>"; };
+		3880915D2876E146001F56BE /* VerticalCustomCellForCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalCustomCellForCollectionView.swift; sourceTree = "<group>"; };
+		3880915F28770E00001F56BE /* HorisontalCustomCellForCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorisontalCustomCellForCollectionView.swift; sourceTree = "<group>"; };
 		3891107D2847D49C00EA462B /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		389110802847D4D100EA462B /* GMSMapViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMSMapViewDelegate.swift; sourceTree = "<group>"; };
 		389110822847D4E500EA462B /* CLLocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationManagerDelegate.swift; sourceTree = "<group>"; };
@@ -168,6 +176,8 @@
 				38672309284CC688000EAD14 /* AccountViewController.swift */,
 				3867230F284F88A7000EAD14 /* ChangePasswordViewController.swift */,
 				3864407428647CAE0059939B /* FilterViewController.swift */,
+				3880915B28760FE9001F56BE /* FavoritesPlacesViewController.swift */,
+				383D2A20287C65DD00DAC25A /* PlaceViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -179,6 +189,8 @@
 				3844CEFC2859DE7B000427C6 /* MarkerInfoView.swift */,
 				3844CF002859E04D000427C6 /* MarkerInfoView.xib */,
 				38644076286486040059939B /* CustomCell.swift */,
+				3880915D2876E146001F56BE /* VerticalCustomCellForCollectionView.swift */,
+				3880915F28770E00001F56BE /* HorisontalCustomCellForCollectionView.swift */,
 			);
 			path = "CustomView + xib";
 			sourceTree = "<group>";
@@ -343,10 +355,14 @@
 				389110832847D4E500EA462B /* CLLocationManagerDelegate.swift in Sources */,
 				3844CEF92858CE8D000427C6 /* Table view.swift in Sources */,
 				3894DEDD286A204D00D52345 /* DataManager.swift in Sources */,
+				3880915C28760FE9001F56BE /* FavoritesPlacesViewController.swift in Sources */,
 				3844CEFD2859DE7B000427C6 /* MarkerInfoView.swift in Sources */,
+				383D2A21287C65DE00DAC25A /* PlaceViewController.swift in Sources */,
 				3867230A284CC688000EAD14 /* AccountViewController.swift in Sources */,
 				3896BC052847BBE40043BD6A /* LoginViewController.swift in Sources */,
 				3891107E2847D49D00EA462B /* MapViewController.swift in Sources */,
+				3880916028770E00001F56BE /* HorisontalCustomCellForCollectionView.swift in Sources */,
+				3880915E2876E146001F56BE /* VerticalCustomCellForCollectionView.swift in Sources */,
 				389110972848A22C00EA462B /* UIImagePickerControllerDelegate.swift in Sources */,
 				3896BC012847BBE40043BD6A /* AppDelegate.swift in Sources */,
 				389110812847D4D100EA462B /* GMSMapViewDelegate.swift in Sources */,
