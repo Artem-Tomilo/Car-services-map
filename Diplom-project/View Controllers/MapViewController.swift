@@ -57,7 +57,7 @@ class MapViewController: UIViewController {
     
     var cluster: GMUClusterManager!
     
-    let listTableViewMenu = ["Advanced filter", "My addresses", "Account", "About app"]
+    let listTableViewMenu = ["Advanced filter", "My favorites places", "Account", "About app"]
     
     var placesClient: GMSPlacesClient!
     

@@ -47,7 +47,7 @@ class CustomCell: UITableViewCell {
             condition.heightAnchor.constraint(equalToConstant: 30),
             condition.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             condition.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-        
+            
             label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             label.heightAnchor.constraint(equalToConstant: 30)
@@ -64,10 +64,10 @@ class CustomCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         
         if selected {
-            condition.image = UIImage(named: "plus")
+            condition.image = UIImage(named: "accept")
             contentView.backgroundColor = .green
         } else {
-            condition.image = UIImage(named: "minus")
+            condition.image = UIImage(named: "noAccept")
             contentView.backgroundColor = .white
         }
     }

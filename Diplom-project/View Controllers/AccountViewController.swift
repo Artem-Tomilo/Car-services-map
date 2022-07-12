@@ -250,19 +250,19 @@ class AccountViewController: UIViewController {
                     Auth.auth().currentUser?.updateEmail(to: textField.text!) { error in
                         guard error == nil else {
                             switch error {
-                            
+                                
                             case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.emailAlreadyInUse.rawValue:
                                 let alert = UIAlertController(title: "Error:", message: "The email address is already in use by another account!", preferredStyle: .alert)
                                 let action = UIAlertAction(title: "Cancel", style: .cancel)
                                 alert.addAction(action)
                                 self.present(alert, animated: true)
-                            
+                                
                             case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.invalidEmail.rawValue:
                                 let alert = UIAlertController(title: "Error", message: "The email address is badly formatted!", preferredStyle: .alert)
                                 let action = UIAlertAction(title: "Cancel", style: .cancel)
                                 alert.addAction(action)
                                 self.present(alert, animated: true)
-                            
+                                
                             case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.requiresRecentLogin.rawValue:
                                 let alert = UIAlertController(title: "Error:", message: "This operation is sensitive and requires recent authentication. Log in again before retrying this request.", preferredStyle: .alert)
                                 let action = UIAlertAction(title: "Retry login", style: .default) { _ in
@@ -273,7 +273,7 @@ class AccountViewController: UIViewController {
                                 alert.addAction(action)
                                 alert.addAction(secondAction)
                                 self.present(alert, animated: true)
-                            
+                                
                             default:
                                 print("Unknown error \(String(describing: error))")
                             }
