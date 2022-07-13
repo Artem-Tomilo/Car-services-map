@@ -28,7 +28,7 @@ extension MapViewController: GMSMapViewDelegate {
         }
         
         markerInfoView.lockView()
-        UIView.animate(withDuration: 1.5) {
+        UIView.animate(withDuration: 2) {
             self.markerInfoView.unlockView()
         }
         
@@ -47,6 +47,9 @@ extension MapViewController: GMSMapViewDelegate {
         
         if marker == mapView.selectedMarker {
             hideInfoView()
+            polyline.map = nil
+        } else {
+            polyline.map = nil
         }
         
         mapView.animate(toLocation: marker.position)
@@ -63,6 +66,7 @@ extension MapViewController: GMSMapViewDelegate {
     
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
         hideInfoView()
+        polyline.map = nil
     }
     
     //MARK: - Hide infoView func

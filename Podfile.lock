@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (5.6.1)
   - AppAuth (1.5.0):
     - AppAuth/Core (= 1.5.0)
     - AppAuth/ExternalUserAgent (= 1.5.0)
@@ -97,8 +98,10 @@ PODS:
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
   - PromisesObjC (2.1.0)
+  - SwiftyJSON (5.0.1)
 
 DEPENDENCIES:
+  - Alamofire
   - FirebaseAuth
   - FirebaseDatabase
   - FirebaseStorage
@@ -106,9 +109,11 @@ DEPENDENCIES:
   - GoogleMaps (= 6.2.1)
   - GooglePlaces (= 6.2.1)
   - GoogleSignIn
+  - SwiftyJSON
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - AppAuth
     - FirebaseAppCheckInterop
     - FirebaseAuth
@@ -131,8 +136,10 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - PromisesObjC
+    - SwiftyJSON
 
 SPEC CHECKSUMS:
+  Alamofire: 87bd8c952f9a4454320fce00d9cc3de57bcadaf5
   AppAuth: 80317d99ac7ff2801a2f18ff86b48cd315ed465d
   FirebaseAppCheckInterop: 39f963659691a896a4f16065c00183f128ab5d46
   FirebaseAuth: 77247e07732ec5cdb20cc58ef40ad84d2fcce847
@@ -155,7 +162,8 @@ SPEC CHECKSUMS:
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
+  SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
 
-PODFILE CHECKSUM: 1498c459432c33e030f36ee288c84bab342c4486
+PODFILE CHECKSUM: 7653fc12431f12b87a9c5047baae75285ec3594d
 
 COCOAPODS: 1.11.3

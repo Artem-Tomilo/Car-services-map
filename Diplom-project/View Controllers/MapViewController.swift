@@ -15,10 +15,13 @@ import FirebaseAuth
 import FirebaseCore
 import FirebaseDatabase
 import FirebaseStorage
+import Alamofire
+import SwiftyJSON
 
 class MapViewController: UIViewController {
     
     @IBOutlet var markerInfoView: MarkerInfoView!
+    
     var mapView: GMSMapView!
     let someView = UIView()
     let viewForUserData = UIView()
@@ -27,6 +30,14 @@ class MapViewController: UIViewController {
     let tableView = UITableView()
     let nameLabel = UILabel()
     
+    let changeStyleButton = UIButton()
+    let minusZoomButton = UIButton()
+    let plusZoomButton = UIButton()
+    let showMenuButton = UIButton()
+    let signOutButton = UIButton()
+    let filterButton = UIButton()
+    let trafficButoon = UIButton()
+    
     var showMenuConstraint: NSLayoutConstraint!
     var hiddenMenuConstraint: NSLayoutConstraint!
     var showClearViewConstraint: NSLayoutConstraint!
@@ -34,16 +45,9 @@ class MapViewController: UIViewController {
     var showMarkerInfoViewConstraint: NSLayoutConstraint!
     var hiddenMarkerInfoViewConstraint: NSLayoutConstraint!
     
-    let changeStyleButton = UIButton()
-    let minusZoomButton = UIButton()
-    let plusZoomButton = UIButton()
-    let hiddenButton = UIButton()
-    let showMenuButton = UIButton()
-    let signOutButton = UIButton()
-    let filterButton = UIButton()
-    
     var lightStyle = false
     var showTableView = false
+    var trafficFlag = false
     
     let ref = Database.database().reference().child("users")
     let storage = Storage.storage()
@@ -57,11 +61,16 @@ class MapViewController: UIViewController {
     
     var cluster: GMUClusterManager!
     
+    var polyline = GMSPolyline()
+    
     let listTableViewMenu = ["Advanced filter", "My favorites places", "Account", "About app"]
     
     var placesClient: GMSPlacesClient!
     
     var place: Places!
+    
+    var urlWeb = ""
+    var urlTelNumber = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -129,6 +138,16 @@ class MapViewController: UIViewController {
         
         markerInfoView.isUserInteractionEnabled = true
         markerInfoView.delegate = self
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(webPressed(_:)))
+        markerInfoView.webLabel.addGestureRecognizer(tapGesture)
+        markerInfoView.webLabel.isUserInteractionEnabled = true
+        tapGesture.delegate = self
+        
+        let telTapGesture = UITapGestureRecognizer(target: self, action: #selector(telPressed(_:)))
+        markerInfoView.telLabel.addGestureRecognizer(telTapGesture)
+        markerInfoView.telLabel.isUserInteractionEnabled = true
+        telTapGesture.delegate = self
     }
     
     //MARK: - Filter
@@ -146,17 +165,10 @@ class MapViewController: UIViewController {
         filterButton.alpha = 0.75
         filterButton.layer.cornerRadius = 25
         filterButton.setImage(UIImage(named: "filter"), for: .normal)
-        filterButton.addTarget(self, action: #selector(filter(_:)), for: .primaryActionTriggered)
+        filterButton.addTarget(self, action: #selector(goFilterVC(_:)), for: .primaryActionTriggered)
     }
     
-    //MARK: - Filter actions
-    
-    @objc func filter(_ sender: UIButton) {
-        let newVC = (storyboard?.instantiateViewController(withIdentifier: "filterViewController")) as! FilterViewController
-        present(newVC, animated: true)
-        
-        newVC.delegate = self
-    }
+    //MARK: - Filter func
     
     func filterFunc(service: Set<ProfServices>) {
         var placeId: Set<String> = []
@@ -224,6 +236,87 @@ class MapViewController: UIViewController {
         }
     }
     
+    //MARK: - Get directions
+    
+    func getDirections() {
+        
+        let currentLat = manager.location?.coordinate.latitude
+        let currentLng = manager.location?.coordinate.longitude
+        
+        let destinationLat = place.latitude
+        let destinationLng = place.longitude
+        
+        let currentLocation = "\(currentLat ?? 0),\(currentLng ?? 0)"
+        let destinationLocation = "\(destinationLat),\(destinationLng)"
+        
+        let url = "https://maps.googleapis.com/maps/api/directions/json?origin=\(currentLocation)&destination=\(destinationLocation)&mode=driving&key=AIzaSyAR3IFkBAeELyGIPbeS5cP3pgpRwAcQi1s"
+        
+        AF.request(url).responseDecodable(of: [Places].self) { (response) in
+            guard let data = response.data else { return }
+            
+            do {
+                let jsonData = try JSON(data: data)
+                let routes = jsonData["routes"].arrayValue
+                
+                for route in routes {
+                    let overview_polyline = route["overview_polyline"].dictionary
+                    let points = overview_polyline?["points"]?.string
+                    let path = GMSPath.init(fromEncodedPath: points ?? "")
+                    self.polyline = GMSPolyline.init(path: path)
+                    self.polyline.strokeColor = .orange
+                    self.polyline.strokeWidth = 5
+                    self.polyline.map = self.mapView
+                }
+            }
+            catch let error {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    //MARK: - Get distance and duration func
+    
+    func getDistance() {
+        let currentLat = manager.location?.coordinate.latitude
+        let currentLng = manager.location?.coordinate.longitude
+        
+        let destinationLat = place.latitude
+        let destinationLng = place.longitude
+        
+        let currentLocation = "\(currentLat ?? 0),\(currentLng ?? 0)"
+        let destinationLocation = "\(destinationLat),\(destinationLng)"
+        
+        let url = "https://maps.googleapis.com/maps/api/directions/json?origin=\(currentLocation)&destination=\(destinationLocation)&mode=driving&key=AIzaSyAR3IFkBAeELyGIPbeS5cP3pgpRwAcQi1s"
+        
+        AF.request(url).responseDecodable(of: [Places].self) { (response) in
+            guard let data = response.data else { return }
+            
+            do {
+                let jsonData = try JSON(data: data)
+                let routes = jsonData["routes"].arrayValue
+                
+                for route in routes {
+                    
+                    let legs = route["legs"].arrayValue
+                    for i in legs {
+                        let distance = i["distance"].dictionary
+                        let distanceText = distance?["text"]?.string
+                        
+                        let duration = i["duration"].dictionary
+                        let durationText = duration?["text"]?.string
+                        
+                        self.markerInfoView.distanceLabel.text = "\(distanceText ?? "") - \(durationText ?? "")"
+                    }
+                }
+            }
+            catch let error {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    //MARK: - Get info about place
+    
     func getInfoAboutPlace(placeID: String, coordinate: CLLocationCoordinate2D) {
         placesClient = GMSPlacesClient.shared()
         
@@ -234,14 +327,20 @@ class MapViewController: UIViewController {
                 return
             }
             if let place = place {
+                self.getDistance()
+                
                 self.markerInfoView.nameLabel.text = place.name
+                
                 self.markerInfoView.addressLabel.text = place.formattedAddress
-                self.markerInfoView.telLabel.text = place.phoneNumber
-                self.markerInfoView.ratingLabel.text = "Rating: " + String(place.rating)
+                
+                self.urlTelNumber = place.phoneNumber ?? ""
+                self.markerInfoView.telLabel.text = "📞"
+                
+                self.markerInfoView.ratingLabel.text = "⭐️ \(String(place.rating))"
                 
                 let url = place.website
-                let str = url?.absoluteString
-                self.markerInfoView.webLabel.text = str
+                self.urlWeb = url?.absoluteString ?? ""
+                self.markerInfoView.webLabel.text = "🌍"
                 
                 let photoMetadata: GMSPlacePhotoMetadata = place.photos![0]
                 self.placesClient?.loadPlacePhoto(photoMetadata, callback: { (photo, error) -> Void in
@@ -274,14 +373,14 @@ class MapViewController: UIViewController {
     
     //MARK: - Create buttons
     
-    func buttonSettings(button: UIButton, viewV: UIView, nameImage: String, constant: CGFloat) {
+    func buttonSettings(button: UIButton, previousView: UIView, nameImage: String, constant: CGFloat) {
         view.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .white
         NSLayoutConstraint.activate([
             button.widthAnchor.constraint(equalToConstant: 56),
             button.heightAnchor.constraint(equalToConstant: 56),
-            button.bottomAnchor.constraint(equalTo: viewV.bottomAnchor, constant: constant),
+            button.bottomAnchor.constraint(equalTo: previousView.bottomAnchor, constant: constant),
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
         ])
         button.setImage(UIImage(named: nameImage), for: .normal)
@@ -290,19 +389,15 @@ class MapViewController: UIViewController {
     
     func createButtons() {
         
-        buttonSettings(button: changeStyleButton, viewV: view, nameImage: "sun", constant: -112)
-        buttonSettings(button: minusZoomButton, viewV: changeStyleButton, nameImage: "minus", constant: -69)
-        buttonSettings(button: plusZoomButton, viewV: minusZoomButton, nameImage: "plus", constant: -69)
-        //        buttonSettings(button: hiddenButton, viewV: view, nameImage: "", constant: -42)
-        
-        //        styleButton.isHidden = true
-        //        minusZoomButton.isHidden = true
-        //        plusZoomButton.isHidden = true
+        buttonSettings(button: changeStyleButton, previousView: view, nameImage: "sun", constant: -112)
+        buttonSettings(button: minusZoomButton, previousView: changeStyleButton, nameImage: "minus", constant: -69)
+        buttonSettings(button: plusZoomButton, previousView: minusZoomButton, nameImage: "plus", constant: -69)
+        buttonSettings(button: trafficButoon, previousView: plusZoomButton, nameImage: "traffic", constant: -69)
         
         changeStyleButton.addTarget(self, action: #selector(styleButtonTapped(_:)), for: .primaryActionTriggered)
         minusZoomButton.addTarget(self, action: #selector(minusOneZoom(_:)), for: .primaryActionTriggered)
         plusZoomButton.addTarget(self, action: #selector(plusOneZoom(_:)), for: .primaryActionTriggered)
-        hiddenButton.addTarget(self, action: #selector(hiddenButtons(_:)), for: .primaryActionTriggered)
+        trafficButoon.addTarget(self, action: #selector(traffic(_:)), for: .primaryActionTriggered)
     }
     
     //MARK: - Button actions
@@ -343,17 +438,14 @@ class MapViewController: UIViewController {
         mapView.animate(with: zoom)
     }
     
-    @objc func hiddenButtons(_ sender: UIButton) {
-        if changeStyleButton.isHidden == false {
-            changeStyleButton.isHidden = true
-            plusZoomButton.isHidden = true
-            minusZoomButton.isHidden = true
-            hiddenButton.isHidden = false
-        } else {
-            changeStyleButton.isHidden = false
-            plusZoomButton.isHidden = false
-            minusZoomButton.isHidden = false
-            hiddenButton.isHidden = true
+    @objc func traffic(_ sender: UIButton) {
+        switch trafficFlag {
+        case false:
+            trafficFlag.toggle()
+            mapView.isTrafficEnabled = true
+        case true:
+            trafficFlag.toggle()
+            mapView.isTrafficEnabled = false
         }
     }
     
@@ -383,6 +475,37 @@ class MapViewController: UIViewController {
         present(alert, animated: true)
     }
     
+    @objc func goFilterVC(_ sender: UIButton) {
+        let newVC = (storyboard?.instantiateViewController(withIdentifier: "filterViewController")) as! FilterViewController
+        present(newVC, animated: true)
+        
+        newVC.delegate = self
+    }
+    
+    @objc func webPressed(_ sender: UITapGestureRecognizer) {
+        let alert = UIAlertController(title: "Do you want to go to this site: \(urlWeb)?", message: "", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Yes", style: .default) { _ in
+            if let url = URL(string: self.urlWeb) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+        let secondAction = UIAlertAction(title: "No", style: .cancel) { _ in
+            self.dismiss(animated: true)
+        }
+        alert.addAction(action)
+        alert.addAction(secondAction)
+        present(alert, animated: true)
+    }
+    
+    @objc func telPressed(_ sender: UITapGestureRecognizer) {
+        urlTelNumber = urlTelNumber.components(separatedBy: "-").joined(separator: "")
+        urlTelNumber = urlTelNumber.components(separatedBy: .whitespaces).joined(separator: "")
+        
+        if let url = URL(string: "tel://\(urlTelNumber)") {
+            UIApplication.shared.open(url as URL)
+        }
+    }
+    
     //MARK: - Style
     
     func style(for resource: String, withExtension: String) {
@@ -400,13 +523,11 @@ class MapViewController: UIViewController {
     //MARK: - Map settings
     
     func mapSettings() {
-        let camera = GMSCameraPosition.camera(withLatitude: 53.90, longitude: 27.56, zoom: 5)
-        //        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 10)
+        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 5)
         mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
-        //        mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         mapView.settings.compassButton = true
         mapView.settings.myLocationButton = true
-        //        mapView.isTrafficEnabled = true
         mapView.isMyLocationEnabled = true
         style(for: "darkStyle", withExtension: ".json")
         view = mapView

@@ -16,6 +16,8 @@ class MarkerInfoView: UIView {
     @IBOutlet weak var webLabel: UILabel!
     @IBOutlet weak var photoImage: UIImageView!
     @IBOutlet weak var heartButton: UIButton!
+    @IBOutlet weak var distanceLabel: UILabel!
+    @IBOutlet weak var directionButton: UIButton!
     
     weak var delegate: MarkerInfoViewDelegate?
     
@@ -51,13 +53,21 @@ class MarkerInfoView: UIView {
         
         webLabel.layer.borderColor = CGColor(red: 0, green: 0, blue: 0, alpha: 1)
         webLabel.layer.borderWidth = 0.5
+        
+        distanceLabel.layer.borderColor = CGColor(red: 0, green: 0, blue: 0, alpha: 1)
+        distanceLabel.layer.borderWidth = 0.5
     }
     
     @IBAction func heartButtonTapped(_ sender: UIButton) {
         delegate?.favoritesPlaces(sender)
     }
+    
+    @IBAction func directionButtonTapped(_ sender: UIButton) {
+        delegate?.getDirections()
+    }
 }
 
 protocol MarkerInfoViewDelegate: AnyObject {
     func favoritesPlaces(_ sender: UIButton)
+    func getDirections()
 }

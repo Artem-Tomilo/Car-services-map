@@ -23,11 +23,11 @@ class DataManager {
     
     func encodePlace(type: [Places]) {
         guard let data = try? JSONEncoder().encode(type) else { return }
-        UserDefaults.standard.set(data, forKey: placesKey)
+        userDefaults.set(data, forKey: placesKey)
     }
     
     func decodePlace() -> [Places] {
-        guard let data = UserDefaults.standard.object(forKey: placesKey) as? Data else { return [] }
+        guard let data = userDefaults.object(forKey: placesKey) as? Data else { return [] }
         guard let places = try? JSONDecoder().decode([Places].self, from: data) else { return [] }
         
         return places
@@ -35,11 +35,11 @@ class DataManager {
     
     func encodeServices(type: Dictionary <ProfServices, Bool>) {
         guard let data = try? JSONEncoder().encode(type) else { return }
-        UserDefaults.standard.set(data, forKey: serviceKey)
+        userDefaults.set(data, forKey: serviceKey)
     }
     
     func decodeServices() -> Dictionary <ProfServices, Bool> {
-        guard let data = UserDefaults.standard.object(forKey: serviceKey) as? Data else { return [:] }
+        guard let data = userDefaults.object(forKey: serviceKey) as? Data else { return [:] }
         guard let conditionsArray = try? JSONDecoder().decode(Dictionary <ProfServices, Bool>.self, from: data) else { return [:] }
         
         return conditionsArray

@@ -12,6 +12,8 @@ pod 'Google-Maps-iOS-Utils', '~> 4.1.0'
 pod 'GoogleSignIn'
 pod 'FirebaseStorage'
 pod 'GooglePlaces', '6.2.1'
+pod 'Alamofire'
+pod 'SwiftyJSON'
 end
 
 post_install do |installer|
