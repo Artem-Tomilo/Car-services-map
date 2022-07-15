@@ -52,6 +52,7 @@ class MapViewController: UIViewController {
     let ref = Database.database().reference().child("users")
     let storage = Storage.storage()
     lazy var avatarsRef = storage.reference().child("avatars/")
+    let placesRef = Database.database().reference().child("places")
     
     var placesArray: [Places] = []
     var users: [Person] = []
@@ -67,6 +68,10 @@ class MapViewController: UIViewController {
     
     var placesClient: GMSPlacesClient!
     
+    var resultsViewController: GMSAutocompleteResultsViewController?
+    
+    var searchController: UISearchController?
+    
     var place: Places!
     
     var urlWeb = ""
@@ -76,6 +81,8 @@ class MapViewController: UIViewController {
         super.viewDidLoad()
         
         mapSettings()
+        
+        searchControllerSettings()
         
         clusterFunc()
         
@@ -107,9 +114,9 @@ class MapViewController: UIViewController {
         placesArray = DataManager.shared.decodePlace()
         
         if placesArray.isEmpty {
-            let firstPlace = Places(latitude: 53.873961, longitude: 27.499368, name: "Автосеть Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
-            let secondPlace = Places(latitude: 53.892702, longitude: 27.646785, name: "Автосеть Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
-            let thirdPlace = Places(latitude: 53.852154, longitude: 27.676753, name: "Автосеть Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
+            let firstPlace = Places(latitude: 53.873981, longitude: 27.49935499999999, name: "Автосеть Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
+            let secondPlace = Places(latitude: 53.89280669999999, longitude: 27.6465287, name: "Автосеть Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
+            let thirdPlace = Places(latitude: 53.8521044, longitude: 27.67671959999999, name: "Автосеть Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
             
             placesArray.append(firstPlace)
             placesArray.append(secondPlace)
@@ -119,6 +126,23 @@ class MapViewController: UIViewController {
         for i in placesArray {
             addMarker(i)
         }
+        
+        //        for i in placesArray {
+        //            for m in ProfServices.allCases {
+        //                if i.services.contains(m) {
+        //                    var ser: [String] = []
+        //                    ser.append(m.title)
+        //                    for s in ser {
+        //                        self.placesRef.child(i.placeID).setValue([
+        //                            "name": i.name,
+        //                            "coordinates": ["latitude": i.latitude, "longitude": i.longitude],
+        //                            "favoriteStatus": i.favoriteStatus,
+        //                            "services": ["\(m.rawValue)" : s]
+        //                        ])
+        //                    }
+        //                }
+        //            }
+        //        }
     }
     
     //MARK: - Marker info view
@@ -453,8 +477,16 @@ class MapViewController: UIViewController {
         switch showTableView {
         case false:
             showMenuFunc()
+            
+            UIView.animate(withDuration: 0.2) {
+                self.navigationController?.setNavigationBarHidden(true, animated: false)
+            }
         case true:
             hideMenuFunc()
+            
+            UIView.animate(withDuration: 0.2) {
+                self.navigationController?.setNavigationBarHidden(false, animated: false)
+            }
         }
     }
     
@@ -523,21 +555,45 @@ class MapViewController: UIViewController {
     //MARK: - Map settings
     
     func mapSettings() {
-        let camera = GMSCameraPosition(latitude: 53.896494, longitude: 27.551534, zoom: 5)
-//        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 5)
-        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
+        //        let camera = GMSCameraPosition(latitude: 53.896494, longitude: 27.551534, zoom: 5)
+        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 5)
+        mapView = GMSMapView.map(withFrame: .zero, camera: camera)
+        view.addSubview(mapView)
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            mapView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+        ])
+        
         mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         mapView.settings.compassButton = true
         mapView.settings.myLocationButton = true
         mapView.isMyLocationEnabled = true
         style(for: "darkStyle", withExtension: ".json")
-        view = mapView
-        navigationController?.setNavigationBarHidden(true, animated: false)
+        //        navigationController?.setNavigationBarHidden(false, animated: false)
         
         mapView.delegate = self
         
         let zoom = GMSCameraUpdate.zoom(to: 10.7)
         mapView.animate(with: zoom)
+    }
+    
+    //MARK: - Search controller
+    
+    func searchControllerSettings() {
+        resultsViewController = GMSAutocompleteResultsViewController()
+        searchController = UISearchController(searchResultsController: resultsViewController)
+        searchController?.searchResultsUpdater = resultsViewController
+        
+        let searchBar = searchController!.searchBar
+        searchBar.sizeToFit()
+        searchBar.placeholder = "Search for places"
+        navigationItem.titleView = searchController?.searchBar
+        definesPresentationContext = true
+        searchController?.hidesNavigationBarDuringPresentation = false
+        resultsViewController?.delegate = self
     }
     
     //MARK: - Cluster markers
@@ -592,5 +648,23 @@ extension MapViewController: MarkerInfoViewDelegate {
         } else {
             sender.setImage(UIImage(named: "heartClear"), for: .normal)
         }
+    }
+}
+
+extension MapViewController: GMSAutocompleteResultsViewControllerDelegate {
+    
+    func resultsController(_ resultsController: GMSAutocompleteResultsViewController, didAutocompleteWith place: GMSPlace) {
+        searchController?.isActive = false
+        
+        for marker in markerArray {
+            if place.coordinate.latitude == marker.position.latitude && place.coordinate.longitude == marker.position.longitude {
+                let camera = GMSCameraPosition(target: place.coordinate, zoom: 12)
+                mapView.animate(to: camera)
+            }
+        }
+    }
+    
+    func resultsController(_ resultsController: GMSAutocompleteResultsViewController, didFailAutocompleteWithError error: Error) {
+        print("Error: \(error.localizedDescription)")
     }
 }
