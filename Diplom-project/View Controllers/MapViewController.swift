@@ -523,7 +523,8 @@ class MapViewController: UIViewController {
     //MARK: - Map settings
     
     func mapSettings() {
-        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 5)
+        let camera = GMSCameraPosition(latitude: 53.896494, longitude: 27.551534, zoom: 5)
+//        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 5)
         mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
         mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         mapView.settings.compassButton = true
