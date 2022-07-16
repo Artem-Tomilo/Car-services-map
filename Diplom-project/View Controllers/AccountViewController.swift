@@ -182,6 +182,7 @@ class AccountViewController: UIViewController {
             changePasswordButton.isHidden = false
             passwordLabel.isHidden = false
             sender.setTitle("Done", for: .normal)
+            sender.setImage(UIImage(), for: .normal)
             editButtonsIsHide = false
             backToMapViewButton.isEnabled = false
         case false:
@@ -190,7 +191,8 @@ class AccountViewController: UIViewController {
             telNumberNameEditButton.isHidden = true
             changePasswordButton.isHidden = true
             passwordLabel.isHidden = true
-            sender.setTitle("Edit", for: .normal)
+            sender.setTitle("", for: .normal)
+            sender.setImage(UIImage(named: "edit"), for: .normal)
             editButtonsIsHide = true
             backToMapViewButton.isEnabled = true
         }
