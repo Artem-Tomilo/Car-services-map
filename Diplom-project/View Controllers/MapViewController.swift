@@ -30,6 +30,8 @@ class MapViewController: UIViewController {
     let tableView = UITableView()
     let nameLabel = UILabel()
     
+    let hidingButton = UIButton()
+    let locationButton = UIButton()
     let changeStyleButton = UIButton()
     let minusZoomButton = UIButton()
     let plusZoomButton = UIButton()
@@ -45,6 +47,7 @@ class MapViewController: UIViewController {
     var showMarkerInfoViewConstraint: NSLayoutConstraint!
     var hiddenMarkerInfoViewConstraint: NSLayoutConstraint!
     
+    var showAllButtons = false
     var lightStyle = false
     var showTableView = false
     var trafficFlag = false
@@ -402,29 +405,60 @@ class MapViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .white
         NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: 56),
-            button.heightAnchor.constraint(equalToConstant: 56),
+            button.widthAnchor.constraint(equalToConstant: 50),
+            button.heightAnchor.constraint(equalToConstant: 50),
             button.bottomAnchor.constraint(equalTo: previousView.bottomAnchor, constant: constant),
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
         ])
         button.setImage(UIImage(named: nameImage), for: .normal)
-        button.layer.cornerRadius = 28
+        button.layer.cornerRadius = 25
+        button.isHidden = true
     }
     
     func createButtons() {
         
-        buttonSettings(button: changeStyleButton, previousView: view, nameImage: "sun", constant: -112)
-        buttonSettings(button: minusZoomButton, previousView: changeStyleButton, nameImage: "minus", constant: -69)
-        buttonSettings(button: plusZoomButton, previousView: minusZoomButton, nameImage: "plus", constant: -69)
-        buttonSettings(button: trafficButoon, previousView: plusZoomButton, nameImage: "traffic", constant: -69)
+        buttonSettings(button: hidingButton, previousView: view, nameImage: "dot", constant: -50)
+        buttonSettings(button: locationButton, previousView: hidingButton, nameImage: "location", constant: -60)
+        buttonSettings(button: changeStyleButton, previousView: locationButton, nameImage: "sun", constant: -60)
+        buttonSettings(button: minusZoomButton, previousView: changeStyleButton, nameImage: "minus", constant: -60)
+        buttonSettings(button: plusZoomButton, previousView: minusZoomButton, nameImage: "plus", constant: -60)
+        buttonSettings(button: trafficButoon, previousView: plusZoomButton, nameImage: "traffic", constant: -60)
         
+        hidingButton.addTarget(self, action: #selector(hideOrShowAllButtons(_:)), for: .primaryActionTriggered)
+        locationButton.addTarget(self, action: #selector(location(_:)), for: .primaryActionTriggered)
         changeStyleButton.addTarget(self, action: #selector(styleButtonTapped(_:)), for: .primaryActionTriggered)
         minusZoomButton.addTarget(self, action: #selector(minusOneZoom(_:)), for: .primaryActionTriggered)
         plusZoomButton.addTarget(self, action: #selector(plusOneZoom(_:)), for: .primaryActionTriggered)
         trafficButoon.addTarget(self, action: #selector(traffic(_:)), for: .primaryActionTriggered)
+        
+        hidingButton.isHidden = false
     }
     
     //MARK: - Button actions
+    
+    @objc func hideOrShowAllButtons(_ sender: UIButton) {
+        switch showAllButtons {
+        case false:
+            showAllButtons.toggle()
+            locationButton.isHidden = false
+            changeStyleButton.isHidden = false
+            minusZoomButton.isHidden = false
+            plusZoomButton.isHidden = false
+            trafficButoon.isHidden = false
+        case true:
+            showAllButtons.toggle()
+            locationButton.isHidden = true
+            changeStyleButton.isHidden = true
+            minusZoomButton.isHidden = true
+            plusZoomButton.isHidden = true
+            trafficButoon.isHidden = true
+        }
+    }
+    
+    @objc func location(_ sender: UIButton) {
+        let camera = GMSCameraPosition(target: manager.location!.coordinate, zoom: 11)
+        mapView.animate(to: camera)
+    }
     
     @objc func styleButtonTapped(_ sender: UIButton) {
         if lightStyle {
@@ -432,6 +466,7 @@ class MapViewController: UIViewController {
             changeStyleButton.setImage(UIImage(named: "sun"), for: .normal)
             lightStyle.toggle()
             clearView.backgroundColor = .systemGray6
+            locationButton.setImage(UIImage(named: "location"), for: .normal)
             if lightStyle == false && hiddenMenuConstraint.isActive == true {
                 showMenuButton.backgroundColor = .white
                 showMenuButton.alpha = 0.75
@@ -441,12 +476,13 @@ class MapViewController: UIViewController {
             }
         } else {
             style(for: "lightStyle", withExtension: ".json")
+            locationButton.setImage(UIImage(named: "darkLocation"), for: .normal)
             changeStyleButton.setImage(UIImage(named: "dark"), for: .normal)
             lightStyle.toggle()
             clearView.backgroundColor = .systemGray
             showMenuButton.backgroundColor = .systemGray3
             showMenuButton.alpha = 1
-            filterButton.setImage(UIImage(named: "blackFilter"), for: .normal)
+            filterButton.setImage(UIImage(named: "darkFilter"), for: .normal)
             filterButton.backgroundColor = .systemGray3
             filterButton.alpha = 1
         }
@@ -476,17 +512,11 @@ class MapViewController: UIViewController {
     @objc func showTableView(_ sender: UIButton) {
         switch showTableView {
         case false:
+            navigationController?.setNavigationBarHidden(true, animated: true)
             showMenuFunc()
-            
-            UIView.animate(withDuration: 0.2) {
-                self.navigationController?.setNavigationBarHidden(true, animated: false)
-            }
         case true:
             hideMenuFunc()
-            
-            UIView.animate(withDuration: 0.2) {
-                self.navigationController?.setNavigationBarHidden(false, animated: false)
-            }
+            navigationController?.setNavigationBarHidden(false, animated: true)
         }
     }
     
@@ -555,24 +585,30 @@ class MapViewController: UIViewController {
     //MARK: - Map settings
     
     func mapSettings() {
-        //        let camera = GMSCameraPosition(latitude: 53.896494, longitude: 27.551534, zoom: 5)
-        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 5)
-        mapView = GMSMapView.map(withFrame: .zero, camera: camera)
-        view.addSubview(mapView)
-        mapView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            mapView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-        ])
+        // settings for simulator
+        
+        let camera = GMSCameraPosition(latitude: 53.896369, longitude: 27.551483, zoom: 5)
+        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
+        view = mapView
+        
+        //setiings for real device
+        
+//        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 5)
+//        mapView = GMSMapView.map(withFrame: .zero, camera: camera)
+//
+//        view.addSubview(mapView)
+//        mapView.translatesAutoresizingMaskIntoConstraints = false
+//        NSLayoutConstraint.activate([
+//            mapView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+//            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//            mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+//        ])
         
         mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         mapView.settings.compassButton = true
-        mapView.settings.myLocationButton = true
         mapView.isMyLocationEnabled = true
         style(for: "darkStyle", withExtension: ".json")
-        //        navigationController?.setNavigationBarHidden(false, animated: false)
         
         mapView.delegate = self
         
