@@ -27,26 +27,10 @@ extension MapViewController: GMSMapViewDelegate {
             markerInfoView.heartButton.setImage(UIImage(named: "heartRed"), for: .normal)
         }
         
-        markerInfoView.lockView()
-        UIView.animate(withDuration: 2) {
-            self.markerInfoView.unlockView()
-        }
-        
-        NSLayoutConstraint.deactivate([
-            hiddenMarkerInfoViewConstraint
-        ])
-        
-        NSLayoutConstraint.activate([
-            showMarkerInfoViewConstraint
-        ])
-        view.setNeedsLayout()
-        
-        UIView.animate(withDuration: 0.2) {
-            self.view.layoutIfNeeded()
-        }
+        showMarkerInfoView()
         
         if marker == mapView.selectedMarker {
-            hideInfoView()
+            hideMarkerInfoView()
             polyline.map = nil
         } else {
             polyline.map = nil
@@ -65,19 +49,22 @@ extension MapViewController: GMSMapViewDelegate {
     //MARK: - Did tap at coordinate
     
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
-        hideInfoView()
+        hideMarkerInfoView()
         polyline.map = nil
     }
     
-    //MARK: - Hide infoView func
+    //MARK: - Hide and show MarkerinfoView func
     
-    func hideInfoView() {
+    func hideMarkerInfoView() {
+        
         NSLayoutConstraint.deactivate([
-            showMarkerInfoViewConstraint
+            showMarkerInfoViewConstraint,
+            hidingButtonUpConstraint
         ])
         
         NSLayoutConstraint.activate([
-            hiddenMarkerInfoViewConstraint
+            hiddenMarkerInfoViewConstraint,
+            hidingButtonDownConstraint
         ])
         view.setNeedsLayout()
         
@@ -86,6 +73,29 @@ extension MapViewController: GMSMapViewDelegate {
         } completion: { _ in
             self.markerInfoView.removeFromSuperview()
             self.addMarkerInfoView()
+        }
+    }
+    
+    func showMarkerInfoView() {
+        
+        markerInfoView.lockView()
+        UIView.animate(withDuration: 2) {
+            self.markerInfoView.unlockView()
+        }
+        
+        NSLayoutConstraint.deactivate([
+            hiddenMarkerInfoViewConstraint,
+            hidingButtonDownConstraint
+        ])
+        
+        NSLayoutConstraint.activate([
+            showMarkerInfoViewConstraint,
+            hidingButtonUpConstraint
+        ])
+        view.setNeedsLayout()
+        
+        UIView.animate(withDuration: 0.2) {
+            self.view.layoutIfNeeded()
         }
     }
 }

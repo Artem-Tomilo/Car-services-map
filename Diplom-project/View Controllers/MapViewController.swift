@@ -46,6 +46,8 @@ class MapViewController: UIViewController {
     var hiddenClearViewConstraint: NSLayoutConstraint!
     var showMarkerInfoViewConstraint: NSLayoutConstraint!
     var hiddenMarkerInfoViewConstraint: NSLayoutConstraint!
+    var hidingButtonDownConstraint: NSLayoutConstraint!
+    var hidingButtonUpConstraint: NSLayoutConstraint!
     
     var showAllButtons = false
     var lightStyle = false
@@ -87,21 +89,21 @@ class MapViewController: UIViewController {
         
         searchControllerSettings()
         
-        clusterFunc()
+        tableViewSettings()
+        
+        addMarkerInfoView()
         
         createButtons()
         
-        locationSettings()
+        addFilterButton()
+        
+        clusterFunc()
         
         newObjectFunc()
         
-        tableViewSettings()
-        
-        addFilterButton()
+        locationSettings()
         
         getData()
-        
-        addMarkerInfoView()
     }
     
     //MARK: - View will appear
@@ -110,42 +112,54 @@ class MapViewController: UIViewController {
         getDataImage()
     }
     
-    //MARK: - New objects
+    //MARK: - Map settings
     
-    func newObjectFunc() {
+    func mapSettings() {
+        // settings for simulator
         
-        placesArray = DataManager.shared.decodePlace()
+        //        let camera = GMSCameraPosition(latitude: 53.896369, longitude: 27.551483, zoom: 5)
+        //        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
+        //        view = mapView
         
-        if placesArray.isEmpty {
-            let firstPlace = Places(latitude: 53.873981, longitude: 27.49935499999999, name: "Автосеть Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
-            let secondPlace = Places(latitude: 53.89280669999999, longitude: 27.6465287, name: "Автосеть Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
-            let thirdPlace = Places(latitude: 53.8521044, longitude: 27.67671959999999, name: "Автосеть Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
-            
-            placesArray.append(firstPlace)
-            placesArray.append(secondPlace)
-            placesArray.append(thirdPlace)
-        }
+        //setiings for real device
         
-        for i in placesArray {
-            addMarker(i)
-        }
+        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 5)
+        mapView = GMSMapView.map(withFrame: .zero, camera: camera)
         
-        //        for i in placesArray {
-        //            for m in ProfServices.allCases {
-        //                if i.services.contains(m) {
-        //                    var ser: [String] = []
-        //                    ser.append(m.title)
-        //                    for s in ser {
-        //                        self.placesRef.child(i.placeID).setValue([
-        //                            "name": i.name,
-        //                            "coordinates": ["latitude": i.latitude, "longitude": i.longitude],
-        //                            "favoriteStatus": i.favoriteStatus,
-        //                            "services": ["\(m.rawValue)" : s]
-        //                        ])
-        //                    }
-        //                }
-        //            }
-        //        }
+        view.addSubview(mapView)
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            mapView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+        ])
+        
+        mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        mapView.settings.compassButton = true
+        mapView.isMyLocationEnabled = true
+        style(for: "darkStyle", withExtension: ".json")
+        
+        mapView.delegate = self
+        
+        let zoom = GMSCameraUpdate.zoom(to: 13)
+        mapView.animate(with: zoom)
+    }
+    
+    //MARK: - Search controller
+    
+    func searchControllerSettings() {
+        resultsViewController = GMSAutocompleteResultsViewController()
+        searchController = UISearchController(searchResultsController: resultsViewController)
+        searchController?.searchResultsUpdater = resultsViewController
+        
+        let searchBar = searchController!.searchBar
+        searchBar.sizeToFit()
+        searchBar.placeholder = "Search for places"
+        navigationItem.titleView = searchController?.searchBar
+        definesPresentationContext = true
+        searchController?.hidesNavigationBarDuringPresentation = false
+        resultsViewController?.delegate = self
     }
     
     //MARK: - Marker info view
@@ -175,6 +189,54 @@ class MapViewController: UIViewController {
         markerInfoView.telLabel.addGestureRecognizer(telTapGesture)
         markerInfoView.telLabel.isUserInteractionEnabled = true
         telTapGesture.delegate = self
+    }
+    
+    //MARK: - Create buttons
+    
+    func buttonSettings(button: UIButton, previousView: UIView, nameImage: String, constant: CGFloat) {
+        view.addSubview(button)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .white
+        NSLayoutConstraint.activate([
+            button.widthAnchor.constraint(equalToConstant: 50),
+            button.heightAnchor.constraint(equalToConstant: 50),
+            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
+        ])
+        
+        if button == hidingButton {
+            hidingButtonDownConstraint = button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50)
+            hidingButtonUpConstraint = button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -(markerInfoView.frame.height + 20))
+            NSLayoutConstraint.activate([
+                hidingButtonDownConstraint
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                button.bottomAnchor.constraint(equalTo: previousView.bottomAnchor, constant: constant),
+            ])
+        }
+        
+        button.setImage(UIImage(named: nameImage), for: .normal)
+        button.layer.cornerRadius = 25
+        button.isHidden = true
+    }
+    
+    func createButtons() {
+        
+        buttonSettings(button: hidingButton, previousView: view, nameImage: "dot", constant: -50)
+        buttonSettings(button: locationButton, previousView: hidingButton, nameImage: "location", constant: -60)
+        buttonSettings(button: changeStyleButton, previousView: locationButton, nameImage: "sun", constant: -60)
+        buttonSettings(button: minusZoomButton, previousView: changeStyleButton, nameImage: "minus", constant: -60)
+        buttonSettings(button: plusZoomButton, previousView: minusZoomButton, nameImage: "plus", constant: -60)
+        buttonSettings(button: trafficButoon, previousView: plusZoomButton, nameImage: "traffic", constant: -60)
+        
+        hidingButton.addTarget(self, action: #selector(hideOrShowAllButtons(_:)), for: .primaryActionTriggered)
+        locationButton.addTarget(self, action: #selector(location(_:)), for: .primaryActionTriggered)
+        changeStyleButton.addTarget(self, action: #selector(styleButtonTapped(_:)), for: .primaryActionTriggered)
+        minusZoomButton.addTarget(self, action: #selector(minusOneZoom(_:)), for: .primaryActionTriggered)
+        plusZoomButton.addTarget(self, action: #selector(plusOneZoom(_:)), for: .primaryActionTriggered)
+        trafficButoon.addTarget(self, action: #selector(traffic(_:)), for: .primaryActionTriggered)
+        
+        hidingButton.isHidden = false
     }
     
     //MARK: - Filter
@@ -212,6 +274,126 @@ class MapViewController: UIViewController {
             } else {
                 marker.map = mapView
             }
+        }
+    }
+    
+    //MARK: - Cluster markers
+    
+    func clusterFunc() {
+        let iconGenerator = GMUDefaultClusterIconGenerator()
+        let algorithm = GMUNonHierarchicalDistanceBasedAlgorithm()
+        let renderer = GMUDefaultClusterRenderer(mapView: mapView,
+                                                 clusterIconGenerator: iconGenerator)
+        cluster = GMUClusterManager(map: mapView, algorithm: algorithm,
+                                    renderer: renderer)
+        cluster.setMapDelegate(self)
+    }
+    
+    //MARK: - New objects
+    
+    func newObjectFunc() {
+        
+        placesArray = DataManager.shared.decodePlace()
+        
+        if placesArray.isEmpty {
+            let place1 = Places(latitude: 53.873981, longitude: 27.49935499999999, name: "Автосеть Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
+            let place2 = Places(latitude: 53.89280669999999, longitude: 27.6465287, name: "Автосеть Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
+            let place3 = Places(latitude: 53.8521044, longitude: 27.67671959999999, name: "Автосеть Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
+            let place4 = Places(latitude: 53.906886, longitude: 27.681267, name: "Колесоплюс Карвата", placeID: "ChIJR6A5zsbP20YR8uL7h0_KrTI", services: [.passengerTireFitting, .truckTireFitting], favoriteStatus: false)
+            let place5 = Places(latitude: 53.8791045, longitude: 27.4105503, name: "Колесоплюс Монтажников", placeID: "ChIJDXbj-f3a20YRreKax2GAGXQ", services: [.passengerTireFitting, .truckTireFitting], favoriteStatus: false)
+            let place6 = Places(latitude: 53.8451518, longitude: 27.4450747, name: "ГранатАвто М", placeID: "ChIJPUWJBnTa20YRdmFRFCbTnDk", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
+            let place7 = Places(latitude: 53.83351829999999, longitude: 27.5544026, name: "СТО РИМБАТ", placeID: "ChIJ5wuw5V_R20YRAXFgmO_lLks", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
+            let place8 = Places(latitude: 53.9037807, longitude: 27.4132021, name: "СТО TOP CRAFT", placeID: "ChIJseY62Rvb20YRPa-3jDm1tfI", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .carWash], favoriteStatus: false)
+            let place9 = Places(latitude: 53.8955371, longitude: 27.6944475, name: "СТО Альтернатива", placeID: "ChIJZbQQqzLM20YRuC914Nc-bYk", services: [.carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
+            let place10 = Places(latitude: 53.95536240000001, longitude: 27.7096865, name: "СТО WDrive Уручье Автосервис", placeID: "ChIJ03MWqSvJ20YRYFScsp2wx9U", services: [.carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
+            let place11 = Places(latitude: 53.9155623, longitude: 27.68796459999999, name: "СТО Торсион", placeID: "ChIJla9umJ7O20YRqYpm9ZkP4HY", services: [.carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
+            let place12 = Places(latitude: 53.8860888, longitude: 27.63263389999999, name: "СТО АНДРИВАН", placeID: "ChIJDyQlmzXO20YRN5Q5jGjQ9oM", services: [.carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
+            let place13 = Places(latitude: 53.8413836, longitude: 27.4840469, name: "Шиномонтаж на Ландера", placeID: "ChIJtX0Pc5LQ20YRFwlxJDKoX3c", services: [.passengerTireFitting], favoriteStatus: false)
+            let place14 = Places(latitude: 53.887187, longitude: 27.480277, name: "Шиномонтаж Логово", placeID: "ChIJP9qam73b20YRC2yY6uk3LSQ", services: [.passengerTireFitting], favoriteStatus: false)
+            let place15 = Places(latitude: 53.8308639, longitude: 27.60580819999999, name: "Шинный центр Дискол-Плюс", placeID: "ChIJaf4LySnS20YRHtYqSwG7ltg", services: [.passengerTireFitting, .truckTireFitting], favoriteStatus: false)
+            let place16 = Places(latitude: 53.93115599999999, longitude: 27.7030728, name: "4 БОКСА", placeID: "ChIJldITMq_O20YRExnWWMFrZ_E", services: [.passengerTireFitting, .truckTireFitting], favoriteStatus: false)
+            let place17 = Places(latitude: 53.91642170000001, longitude: 27.5215486, name: "TYREPLUS Тимирязева", placeID: "ChIJn9jdN2fF20YRAnA5gvyHj8s", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
+            let place18 = Places(latitude: 53.878782, longitude: 27.59434599999999, name: "TYREPLUS Велосипедный пер", placeID: "ChIJlXTwHCbO20YRDHY8tnkcxQ0", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
+            let place19 = Places(latitude: 53.9583153, longitude: 27.6322779, name: "TYREPLUS Логойский тракт", placeID: "ChIJH6SftczI20YR0iYkdN24IBM", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
+            let place20 = Places(latitude: 53.87338769999999, longitude: 27.5037031, name: "Склад Шин - Сезонное хранение шин и велосипедов", placeID: "ChIJkwzZ_HzP20YRp_g0HE_4zTM", services: [.seasonalTireStorage], favoriteStatus: false)
+            let place21 = Places(latitude: 53.9086805, longitude: 27.4286835, name: "Автомойка GT", placeID: "ChIJExhXeZPb20YRRFTN9YrwzX8", services: [.carWash], favoriteStatus: false)
+            let place22 = Places(latitude: 53.9104957, longitude: 27.5042457, name: "Сивый мерин. Автомойка. Химчистка. Полировка.", placeID: "ChIJb5kI2ETF20YRdUxqBk55iqk", services: [.carWash], favoriteStatus: false)
+            let place23 = Places(latitude: 53.93014409999999, longitude: 27.65915429999999, name: "Автомойка CleanAuto Скорины", placeID: "ChIJLb_HJMLO20YRGiu58SrsHeI", services: [.carWash], favoriteStatus: false)
+            let place24 = Places(latitude: 53.8724853, longitude: 27.5604165, name: "АвтоСуперКомплекс", placeID: "ChIJP5a1rS3Q20YRd_sQx-LV9JI", services: [.carWash], favoriteStatus: false)
+            let place25 = Places(latitude: 53.865666, longitude: 27.42612059999999, name: "Авто SPA. Автомойка 24/7", placeID: "ChIJqxQYKV_a20YR43Uvp38hctc", services: [.carWash], favoriteStatus: false)
+            let place26 = Places(latitude: 53.9207325, longitude: 27.56555239999999, name: "Аквалаб", placeID: "ChIJz871k2zP20YRExXKzYWgg7s", services: [.carWash], favoriteStatus: false)
+            let place27 = Places(latitude: 53.8647436, longitude: 27.5033956, name: "Техцентр BMW - ЗауберАвто", placeID: "ChIJB6EvRxHQ20YRgwztX_ZO_Pg", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
+            let place28 = Places(latitude: 53.8857481, longitude: 27.5009273, name: "Ручная автомойка МойCAR", placeID: "ChIJI2CjmwfQ20YRyahozRZecfo", services: [.carWash], favoriteStatus: false)
+            let place29 = Places(latitude: 53.8642668, longitude: 27.6506701, name: "Автомойка Шиномонтаж Perfect Look Service & Wash", placeID: "ChIJ1RR8OPnN20YRg7tYHQdY_CU", services: [.passengerTireFitting, .carWash], favoriteStatus: false)
+            let place30 = Places(latitude: 53.9590835, longitude: 27.70116419999999, name: "Шиномонтаж Профитрак", placeID: "ChIJH35KqzrJ20YRHN2n2arbPhY", services: [.passengerTireFitting, .truckTireFitting], favoriteStatus: false)
+            
+            placesArray.append(place1)
+            placesArray.append(place2)
+            placesArray.append(place3)
+            placesArray.append(place4)
+            placesArray.append(place5)
+            placesArray.append(place6)
+            placesArray.append(place7)
+            placesArray.append(place8)
+            placesArray.append(place9)
+            placesArray.append(place10)
+            placesArray.append(place11)
+            placesArray.append(place12)
+            placesArray.append(place13)
+            placesArray.append(place14)
+            placesArray.append(place15)
+            placesArray.append(place16)
+            placesArray.append(place17)
+            placesArray.append(place18)
+            placesArray.append(place19)
+            placesArray.append(place20)
+            placesArray.append(place21)
+            placesArray.append(place22)
+            placesArray.append(place23)
+            placesArray.append(place24)
+            placesArray.append(place25)
+            placesArray.append(place26)
+            placesArray.append(place27)
+            placesArray.append(place28)
+            placesArray.append(place29)
+            placesArray.append(place30)
+        }
+        
+        for i in placesArray {
+            addMarker(i)
+        }
+        
+        //        for i in placesArray {
+        //            for m in ProfServices.allCases {
+        //                if i.services.contains(m) {
+        //                    var ser: [String] = []
+        //                    ser.append(m.title)
+        //                    for s in ser {
+        //                        self.placesRef.child(i.placeID).setValue([
+        //                            "name": i.name,
+        //                            "coordinates": ["latitude": i.latitude, "longitude": i.longitude],
+        //                            "favoriteStatus": i.favoriteStatus,
+        //                            "services": ["\(m.rawValue)" : s]
+        //                        ])
+        //                    }
+        //                }
+        //            }
+        //        }
+    }
+    
+    //MARK: - Location Settings
+    
+    func locationSettings() {
+        //        manager.desiredAccuracy = kCLLocationAccuracyBest
+        //        manager.requestWhenInUseAuthorization()
+        //        manager.distanceFilter = 50
+        //        manager.startUpdatingLocation()
+        
+        manager.delegate = self
+        if CLLocationManager.locationServicesEnabled() {
+            manager.requestLocation()
+        } else {
+            manager.requestWhenInUseAuthorization()
         }
     }
     
@@ -382,58 +564,6 @@ class MapViewController: UIViewController {
         }
     }
     
-    //MARK: - Location Settings
-    
-    func locationSettings() {
-        //        manager.desiredAccuracy = kCLLocationAccuracyBest
-        //        manager.requestWhenInUseAuthorization()
-        //        manager.distanceFilter = 50
-        //        manager.startUpdatingLocation()
-        
-        manager.delegate = self
-        if CLLocationManager.locationServicesEnabled() {
-            manager.requestLocation()
-        } else {
-            manager.requestWhenInUseAuthorization()
-        }
-    }
-    
-    //MARK: - Create buttons
-    
-    func buttonSettings(button: UIButton, previousView: UIView, nameImage: String, constant: CGFloat) {
-        view.addSubview(button)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .white
-        NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: 50),
-            button.heightAnchor.constraint(equalToConstant: 50),
-            button.bottomAnchor.constraint(equalTo: previousView.bottomAnchor, constant: constant),
-            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
-        ])
-        button.setImage(UIImage(named: nameImage), for: .normal)
-        button.layer.cornerRadius = 25
-        button.isHidden = true
-    }
-    
-    func createButtons() {
-        
-        buttonSettings(button: hidingButton, previousView: view, nameImage: "dot", constant: -50)
-        buttonSettings(button: locationButton, previousView: hidingButton, nameImage: "location", constant: -60)
-        buttonSettings(button: changeStyleButton, previousView: locationButton, nameImage: "sun", constant: -60)
-        buttonSettings(button: minusZoomButton, previousView: changeStyleButton, nameImage: "minus", constant: -60)
-        buttonSettings(button: plusZoomButton, previousView: minusZoomButton, nameImage: "plus", constant: -60)
-        buttonSettings(button: trafficButoon, previousView: plusZoomButton, nameImage: "traffic", constant: -60)
-        
-        hidingButton.addTarget(self, action: #selector(hideOrShowAllButtons(_:)), for: .primaryActionTriggered)
-        locationButton.addTarget(self, action: #selector(location(_:)), for: .primaryActionTriggered)
-        changeStyleButton.addTarget(self, action: #selector(styleButtonTapped(_:)), for: .primaryActionTriggered)
-        minusZoomButton.addTarget(self, action: #selector(minusOneZoom(_:)), for: .primaryActionTriggered)
-        plusZoomButton.addTarget(self, action: #selector(plusOneZoom(_:)), for: .primaryActionTriggered)
-        trafficButoon.addTarget(self, action: #selector(traffic(_:)), for: .primaryActionTriggered)
-        
-        hidingButton.isHidden = false
-    }
-    
     //MARK: - Button actions
     
     @objc func hideOrShowAllButtons(_ sender: UIButton) {
@@ -456,7 +586,7 @@ class MapViewController: UIViewController {
     }
     
     @objc func location(_ sender: UIButton) {
-        let camera = GMSCameraPosition(target: manager.location!.coordinate, zoom: 11)
+        let camera = GMSCameraPosition(target: manager.location!.coordinate, zoom: 13)
         mapView.animate(to: camera)
     }
     
@@ -514,6 +644,7 @@ class MapViewController: UIViewController {
         case false:
             navigationController?.setNavigationBarHidden(true, animated: true)
             showMenuFunc()
+            mapView.selectedMarker = nil
         case true:
             hideMenuFunc()
             navigationController?.setNavigationBarHidden(false, animated: true)
@@ -582,68 +713,6 @@ class MapViewController: UIViewController {
         }
     }
     
-    //MARK: - Map settings
-    
-    func mapSettings() {
-        // settings for simulator
-        
-        let camera = GMSCameraPosition(latitude: 53.896369, longitude: 27.551483, zoom: 5)
-        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
-        view = mapView
-        
-        //setiings for real device
-        
-//        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 5)
-//        mapView = GMSMapView.map(withFrame: .zero, camera: camera)
-//
-//        view.addSubview(mapView)
-//        mapView.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            mapView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-//            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-//        ])
-        
-        mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        mapView.settings.compassButton = true
-        mapView.isMyLocationEnabled = true
-        style(for: "darkStyle", withExtension: ".json")
-        
-        mapView.delegate = self
-        
-        let zoom = GMSCameraUpdate.zoom(to: 10.7)
-        mapView.animate(with: zoom)
-    }
-    
-    //MARK: - Search controller
-    
-    func searchControllerSettings() {
-        resultsViewController = GMSAutocompleteResultsViewController()
-        searchController = UISearchController(searchResultsController: resultsViewController)
-        searchController?.searchResultsUpdater = resultsViewController
-        
-        let searchBar = searchController!.searchBar
-        searchBar.sizeToFit()
-        searchBar.placeholder = "Search for places"
-        navigationItem.titleView = searchController?.searchBar
-        definesPresentationContext = true
-        searchController?.hidesNavigationBarDuringPresentation = false
-        resultsViewController?.delegate = self
-    }
-    
-    //MARK: - Cluster markers
-    
-    func clusterFunc() {
-        let iconGenerator = GMUDefaultClusterIconGenerator()
-        let algorithm = GMUNonHierarchicalDistanceBasedAlgorithm()
-        let renderer = GMUDefaultClusterRenderer(mapView: mapView,
-                                                 clusterIconGenerator: iconGenerator)
-        cluster = GMUClusterManager(map: mapView, algorithm: algorithm,
-                                    renderer: renderer)
-        cluster.setMapDelegate(self)
-    }
-    
     //MARK: - Add marker
     
     func addMarker(_ object: Places) {
@@ -694,8 +763,24 @@ extension MapViewController: GMSAutocompleteResultsViewControllerDelegate {
         
         for marker in markerArray {
             if place.coordinate.latitude == marker.position.latitude && place.coordinate.longitude == marker.position.longitude {
-                let camera = GMSCameraPosition(target: place.coordinate, zoom: 12)
+                
+                let camera = GMSCameraPosition(target: place.coordinate, zoom: 13)
                 mapView.animate(to: camera)
+                
+                guard let data = marker.userData as? Places else { return }
+                getInfoAboutPlace(placeID: data.placeID, coordinate: CLLocationCoordinate2D(latitude: data.latitude, longitude: data.longitude))
+                
+                self.place = data
+                
+                if self.place == nil || self.place.favoriteStatus == false {
+                    markerInfoView.heartButton.setImage(UIImage(named: "heartClear"), for: .normal)
+                } else {
+                    markerInfoView.heartButton.setImage(UIImage(named: "heartRed"), for: .normal)
+                }
+                
+                showMarkerInfoView()
+                
+                mapView.selectedMarker = marker
             }
         }
     }

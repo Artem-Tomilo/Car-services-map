@@ -144,7 +144,7 @@ extension MapViewController {
     func showMenuFunc() {
         showMenuButton.alpha = 0
         filterButton.isHidden = true
-        hideInfoView()
+        hideMarkerInfoView()
         
         NSLayoutConstraint.deactivate([hiddenMenuConstraint, hiddenClearViewConstraint])
         NSLayoutConstraint.activate([showMenuConstraint, showClearViewConstraint])
