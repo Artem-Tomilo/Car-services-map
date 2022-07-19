@@ -39,6 +39,7 @@ class MapViewController: UIViewController {
     let signOutButton = UIButton()
     let filterButton = UIButton()
     let trafficButoon = UIButton()
+    let allPlacesButton = UIButton()
     
     var showMenuConstraint: NSLayoutConstraint!
     var hiddenMenuConstraint: NSLayoutConstraint!
@@ -53,6 +54,7 @@ class MapViewController: UIViewController {
     var lightStyle = false
     var showTableView = false
     var trafficFlag = false
+    var showAllPlacesOnMap = false
     
     let ref = Database.database().reference().child("users")
     let storage = Storage.storage()
@@ -64,8 +66,6 @@ class MapViewController: UIViewController {
     var markerArray: [GMSMarker] = []
     
     let manager = CLLocationManager()
-    
-    var cluster: GMUClusterManager!
     
     var polyline = GMSPolyline()
     
@@ -95,9 +95,7 @@ class MapViewController: UIViewController {
         
         createButtons()
         
-        addFilterButton()
-        
-        clusterFunc()
+        addFilterButtonAndAllPlacesButton()
         
         newObjectFunc()
         
@@ -239,9 +237,9 @@ class MapViewController: UIViewController {
         hidingButton.isHidden = false
     }
     
-    //MARK: - Filter
+    //MARK: - AllPlacesButton and FilterButton settings
     
-    func addFilterButton() {
+    func addFilterButtonAndAllPlacesButton() {
         view.addSubview(filterButton)
         filterButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -255,6 +253,20 @@ class MapViewController: UIViewController {
         filterButton.layer.cornerRadius = 25
         filterButton.setImage(UIImage(named: "filter"), for: .normal)
         filterButton.addTarget(self, action: #selector(goFilterVC(_:)), for: .primaryActionTriggered)
+        
+        view.addSubview(allPlacesButton)
+        allPlacesButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            allPlacesButton.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
+            allPlacesButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            allPlacesButton.widthAnchor.constraint(equalToConstant: 50),
+            allPlacesButton.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        allPlacesButton.setImage(UIImage(named: ""), for: .normal)
+        allPlacesButton.backgroundColor = .white
+        allPlacesButton.alpha = 0.75
+        allPlacesButton.layer.cornerRadius = 25
+        allPlacesButton.addTarget(self, action: #selector(showAllPlaces(_:)), for: .primaryActionTriggered)
     }
     
     //MARK: - Filter func
@@ -275,18 +287,6 @@ class MapViewController: UIViewController {
                 marker.map = mapView
             }
         }
-    }
-    
-    //MARK: - Cluster markers
-    
-    func clusterFunc() {
-        let iconGenerator = GMUDefaultClusterIconGenerator()
-        let algorithm = GMUNonHierarchicalDistanceBasedAlgorithm()
-        let renderer = GMUDefaultClusterRenderer(mapView: mapView,
-                                                 clusterIconGenerator: iconGenerator)
-        cluster = GMUClusterManager(map: mapView, algorithm: algorithm,
-                                    renderer: renderer)
-        cluster.setMapDelegate(self)
     }
     
     //MARK: - New objects
@@ -360,7 +360,7 @@ class MapViewController: UIViewController {
         }
         
         for i in placesArray {
-            addMarker(i)
+            getDistance(place: i, meters: 7000)
         }
         
         //        for i in placesArray {
@@ -485,7 +485,7 @@ class MapViewController: UIViewController {
     
     //MARK: - Get distance and duration func
     
-    func getDistance() {
+    func getDistance(place: Places, meters: Int?) {
         let currentLat = manager.location?.coordinate.latitude
         let currentLng = manager.location?.coordinate.longitude
         
@@ -510,6 +510,19 @@ class MapViewController: UIViewController {
                     for i in legs {
                         let distance = i["distance"].dictionary
                         let distanceText = distance?["text"]?.string
+                        let distanceValue  = distance?["value"]?.int
+                        
+                        if distanceValue! <= meters ?? 40000 {
+                            if !self.markerArray.isEmpty {
+                                if !self.markerArray.contains(where: { marker in
+                                    marker.position.latitude == place.latitude
+                                }) {
+                                    self.addMarker(place)
+                                }
+                            } else {
+                                self.addMarker(place)
+                            }
+                        }
                         
                         let duration = i["duration"].dictionary
                         let durationText = duration?["text"]?.string
@@ -536,7 +549,7 @@ class MapViewController: UIViewController {
                 return
             }
             if let place = place {
-                self.getDistance()
+                self.getDistance(place: self.place, meters: nil)
                 
                 self.markerInfoView.nameLabel.text = place.name
                 
@@ -699,6 +712,24 @@ class MapViewController: UIViewController {
         }
     }
     
+    @objc func showAllPlaces(_ sender: UIButton) {
+        markerArray.removeAll()
+        mapView.clear()
+        
+        switch showAllPlacesOnMap {
+        case false:
+            for i in placesArray {
+                addMarker(i)
+            }
+        case true:
+            for i in placesArray {
+                getDistance(place: i, meters: 7000)
+            }
+        }
+        
+        showAllPlacesOnMap.toggle()
+    }
+    
     //MARK: - Style
     
     func style(for resource: String, withExtension: String) {
@@ -721,8 +752,6 @@ class MapViewController: UIViewController {
         marker.map = mapView
         marker.title = object.name
         marker.userData = object
-        cluster.add(marker)
-        cluster.cluster()
         markerArray.append(marker)
     }
 }
