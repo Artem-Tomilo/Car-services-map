@@ -180,10 +180,9 @@ extension MapViewController {
     }
     
     @objc func tap(_ sender: UITapGestureRecognizer) {
+        allPlacesButton.isHidden = false
+        hidingButton.isHidden = false
         hideMenuFunc()
-        
-        UIView.animate(withDuration: 0.2) {
-            self.navigationController?.setNavigationBarHidden(false, animated: false)
-        }
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
 }

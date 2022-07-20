@@ -87,6 +87,8 @@ class MapViewController: UIViewController {
         
         mapSettings()
         
+        newObjectFunc()
+        
         searchControllerSettings()
         
         tableViewSettings()
@@ -96,8 +98,6 @@ class MapViewController: UIViewController {
         createButtons()
         
         addFilterButtonAndAllPlacesButton()
-        
-        newObjectFunc()
         
         locationSettings()
         
@@ -140,7 +140,7 @@ class MapViewController: UIViewController {
         
         mapView.delegate = self
         
-        let zoom = GMSCameraUpdate.zoom(to: 13)
+        let zoom = GMSCameraUpdate.zoom(to: 12)
         mapView.animate(with: zoom)
     }
     
@@ -262,7 +262,7 @@ class MapViewController: UIViewController {
             allPlacesButton.widthAnchor.constraint(equalToConstant: 50),
             allPlacesButton.heightAnchor.constraint(equalToConstant: 50)
         ])
-        allPlacesButton.setImage(UIImage(named: ""), for: .normal)
+        allPlacesButton.setImage(UIImage(named: "flag"), for: .normal)
         allPlacesButton.backgroundColor = .white
         allPlacesButton.alpha = 0.75
         allPlacesButton.layer.cornerRadius = 25
@@ -293,92 +293,39 @@ class MapViewController: UIViewController {
     
     func newObjectFunc() {
         
-        placesArray = DataManager.shared.decodePlace()
-        
-        if placesArray.isEmpty {
-            let place1 = Places(latitude: 53.873981, longitude: 27.49935499999999, name: "Автосеть Уманская", placeID: "ChIJWaiUyAzQ20YRakPEJ7388gY", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
-            let place2 = Places(latitude: 53.89280669999999, longitude: 27.6465287, name: "Автосеть Радиальная", placeID: "ChIJs9P1yW_O20YRTrwE7gQTBxo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
-            let place3 = Places(latitude: 53.8521044, longitude: 27.67671959999999, name: "Автосеть Промышленная", placeID: "ChIJH09kZ3bS20YRFdu-9YawbMo", services: [.passengerTireFitting, .truckTireFitting, .seasonalTireStorage], favoriteStatus: false)
-            let place4 = Places(latitude: 53.906886, longitude: 27.681267, name: "Колесоплюс Карвата", placeID: "ChIJR6A5zsbP20YR8uL7h0_KrTI", services: [.passengerTireFitting, .truckTireFitting], favoriteStatus: false)
-            let place5 = Places(latitude: 53.8791045, longitude: 27.4105503, name: "Колесоплюс Монтажников", placeID: "ChIJDXbj-f3a20YRreKax2GAGXQ", services: [.passengerTireFitting, .truckTireFitting], favoriteStatus: false)
-            let place6 = Places(latitude: 53.8451518, longitude: 27.4450747, name: "ГранатАвто М", placeID: "ChIJPUWJBnTa20YRdmFRFCbTnDk", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
-            let place7 = Places(latitude: 53.83351829999999, longitude: 27.5544026, name: "СТО РИМБАТ", placeID: "ChIJ5wuw5V_R20YRAXFgmO_lLks", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
-            let place8 = Places(latitude: 53.9037807, longitude: 27.4132021, name: "СТО TOP CRAFT", placeID: "ChIJseY62Rvb20YRPa-3jDm1tfI", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .carWash], favoriteStatus: false)
-            let place9 = Places(latitude: 53.8955371, longitude: 27.6944475, name: "СТО Альтернатива", placeID: "ChIJZbQQqzLM20YRuC914Nc-bYk", services: [.carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
-            let place10 = Places(latitude: 53.95536240000001, longitude: 27.7096865, name: "СТО WDrive Уручье Автосервис", placeID: "ChIJ03MWqSvJ20YRYFScsp2wx9U", services: [.carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
-            let place11 = Places(latitude: 53.9155623, longitude: 27.68796459999999, name: "СТО Торсион", placeID: "ChIJla9umJ7O20YRqYpm9ZkP4HY", services: [.carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
-            let place12 = Places(latitude: 53.8860888, longitude: 27.63263389999999, name: "СТО АНДРИВАН", placeID: "ChIJDyQlmzXO20YRN5Q5jGjQ9oM", services: [.carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
-            let place13 = Places(latitude: 53.8413836, longitude: 27.4840469, name: "Шиномонтаж на Ландера", placeID: "ChIJtX0Pc5LQ20YRFwlxJDKoX3c", services: [.passengerTireFitting], favoriteStatus: false)
-            let place14 = Places(latitude: 53.887187, longitude: 27.480277, name: "Шиномонтаж Логово", placeID: "ChIJP9qam73b20YRC2yY6uk3LSQ", services: [.passengerTireFitting], favoriteStatus: false)
-            let place15 = Places(latitude: 53.8308639, longitude: 27.60580819999999, name: "Шинный центр Дискол-Плюс", placeID: "ChIJaf4LySnS20YRHtYqSwG7ltg", services: [.passengerTireFitting, .truckTireFitting], favoriteStatus: false)
-            let place16 = Places(latitude: 53.93115599999999, longitude: 27.7030728, name: "4 БОКСА", placeID: "ChIJldITMq_O20YRExnWWMFrZ_E", services: [.passengerTireFitting, .truckTireFitting], favoriteStatus: false)
-            let place17 = Places(latitude: 53.91642170000001, longitude: 27.5215486, name: "TYREPLUS Тимирязева", placeID: "ChIJn9jdN2fF20YRAnA5gvyHj8s", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
-            let place18 = Places(latitude: 53.878782, longitude: 27.59434599999999, name: "TYREPLUS Велосипедный пер", placeID: "ChIJlXTwHCbO20YRDHY8tnkcxQ0", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
-            let place19 = Places(latitude: 53.9583153, longitude: 27.6322779, name: "TYREPLUS Логойский тракт", placeID: "ChIJH6SftczI20YR0iYkdN24IBM", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange, .seasonalTireStorage], favoriteStatus: false)
-            let place20 = Places(latitude: 53.87338769999999, longitude: 27.5037031, name: "Склад Шин - Сезонное хранение шин и велосипедов", placeID: "ChIJkwzZ_HzP20YRp_g0HE_4zTM", services: [.seasonalTireStorage], favoriteStatus: false)
-            let place21 = Places(latitude: 53.9086805, longitude: 27.4286835, name: "Автомойка GT", placeID: "ChIJExhXeZPb20YRRFTN9YrwzX8", services: [.carWash], favoriteStatus: false)
-            let place22 = Places(latitude: 53.9104957, longitude: 27.5042457, name: "Сивый мерин. Автомойка. Химчистка. Полировка.", placeID: "ChIJb5kI2ETF20YRdUxqBk55iqk", services: [.carWash], favoriteStatus: false)
-            let place23 = Places(latitude: 53.93014409999999, longitude: 27.65915429999999, name: "Автомойка CleanAuto Скорины", placeID: "ChIJLb_HJMLO20YRGiu58SrsHeI", services: [.carWash], favoriteStatus: false)
-            let place24 = Places(latitude: 53.8724853, longitude: 27.5604165, name: "АвтоСуперКомплекс", placeID: "ChIJP5a1rS3Q20YRd_sQx-LV9JI", services: [.carWash], favoriteStatus: false)
-            let place25 = Places(latitude: 53.865666, longitude: 27.42612059999999, name: "Авто SPA. Автомойка 24/7", placeID: "ChIJqxQYKV_a20YR43Uvp38hctc", services: [.carWash], favoriteStatus: false)
-            let place26 = Places(latitude: 53.9207325, longitude: 27.56555239999999, name: "Аквалаб", placeID: "ChIJz871k2zP20YRExXKzYWgg7s", services: [.carWash], favoriteStatus: false)
-            let place27 = Places(latitude: 53.8647436, longitude: 27.5033956, name: "Техцентр BMW - ЗауберАвто", placeID: "ChIJB6EvRxHQ20YRgwztX_ZO_Pg", services: [.passengerTireFitting, .carMaintenance, .breakRepair, .oilChange], favoriteStatus: false)
-            let place28 = Places(latitude: 53.8857481, longitude: 27.5009273, name: "Ручная автомойка МойCAR", placeID: "ChIJI2CjmwfQ20YRyahozRZecfo", services: [.carWash], favoriteStatus: false)
-            let place29 = Places(latitude: 53.8642668, longitude: 27.6506701, name: "Автомойка Шиномонтаж Perfect Look Service & Wash", placeID: "ChIJ1RR8OPnN20YRg7tYHQdY_CU", services: [.passengerTireFitting, .carWash], favoriteStatus: false)
-            let place30 = Places(latitude: 53.9590835, longitude: 27.70116419999999, name: "Шиномонтаж Профитрак", placeID: "ChIJH35KqzrJ20YRHN2n2arbPhY", services: [.passengerTireFitting, .truckTireFitting], favoriteStatus: false)
-            
-            placesArray.append(place1)
-            placesArray.append(place2)
-            placesArray.append(place3)
-            placesArray.append(place4)
-            placesArray.append(place5)
-            placesArray.append(place6)
-            placesArray.append(place7)
-            placesArray.append(place8)
-            placesArray.append(place9)
-            placesArray.append(place10)
-            placesArray.append(place11)
-            placesArray.append(place12)
-            placesArray.append(place13)
-            placesArray.append(place14)
-            placesArray.append(place15)
-            placesArray.append(place16)
-            placesArray.append(place17)
-            placesArray.append(place18)
-            placesArray.append(place19)
-            placesArray.append(place20)
-            placesArray.append(place21)
-            placesArray.append(place22)
-            placesArray.append(place23)
-            placesArray.append(place24)
-            placesArray.append(place25)
-            placesArray.append(place26)
-            placesArray.append(place27)
-            placesArray.append(place28)
-            placesArray.append(place29)
-            placesArray.append(place30)
+        placesRef.getData { error, snapshot in
+            guard error == nil else {
+                print(error!.localizedDescription)
+                return
+            }
+            guard let allPlaces = snapshot?.value as? Dictionary<String, Any> else {
+                return
+            }
+            let _ = allPlaces.compactMap { k, v -> Places? in
+                guard let values = v as? Dictionary<String, Any>,
+                      let coordinates = values["coordinates"] as? Dictionary<String, Double>,
+                      let latitude = coordinates["latitude"],
+                      let longitude = coordinates["longitude"],
+                      let name = values["name"] as? String,
+                      let favoriteStatus = values["favoriteStatus"] as? Bool,
+                      let services = values["services"] as? Array<String> else { return nil }
+                
+                var setServices: Set<ProfServices> = []
+                for service in ProfServices.allCases {
+                    for i in services {
+                        if service.title == i {
+                            setServices.insert(service)
+                        }
+                    }
+                }
+                let place = Places(latitude: latitude, longitude: longitude, name: name, placeID: k, services: setServices, favoriteStatus: favoriteStatus)
+                self.placesArray.append(place)
+                return place
+            }
+            for i in self.placesArray {
+                self.getDistance(place: i, meters: 7000)
+            }
         }
-        
-        for i in placesArray {
-            getDistance(place: i, meters: 7000)
-        }
-        
-        //        for i in placesArray {
-        //            for m in ProfServices.allCases {
-        //                if i.services.contains(m) {
-        //                    var ser: [String] = []
-        //                    ser.append(m.title)
-        //                    for s in ser {
-        //                        self.placesRef.child(i.placeID).setValue([
-        //                            "name": i.name,
-        //                            "coordinates": ["latitude": i.latitude, "longitude": i.longitude],
-        //                            "favoriteStatus": i.favoriteStatus,
-        //                            "services": ["\(m.rawValue)" : s]
-        //                        ])
-        //                    }
-        //                }
-        //            }
-        //        }
     }
     
     //MARK: - Location Settings
@@ -577,29 +524,64 @@ class MapViewController: UIViewController {
         }
     }
     
+    //MARK: - Style
+    
+    func style(for resource: String, withExtension: String) {
+        do {
+            if let styleURL = Bundle.main.url(forResource: resource, withExtension: withExtension) {
+                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            } else {
+                NSLog("Unable to find style.json")
+            }
+        } catch {
+            NSLog("One or more of the map styles failed to load. \(error)")
+        }
+    }
+    
+    //MARK: - Add marker
+    
+    func addMarker(_ object: Places) {
+        let marker = GMSMarker()
+        marker.position = CLLocationCoordinate2D(latitude: object.latitude, longitude: object.longitude)
+        marker.map = mapView
+        marker.title = object.name
+        marker.userData = object
+        markerArray.append(marker)
+    }
+    
+    //MARK: - Hide and show all buttons
+    
+    func hideButtons() {
+        locationButton.isHidden = true
+        changeStyleButton.isHidden = true
+        minusZoomButton.isHidden = true
+        plusZoomButton.isHidden = true
+        trafficButoon.isHidden = true
+    }
+    
+    func showButtons() {
+        locationButton.isHidden = false
+        changeStyleButton.isHidden = false
+        minusZoomButton.isHidden = false
+        plusZoomButton.isHidden = false
+        trafficButoon.isHidden = false
+    }
+    
     //MARK: - Button actions
     
     @objc func hideOrShowAllButtons(_ sender: UIButton) {
         switch showAllButtons {
         case false:
             showAllButtons.toggle()
-            locationButton.isHidden = false
-            changeStyleButton.isHidden = false
-            minusZoomButton.isHidden = false
-            plusZoomButton.isHidden = false
-            trafficButoon.isHidden = false
+            showButtons()
         case true:
             showAllButtons.toggle()
-            locationButton.isHidden = true
-            changeStyleButton.isHidden = true
-            minusZoomButton.isHidden = true
-            plusZoomButton.isHidden = true
-            trafficButoon.isHidden = true
+            hideButtons()
         }
     }
     
     @objc func location(_ sender: UIButton) {
-        let camera = GMSCameraPosition(target: manager.location!.coordinate, zoom: 13)
+        let camera = GMSCameraPosition(target: manager.location!.coordinate, zoom: 12)
         mapView.animate(to: camera)
     }
     
@@ -616,6 +598,8 @@ class MapViewController: UIViewController {
                 filterButton.setImage(UIImage(named: "filter"), for: .normal)
                 filterButton.backgroundColor = .white
                 filterButton.alpha = 0.75
+                allPlacesButton.backgroundColor = .white
+                allPlacesButton.alpha = 0.75
             }
         } else {
             style(for: "lightStyle", withExtension: ".json")
@@ -628,6 +612,8 @@ class MapViewController: UIViewController {
             filterButton.setImage(UIImage(named: "darkFilter"), for: .normal)
             filterButton.backgroundColor = .systemGray3
             filterButton.alpha = 1
+            allPlacesButton.backgroundColor = .systemGray3
+            allPlacesButton.alpha = 1
         }
     }
     
@@ -655,10 +641,18 @@ class MapViewController: UIViewController {
     @objc func showTableView(_ sender: UIButton) {
         switch showTableView {
         case false:
+            if showAllButtons {
+                showAllButtons.toggle()
+            }
+            hideButtons()
+            allPlacesButton.isHidden = true
+            hidingButton.isHidden = true
             navigationController?.setNavigationBarHidden(true, animated: true)
             showMenuFunc()
             mapView.selectedMarker = nil
         case true:
+            allPlacesButton.isHidden = false
+            hidingButton.isHidden = false
             hideMenuFunc()
             navigationController?.setNavigationBarHidden(false, animated: true)
         }
@@ -728,31 +722,6 @@ class MapViewController: UIViewController {
         }
         
         showAllPlacesOnMap.toggle()
-    }
-    
-    //MARK: - Style
-    
-    func style(for resource: String, withExtension: String) {
-        do {
-            if let styleURL = Bundle.main.url(forResource: resource, withExtension: withExtension) {
-                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
-            } else {
-                NSLog("Unable to find style.json")
-            }
-        } catch {
-            NSLog("One or more of the map styles failed to load. \(error)")
-        }
-    }
-    
-    //MARK: - Add marker
-    
-    func addMarker(_ object: Places) {
-        let marker = GMSMarker()
-        marker.position = CLLocationCoordinate2D(latitude: object.latitude, longitude: object.longitude)
-        marker.map = mapView
-        marker.title = object.name
-        marker.userData = object
-        markerArray.append(marker)
     }
 }
 
