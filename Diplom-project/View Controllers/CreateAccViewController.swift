@@ -9,23 +9,28 @@ import UIKit
 import FirebaseAuth
 import FirebaseDatabase
 
-
-class CreateAccViewController: UIViewController {
+final class CreateAccViewController: UIViewController {
+    
+    //MARK: - IBOutlets
     
     @IBOutlet var usernameTextField: UITextField!
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
     
     @IBOutlet var createAccButton: UIButton!
+    @IBOutlet var eyeButton: UIButton!
     
     @IBOutlet var nameView: UIView!
     @IBOutlet var emailView: UIView!
     @IBOutlet var passwordView: UIView!
     
-    @IBOutlet var eyeButton: UIButton!
-    var iconClick = true
+    //MARK: - private properties
     
-    let ref = Database.database().reference().child("users")
+    private var iconClick = true
+    
+    private let ref = Database.database().reference().child("users")
+    
+    //MARK: - View did load
     
     override func viewDidLoad() {
         super.viewDidLoad()

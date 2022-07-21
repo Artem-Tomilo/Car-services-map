@@ -11,7 +11,9 @@ import FirebaseCore
 import GoogleSignIn
 import FirebaseDatabase
 
-class LoginViewController: UIViewController {
+final class LoginViewController: UIViewController {
+    
+    //MARK: - IBOutlets
     
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
@@ -23,7 +25,12 @@ class LoginViewController: UIViewController {
     @IBOutlet var forgetPasswordButton: UIButton!
     
     @IBOutlet var eyeButton: UIButton!
-    var iconClick = true
+    
+    //MARK: - private properties
+    
+    private var iconClick = true
+    
+    //MARK: - View did load
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,7 +90,7 @@ class LoginViewController: UIViewController {
                 switch error {
                     
                 case let nsError as NSError where nsError.domain == AuthErrorDomain && nsError.code == AuthErrorCode.wrongPassword.rawValue:
-                    let alert = UIAlertController(title: "Error:", message: "Wrong password", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "Error:", message: "Wrong email or password", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Cancel", style: .cancel)
                     alert.addAction(action)
                     self.present(alert, animated: true)
@@ -153,6 +160,8 @@ class LoginViewController: UIViewController {
         }
     }
 }
+
+//MARK: - extension UITextFieldDelegate
 
 extension LoginViewController: UITextFieldDelegate {
     

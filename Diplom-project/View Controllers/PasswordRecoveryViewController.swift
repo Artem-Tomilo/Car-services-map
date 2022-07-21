@@ -9,11 +9,15 @@ import UIKit
 import FirebaseAuth
 import FirebaseDatabase
 
-class PasswordRecoveryViewController: UIViewController {
+final class PasswordRecoveryViewController: UIViewController {
+    
+    //MARK: - IBOutlets
     
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var sendEmailButton: UIButton!
     @IBOutlet var emailView: UIView!
+    
+    //MARK: - View did load
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +25,8 @@ class PasswordRecoveryViewController: UIViewController {
         sendEmailButton.layer.cornerRadius = 25
         emailView.layer.cornerRadius = 5
     }
+    
+    //MARK: - IBActions
     
     @IBAction func sendEmail(_ sender: UIButton) {
         Auth.auth().sendPasswordReset(withEmail: emailTextField.text ?? "") { error in

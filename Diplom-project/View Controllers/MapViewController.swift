@@ -18,11 +18,15 @@ import FirebaseStorage
 import Alamofire
 import SwiftyJSON
 
-class MapViewController: UIViewController {
+final class MapViewController: UIViewController {
+    
+    //MARK: - IBOutlet
     
     @IBOutlet var markerInfoView: MarkerInfoView!
     
-    var mapView: GMSMapView!
+    //MARK: - properties
+    
+    var mapView = GMSMapView()
     let someView = UIView()
     let viewForUserData = UIView()
     let avatarView = UIImageView()
@@ -31,101 +35,107 @@ class MapViewController: UIViewController {
     let nameLabel = UILabel()
     
     let hidingButton = UIButton()
-    let locationButton = UIButton()
-    let changeStyleButton = UIButton()
-    let minusZoomButton = UIButton()
-    let plusZoomButton = UIButton()
+    private let locationButton = UIButton()
+    private let changeStyleButton = UIButton()
+    private let minusZoomButton = UIButton()
+    private let plusZoomButton = UIButton()
     let showMenuButton = UIButton()
     let signOutButton = UIButton()
     let filterButton = UIButton()
-    let trafficButoon = UIButton()
+    private let trafficButoon = UIButton()
     let allPlacesButton = UIButton()
     
-    var showMenuConstraint: NSLayoutConstraint!
-    var hiddenMenuConstraint: NSLayoutConstraint!
-    var showClearViewConstraint: NSLayoutConstraint!
-    var hiddenClearViewConstraint: NSLayoutConstraint!
-    var showMarkerInfoViewConstraint: NSLayoutConstraint!
-    var hiddenMarkerInfoViewConstraint: NSLayoutConstraint!
-    var hidingButtonDownConstraint: NSLayoutConstraint!
-    var hidingButtonUpConstraint: NSLayoutConstraint!
+    var showMenuConstraint = NSLayoutConstraint()
+    var hiddenMenuConstraint = NSLayoutConstraint()
+    var showClearViewConstraint = NSLayoutConstraint()
+    var hiddenClearViewConstraint = NSLayoutConstraint()
+    var showMarkerInfoViewConstraint = NSLayoutConstraint()
+    var hiddenMarkerInfoViewConstraint = NSLayoutConstraint()
+    var hidingButtonDownConstraint = NSLayoutConstraint()
+    var hidingButtonUpConstraint = NSLayoutConstraint()
     
-    var showAllButtons = false
+    private var showAllButtons = false
     var lightStyle = false
     var showTableView = false
-    var trafficFlag = false
-    var showAllPlacesOnMap = false
+    private var trafficFlag = false
+    private var showAllPlacesOnMap = false
     
-    let ref = Database.database().reference().child("users")
-    let storage = Storage.storage()
-    lazy var avatarsRef = storage.reference().child("avatars/")
-    let placesRef = Database.database().reference().child("places")
+    private let ref = Database.database().reference().child("users")
+    private let storage = Storage.storage()
+    private lazy var avatarsRef = storage.reference().child("avatars/")
+    private let placesRef = Database.database().reference().child("places")
     
     var placesArray: [Places] = []
-    var users: [Person] = []
+    private var users: [Person] = []
     var markerArray: [GMSMarker] = []
     
-    let manager = CLLocationManager()
+    private let manager = CLLocationManager()
+    
+    private var placesClient = GMSPlacesClient()
+    
+    private var resultsViewController: GMSAutocompleteResultsViewController?
+    
+    var searchController: UISearchController?
     
     var polyline = GMSPolyline()
     
     let listTableViewMenu = ["Advanced filter", "My favorites places", "Account", "About app"]
     
-    var placesClient: GMSPlacesClient!
+    var place: Places?
     
-    var resultsViewController: GMSAutocompleteResultsViewController?
+    private var urlWeb = ""
+    private var urlTelNumber = ""
     
-    var searchController: UISearchController?
-    
-    var place: Places!
-    
-    var urlWeb = ""
-    var urlTelNumber = ""
+    //MARK: - View did load
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         mapSettings()
         
-        newObjectFunc()
-        
         searchControllerSettings()
         
         tableViewSettings()
         
-        addMarkerInfoView()
+        configureMarkerInfoView()
         
         createButtons()
         
-        addFilterButtonAndAllPlacesButton()
+        configureFilterButtonAndAllPlacesButton()
         
-        locationSettings()
-        
-        getData()
+        getPersonData()
     }
     
     //MARK: - View will appear
     
     override func viewWillAppear(_ animated: Bool) {
         getDataImage()
+        locationManagerDidChangeAuthorization(manager)
+        locationSettings()
+    }
+    
+    //MARK: - Location Settings
+    
+    private func locationSettings() {
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.distanceFilter = 50
+        manager.startUpdatingLocation()
+        
+        manager.delegate = self
     }
     
     //MARK: - Map settings
     
-    func mapSettings() {
-        // settings for simulator
-        
-        //        let camera = GMSCameraPosition(latitude: 53.896369, longitude: 27.551483, zoom: 5)
-        //        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
-        //        view = mapView
-        
-        //setiings for real device
-        
-        let camera = GMSCameraPosition(target: CLLocationCoordinate2D(latitude: manager.location?.coordinate.latitude ?? 0, longitude: manager.location?.coordinate.longitude ?? 0), zoom: 5)
-        mapView = GMSMapView.map(withFrame: .zero, camera: camera)
+    private func mapSettings() {
+        let camera = GMSCameraPosition(latitude: 53.896369, longitude: 27.551483, zoom: 10)
+        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
         
         view.addSubview(mapView)
+        
         mapView.translatesAutoresizingMaskIntoConstraints = false
+        mapView.settings.compassButton = true
+        mapView.isMyLocationEnabled = true
+        
         NSLayoutConstraint.activate([
             mapView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -134,19 +144,15 @@ class MapViewController: UIViewController {
         ])
         
         mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        mapView.settings.compassButton = true
-        mapView.isMyLocationEnabled = true
+        
         style(for: "darkStyle", withExtension: ".json")
         
         mapView.delegate = self
-        
-        let zoom = GMSCameraUpdate.zoom(to: 12)
-        mapView.animate(with: zoom)
     }
     
     //MARK: - Search controller
     
-    func searchControllerSettings() {
+    private func searchControllerSettings() {
         resultsViewController = GMSAutocompleteResultsViewController()
         searchController = UISearchController(searchResultsController: resultsViewController)
         searchController?.searchResultsUpdater = resultsViewController
@@ -155,6 +161,7 @@ class MapViewController: UIViewController {
         searchBar.sizeToFit()
         searchBar.placeholder = "Search for places"
         navigationItem.titleView = searchController?.searchBar
+        
         definesPresentationContext = true
         searchController?.hidesNavigationBarDuringPresentation = false
         resultsViewController?.delegate = self
@@ -162,20 +169,22 @@ class MapViewController: UIViewController {
     
     //MARK: - Marker info view
     
-    func addMarkerInfoView() {
+    internal func configureMarkerInfoView() {
         Bundle.main.loadNibNamed("MarkerInfoView", owner: self)
+        
         view.addSubview(markerInfoView)
+        
         markerInfoView.translatesAutoresizingMaskIntoConstraints = false
+        markerInfoView.isUserInteractionEnabled = true
+        
         hiddenMarkerInfoViewConstraint = markerInfoView.topAnchor.constraint(equalTo: view.bottomAnchor)
         showMarkerInfoViewConstraint = markerInfoView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        
         NSLayoutConstraint.activate([
             hiddenMarkerInfoViewConstraint,
             markerInfoView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             markerInfoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
         
-        markerInfoView.isUserInteractionEnabled = true
         markerInfoView.delegate = self
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(webPressed(_:)))
@@ -191,10 +200,16 @@ class MapViewController: UIViewController {
     
     //MARK: - Create buttons
     
-    func buttonSettings(button: UIButton, previousView: UIView, nameImage: String, constant: CGFloat) {
+    private func buttonSettings(button: UIButton, previousView: UIView, nameImage: String, constant: CGFloat) {
         view.addSubview(button)
+        
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
+        
         button.backgroundColor = .white
+        button.setImage(UIImage(named: nameImage), for: .normal)
+        button.layer.cornerRadius = 25
+        
         NSLayoutConstraint.activate([
             button.widthAnchor.constraint(equalToConstant: 50),
             button.heightAnchor.constraint(equalToConstant: 50),
@@ -212,13 +227,9 @@ class MapViewController: UIViewController {
                 button.bottomAnchor.constraint(equalTo: previousView.bottomAnchor, constant: constant),
             ])
         }
-        
-        button.setImage(UIImage(named: nameImage), for: .normal)
-        button.layer.cornerRadius = 25
-        button.isHidden = true
     }
     
-    func createButtons() {
+    private func createButtons() {
         
         buttonSettings(button: hidingButton, previousView: view, nameImage: "dot", constant: -50)
         buttonSettings(button: locationButton, previousView: hidingButton, nameImage: "location", constant: -60)
@@ -228,18 +239,18 @@ class MapViewController: UIViewController {
         buttonSettings(button: trafficButoon, previousView: plusZoomButton, nameImage: "traffic", constant: -60)
         
         hidingButton.addTarget(self, action: #selector(hideOrShowAllButtons(_:)), for: .primaryActionTriggered)
-        locationButton.addTarget(self, action: #selector(location(_:)), for: .primaryActionTriggered)
+        locationButton.addTarget(self, action: #selector(userLocation(_:)), for: .primaryActionTriggered)
         changeStyleButton.addTarget(self, action: #selector(styleButtonTapped(_:)), for: .primaryActionTriggered)
         minusZoomButton.addTarget(self, action: #selector(minusOneZoom(_:)), for: .primaryActionTriggered)
         plusZoomButton.addTarget(self, action: #selector(plusOneZoom(_:)), for: .primaryActionTriggered)
-        trafficButoon.addTarget(self, action: #selector(traffic(_:)), for: .primaryActionTriggered)
+        trafficButoon.addTarget(self, action: #selector(showAndHideTraffic(_:)), for: .primaryActionTriggered)
         
         hidingButton.isHidden = false
     }
     
-    //MARK: - AllPlacesButton and FilterButton settings
+    //MARK: - AllPlacesButton and FilterButton config
     
-    func addFilterButtonAndAllPlacesButton() {
+    private func configureFilterButtonAndAllPlacesButton() {
         view.addSubview(filterButton)
         filterButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -266,7 +277,7 @@ class MapViewController: UIViewController {
         allPlacesButton.backgroundColor = .white
         allPlacesButton.alpha = 0.75
         allPlacesButton.layer.cornerRadius = 25
-        allPlacesButton.addTarget(self, action: #selector(showAllPlaces(_:)), for: .primaryActionTriggered)
+        allPlacesButton.addTarget(self, action: #selector(showAndHideAllPlaces(_:)), for: .primaryActionTriggered)
     }
     
     //MARK: - Filter func
@@ -289,9 +300,9 @@ class MapViewController: UIViewController {
         }
     }
     
-    //MARK: - New objects
+    //MARK: - Get objects data
     
-    func newObjectFunc() {
+    internal func getObjectsData(radius: Int?) {
         
         placesRef.getData { error, snapshot in
             guard error == nil else {
@@ -323,30 +334,15 @@ class MapViewController: UIViewController {
                 return place
             }
             for i in self.placesArray {
-                self.getDistance(place: i, meters: 7000)
+                self.getDistance(place: i, meters: radius)
             }
         }
     }
     
-    //MARK: - Location Settings
     
-    func locationSettings() {
-        //        manager.desiredAccuracy = kCLLocationAccuracyBest
-        //        manager.requestWhenInUseAuthorization()
-        //        manager.distanceFilter = 50
-        //        manager.startUpdatingLocation()
-        
-        manager.delegate = self
-        if CLLocationManager.locationServicesEnabled() {
-            manager.requestLocation()
-        } else {
-            manager.requestWhenInUseAuthorization()
-        }
-    }
+    //MARK: - Get person data functions
     
-    //MARK: - Get data functions
-    
-    func getData() {
+    private func getPersonData() {
         ref.getData(completion:  { error, snapshot in
             guard error == nil else {
                 print(error!.localizedDescription)
@@ -371,7 +367,7 @@ class MapViewController: UIViewController {
         })
     }
     
-    func getDataImage() {
+    private func getDataImage() {
         let myImageReference = self.avatarsRef.child(Auth.auth().currentUser!.uid + ".jpg")
         myImageReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
             if let error = error {
@@ -394,11 +390,12 @@ class MapViewController: UIViewController {
     
     //MARK: - Get directions
     
-    func getDirections() {
+    internal func getDirections() {
         
         let currentLat = manager.location?.coordinate.latitude
         let currentLng = manager.location?.coordinate.longitude
         
+        guard let place = place else { return }
         let destinationLat = place.latitude
         let destinationLng = place.longitude
         
@@ -432,14 +429,14 @@ class MapViewController: UIViewController {
     
     //MARK: - Get distance and duration func
     
-    func getDistance(place: Places, meters: Int?) {
+    private func getDistance(place: Places, meters: Int?) {
         let currentLat = manager.location?.coordinate.latitude
         let currentLng = manager.location?.coordinate.longitude
         
         let destinationLat = place.latitude
         let destinationLng = place.longitude
         
-        let currentLocation = "\(currentLat ?? 0),\(currentLng ?? 0)"
+        let currentLocation = "\(currentLat ?? 53.896369),\(currentLng ?? 27.551483)"
         let destinationLocation = "\(destinationLat),\(destinationLng)"
         
         let url = "https://maps.googleapis.com/maps/api/directions/json?origin=\(currentLocation)&destination=\(destinationLocation)&mode=driving&key=AIzaSyAR3IFkBAeELyGIPbeS5cP3pgpRwAcQi1s"
@@ -462,12 +459,12 @@ class MapViewController: UIViewController {
                         if distanceValue! <= meters ?? 40000 {
                             if !self.markerArray.isEmpty {
                                 if !self.markerArray.contains(where: { marker in
-                                    marker.position.latitude == place.latitude
+                                    marker.position.latitude == place.latitude && marker.position.longitude == place.longitude
                                 }) {
-                                    self.addMarker(place)
+                                    self.addMarkerOnTheMap(place)
                                 }
                             } else {
-                                self.addMarker(place)
+                                self.addMarkerOnTheMap(place)
                             }
                         }
                         
@@ -486,7 +483,7 @@ class MapViewController: UIViewController {
     
     //MARK: - Get info about place
     
-    func getInfoAboutPlace(placeID: String, coordinate: CLLocationCoordinate2D) {
+    internal func getInfoAboutPlace(placeID: String, coordinate: CLLocationCoordinate2D) {
         placesClient = GMSPlacesClient.shared()
         
         let fields: GMSPlaceField = [.name, .formattedAddress, .phoneNumber, .rating, .website, .photos]
@@ -496,7 +493,7 @@ class MapViewController: UIViewController {
                 return
             }
             if let place = place {
-                self.getDistance(place: self.place, meters: nil)
+                self.getDistance(place: self.place!, meters: nil)
                 
                 self.markerInfoView.nameLabel.text = place.name
                 
@@ -512,7 +509,7 @@ class MapViewController: UIViewController {
                 self.markerInfoView.webLabel.text = "🌍"
                 
                 let photoMetadata: GMSPlacePhotoMetadata = place.photos![0]
-                self.placesClient?.loadPlacePhoto(photoMetadata, callback: { (photo, error) -> Void in
+                self.placesClient.loadPlacePhoto(photoMetadata, callback: { (photo, error) -> Void in
                     if let error = error {
                         print("Error loading photo metadata: \(error.localizedDescription)")
                         return
@@ -526,7 +523,7 @@ class MapViewController: UIViewController {
     
     //MARK: - Style
     
-    func style(for resource: String, withExtension: String) {
+    private func style(for resource: String, withExtension: String) {
         do {
             if let styleURL = Bundle.main.url(forResource: resource, withExtension: withExtension) {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
@@ -540,7 +537,7 @@ class MapViewController: UIViewController {
     
     //MARK: - Add marker
     
-    func addMarker(_ object: Places) {
+    private func addMarkerOnTheMap(_ object: Places) {
         let marker = GMSMarker()
         marker.position = CLLocationCoordinate2D(latitude: object.latitude, longitude: object.longitude)
         marker.map = mapView
@@ -551,7 +548,7 @@ class MapViewController: UIViewController {
     
     //MARK: - Hide and show all buttons
     
-    func hideButtons() {
+    private func hideButtons() {
         locationButton.isHidden = true
         changeStyleButton.isHidden = true
         minusZoomButton.isHidden = true
@@ -559,7 +556,7 @@ class MapViewController: UIViewController {
         trafficButoon.isHidden = true
     }
     
-    func showButtons() {
+    private func showButtons() {
         locationButton.isHidden = false
         changeStyleButton.isHidden = false
         minusZoomButton.isHidden = false
@@ -580,8 +577,8 @@ class MapViewController: UIViewController {
         }
     }
     
-    @objc func location(_ sender: UIButton) {
-        let camera = GMSCameraPosition(target: manager.location!.coordinate, zoom: 12)
+    @objc func userLocation(_ sender: UIButton) {
+        let camera = GMSCameraPosition(target: manager.location?.coordinate ?? CLLocationCoordinate2D(latitude: 53.896369, longitude: 27.551483), zoom: 12)
         mapView.animate(to: camera)
     }
     
@@ -627,7 +624,7 @@ class MapViewController: UIViewController {
         mapView.animate(with: zoom)
     }
     
-    @objc func traffic(_ sender: UIButton) {
+    @objc func showAndHideTraffic(_ sender: UIButton) {
         switch trafficFlag {
         case false:
             trafficFlag.toggle()
@@ -638,7 +635,7 @@ class MapViewController: UIViewController {
         }
     }
     
-    @objc func showTableView(_ sender: UIButton) {
+    @objc func showAndHideTableView(_ sender: UIButton) {
         switch showTableView {
         case false:
             if showAllButtons {
@@ -658,7 +655,7 @@ class MapViewController: UIViewController {
         }
     }
     
-    @objc func signOut(_ sender: UIButton) {
+    @objc func signOutFromAcc(_ sender: UIButton) {
         let alert = UIAlertController(title: "Logout", message: "Are you sure you want to log out?", preferredStyle: .actionSheet)
         let action = UIAlertAction(title: "Yes, logout", style: .destructive) { _ in
             try? Auth.auth().signOut()
@@ -706,14 +703,14 @@ class MapViewController: UIViewController {
         }
     }
     
-    @objc func showAllPlaces(_ sender: UIButton) {
+    @objc func showAndHideAllPlaces(_ sender: UIButton) {
         markerArray.removeAll()
         mapView.clear()
         
         switch showAllPlacesOnMap {
         case false:
             for i in placesArray {
-                addMarker(i)
+                addMarkerOnTheMap(i)
             }
         case true:
             for i in placesArray {
@@ -722,68 +719,5 @@ class MapViewController: UIViewController {
         }
         
         showAllPlacesOnMap.toggle()
-    }
-}
-
-extension MapViewController: FilterViewControllerDelegate {
-    
-    func filterMap(with set: Set<ProfServices>) {
-        filterFunc(service: set)
-    }
-}
-
-extension MapViewController: MarkerInfoViewDelegate {
-    
-    func favoritesPlaces(_ sender: UIButton) {
-        
-        placesArray.removeAll { place in
-            place.name == self.place.name
-        }
-        
-        place.favoriteStatus.toggle()
-        
-        placesArray.append(place)
-        
-        DataManager.shared.encodePlace(type: placesArray)
-        
-        if place.favoriteStatus {
-            sender.setImage(UIImage(named: "heartRed"), for: .normal)
-        } else {
-            sender.setImage(UIImage(named: "heartClear"), for: .normal)
-        }
-    }
-}
-
-extension MapViewController: GMSAutocompleteResultsViewControllerDelegate {
-    
-    func resultsController(_ resultsController: GMSAutocompleteResultsViewController, didAutocompleteWith place: GMSPlace) {
-        searchController?.isActive = false
-        
-        for marker in markerArray {
-            if place.coordinate.latitude == marker.position.latitude && place.coordinate.longitude == marker.position.longitude {
-                
-                let camera = GMSCameraPosition(target: place.coordinate, zoom: 13)
-                mapView.animate(to: camera)
-                
-                guard let data = marker.userData as? Places else { return }
-                getInfoAboutPlace(placeID: data.placeID, coordinate: CLLocationCoordinate2D(latitude: data.latitude, longitude: data.longitude))
-                
-                self.place = data
-                
-                if self.place == nil || self.place.favoriteStatus == false {
-                    markerInfoView.heartButton.setImage(UIImage(named: "heartClear"), for: .normal)
-                } else {
-                    markerInfoView.heartButton.setImage(UIImage(named: "heartRed"), for: .normal)
-                }
-                
-                showMarkerInfoView()
-                
-                mapView.selectedMarker = marker
-            }
-        }
-    }
-    
-    func resultsController(_ resultsController: GMSAutocompleteResultsViewController, didFailAutocompleteWithError error: Error) {
-        print("Error: \(error.localizedDescription)")
     }
 }

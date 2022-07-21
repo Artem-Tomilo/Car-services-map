@@ -9,15 +9,19 @@ import UIKit
 import CoreLocation
 import GooglePlaces
 
-class FavoritesPlacesViewController: UIViewController {
+final class FavoritesPlacesViewController: UIViewController {
+    
+    //MARK: - IBOutlet
     
     @IBOutlet var verticalCollectionView: UICollectionView!
     
+    //MARK: - properties
+    
     static let cellIdentifier = "verticalCell"
     
-    var favoritesPlacesArray: [Places] = []
+    private var favoritesPlacesArray: [Places] = []
     
-    var placeIndex = 0
+    private var placeIndex = 0
     
     //MARK: - View did load
     
@@ -32,6 +36,8 @@ class FavoritesPlacesViewController: UIViewController {
         
         favoritesPlaceFunc()
     }
+    
+    //MARK: - View will disappear
     
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(true, animated: false)
@@ -128,7 +134,7 @@ extension FavoritesPlacesViewController: UICollectionViewDataSource {
     }
 }
 
-//MARK: - Delegate
+//MARK: - Delegate FavoritesPlacesViewController
 
 extension FavoritesPlacesViewController: PlaceViewControllerDelegate {
     var index: Int {

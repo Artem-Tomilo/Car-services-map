@@ -9,7 +9,9 @@ import UIKit
 import CoreLocation
 import GooglePlaces
 
-class PlaceViewController: UIViewController {
+final class PlaceViewController: UIViewController {
+    
+    //MARK: - IBOutlets
     
     @IBOutlet var horisontalCollectionView: UICollectionView!
     @IBOutlet var nameLabel: UILabel!
@@ -19,8 +21,10 @@ class PlaceViewController: UIViewController {
     @IBOutlet var ratingLabel: UILabel!
     @IBOutlet var servicesLabel: UILabel!
     
-    var urlString = ""
-    var urlTelNumber = ""
+    //MARK: - properties
+    
+    private var urlString = ""
+    private var urlTelNumber = ""
     
     static let horisontalCellIdentifier = "horisontalCell"
     
@@ -152,19 +156,19 @@ extension PlaceViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PlaceViewController.horisontalCellIdentifier, for: indexPath) as? HorisontalCustomCellForCollectionView
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PlaceViewController.horisontalCellIdentifier, for: indexPath) as? HorisontalCustomCellForCollectionView else { return UICollectionViewCell() }
         
-        cell?.lockView()
+        cell.lockView()
         UIView.animate(withDuration: 1) {
-            cell?.unlockView()
+            cell.unlockView()
         }
         
-        fetchPlaceData(index: delegate!.index, indexPath: indexPath, cell: cell!)
-        return cell!
+        fetchPlaceData(index: delegate!.index, indexPath: indexPath, cell: cell)
+        return cell
     }
 }
 
-//MARK: - Protocol
+//MARK: - Protocol PlaceViewControllerDelegate
 
 protocol PlaceViewControllerDelegate: AnyObject {
     func favoritePlaces() -> [Places]

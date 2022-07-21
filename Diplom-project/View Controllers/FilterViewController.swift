@@ -7,16 +7,20 @@
 
 import UIKit
 
-class FilterViewController: UIViewController {
+final class FilterViewController: UIViewController {
+    
+    //MARK: - IBOutlets
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var closeButon: UIButton!
     @IBOutlet weak var acceptButton: UIButton!
     @IBOutlet weak var resetFilterButton: UIButton!
     
+    //MARK: - properties
+    
     weak var delegate: FilterViewControllerDelegate?
     
-    var servicesDictionary: Dictionary <ProfServices, Bool> = [:]
+    private var servicesDictionary: Dictionary <ProfServices, Bool> = [:]
     
     static let cellIdentifier = "cell"
     
@@ -43,7 +47,7 @@ class FilterViewController: UIViewController {
         tableView.register(CustomCell.self, forCellReuseIdentifier: Self.cellIdentifier)
     }
     
-    //MARK: - Accept func
+    //MARK: - Filter func
     
     func filterFunc() -> Set<ProfServices>  {
         var services: Set<ProfServices> = []
@@ -83,7 +87,7 @@ class FilterViewController: UIViewController {
     }
 }
 
-//MARK: - Table view
+//MARK: - Extension table view
 
 extension FilterViewController: UITableViewDataSource {
     
@@ -124,7 +128,7 @@ extension FilterViewController: UITableViewDelegate {
     }
 }
 
-//MARK: - Protocol
+//MARK: - Protocol FilterViewControllerDelegate
 
 protocol FilterViewControllerDelegate: AnyObject {
     func filterMap(with set: Set<ProfServices>)

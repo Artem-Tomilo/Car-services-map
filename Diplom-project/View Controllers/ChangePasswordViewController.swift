@@ -10,7 +10,9 @@ import FirebaseAuth
 import FirebaseCore
 import FirebaseDatabase
 
-class ChangePasswordViewController: UIViewController {
+final class ChangePasswordViewController: UIViewController {
+    
+    //MARK: - IBOutlets
     
     @IBOutlet var newPassField: UITextField!
     @IBOutlet var newPassView: UIView!
@@ -20,8 +22,12 @@ class ChangePasswordViewController: UIViewController {
     @IBOutlet var secondEyeButton: UIButton!
     @IBOutlet var confirmPassButton: UIButton!
     
-    var firstIconClick = true
-    var secondIconClick = true
+    //MARK: - private properties
+    
+    private var firstIconClick = true
+    private var secondIconClick = true
+    
+    //MARK: - View did load
     
     override func viewDidLoad() {
         super.viewDidLoad()

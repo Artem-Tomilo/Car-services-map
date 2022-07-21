@@ -11,7 +11,9 @@ import FirebaseCore
 import FirebaseDatabase
 import FirebaseStorage
 
-class AccountViewController: UIViewController {
+final class AccountViewController: UIViewController {
+    
+    //MARK: - IBOutlets
     
     @IBOutlet var avatarView: UIImageView!
     @IBOutlet var nameLabel: UILabel!
@@ -25,11 +27,15 @@ class AccountViewController: UIViewController {
     @IBOutlet var changePasswordButton: UIButton!
     @IBOutlet var backToMapViewButton: UIButton!
     
-    var editButtonsIsHide = true
+    //MARK: - private properties
     
-    let ref = Database.database().reference().child("users")
-    let storage = Storage.storage()
+    private var editButtonsIsHide = true
+    
+    private let ref = Database.database().reference().child("users")
+    private let storage = Storage.storage()
     lazy var avatarsRef = storage.reference().child("avatars/")
+    
+    //MARK: - View did load
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +57,8 @@ class AccountViewController: UIViewController {
         changePasswordButton.isHidden = true
         passwordLabel.isHidden = true
     }
+    
+    //MARK: - View will appear
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(true, animated: false)

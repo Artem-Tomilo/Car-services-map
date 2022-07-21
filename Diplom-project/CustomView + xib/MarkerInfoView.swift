@@ -8,6 +8,9 @@
 import UIKit
 
 class MarkerInfoView: UIView {
+    
+    //MARK: - IBOutlets
+    
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var addressLabel: UILabel!
@@ -19,7 +22,11 @@ class MarkerInfoView: UIView {
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var directionButton: UIButton!
     
+    //MARK: - delegate
+    
     weak var delegate: MarkerInfoViewDelegate?
+    
+    //MARK: - init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -29,6 +36,8 @@ class MarkerInfoView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+    
+    //MARK: - functions
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -58,6 +67,8 @@ class MarkerInfoView: UIView {
         distanceLabel.layer.borderWidth = 0.5
     }
     
+    //MARK: - IBActions
+    
     @IBAction func heartButtonTapped(_ sender: UIButton) {
         delegate?.favoritesPlaces(sender)
     }
@@ -66,6 +77,8 @@ class MarkerInfoView: UIView {
         delegate?.getDirections()
     }
 }
+
+//MARK: - protocol MarkerInfoViewDelegate
 
 protocol MarkerInfoViewDelegate: AnyObject {
     func favoritesPlaces(_ sender: UIButton)

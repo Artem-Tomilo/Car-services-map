@@ -21,7 +21,7 @@ extension MapViewController: GMSMapViewDelegate {
         
         place = data
         
-        if place == nil || place.favoriteStatus == false {
+        if place == nil || place!.favoriteStatus == false {
             markerInfoView.heartButton.setImage(UIImage(named: "heartClear"), for: .normal)
         } else {
             markerInfoView.heartButton.setImage(UIImage(named: "heartRed"), for: .normal)
@@ -37,12 +37,7 @@ extension MapViewController: GMSMapViewDelegate {
         }
         
         mapView.animate(toLocation: marker.position)
-        if marker.userData is GMUCluster {
-            mapView.animate(toZoom: mapView.camera.zoom + 1)
-            NSLog("Did tap cluster")
-            return true
-        }
-        NSLog("Did tap a normal marker")
+        
         return false
     }
     
@@ -72,7 +67,7 @@ extension MapViewController: GMSMapViewDelegate {
             self.view.layoutIfNeeded()
         } completion: { _ in
             self.markerInfoView.removeFromSuperview()
-            self.addMarkerInfoView()
+            self.configureMarkerInfoView()
         }
     }
     

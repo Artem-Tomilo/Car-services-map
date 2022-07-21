@@ -11,7 +11,7 @@ class CustomCell: UITableViewCell {
     
     private let label = UILabel(frame: .zero)
     var picture = UIImageView(frame: .zero)
-    let condition = UIImageView(frame: .zero)
+    private let condition = UIImageView(frame: .zero)
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
