@@ -1,5 +1,21 @@
 # Car service places
 ### UIKit app for finding car service locations
+Основной испльзуемый стек: UIKit, Navigation Controller, Google (Maps, Places, Direction, Distance), Firebase (Auth, Realtime Database, Storage), Alert Controller, JSON,Alamofire. 
+
+Краткое описание: отображение на карте внесенных в базу данных мест обслуживания автомобилей, их сортировка по услугам, прокладывание маршрута, возможность добавления этиx мест в избранное, а также личный кабинет с информацией о пользователе. 
+
+1) Проект написан на UIKit. 
+2) Были использованы Navigation Controller, Collection View, Table View, кастомные ячейки, xib-файлы. 
+3) Возможность загрузки фотографии из галереи для установки на аватар в личном кабинете пользователя. 
+4) Регистрация через Firebase Authentication, места хранятся в Firebase Realtime database, фотографии пользователя в Firebase storage.
+5) Используются Google Maps с доп. функциями гугла (места, расстояние и маршруты). 
+
+Что планируется добавить:
+1) Первоочередное - добавление архитектуры. 
+2) Добавление дополнительных функций и усовершествование приложиния. 
+3) Рефакторинг кода, а также мелкие доработки. 
+
+### UIKit app for finding car service locations
 ___
 
 ### Начальный экран
