@@ -32,4 +32,5 @@ ___
 #### Избранные места отображаются списком, на каждое можно нажать и получить доступную информацию:
 <img src="https://github.com/Umbr0o/Diplom-project/blob/main/Diplom-project/Screens/14.png" width="300"> <img src="https://github.com/Umbr0o/Diplom-project/blob/main/Diplom-project/Screens/15.png" width="300">
 
-#### После входа в аккаунт также отображается информация о пользователе и тут же есть возможность ее изменить, нажав на кнопку 
+#### После входа в аккаунт также отображается информация о пользователе и тут же есть возможность ее изменить, нажав на кнопку карандаша справа вверху:
+<img src="https://github.com/Umbr0o/Diplom-project/blob/main/Diplom-project/Screens/18.png" width="300"> <img src="https://github.com/Umbr0o/Diplom-project/blob/main/Diplom-project/Screens/19.png" width="300"> <img src="https://github.com/Umbr0o/Diplom-project/blob/main/Diplom-project/Screens/20.png" width="300">
