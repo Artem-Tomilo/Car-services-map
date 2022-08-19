@@ -169,7 +169,7 @@ final class MapViewController: UIViewController {
     
     //MARK: - Marker info view
     
-    internal func configureMarkerInfoView() {
+    func configureMarkerInfoView() {
         Bundle.main.loadNibNamed("MarkerInfoView", owner: self)
         
         view.addSubview(markerInfoView)
@@ -302,7 +302,7 @@ final class MapViewController: UIViewController {
     
     //MARK: - Get objects data
     
-    internal func getObjectsData(radius: Int?) {
+    func getObjectsData(radius: Int?) {
         
         placesRef.getData { error, snapshot in
             guard error == nil else {
@@ -390,7 +390,7 @@ final class MapViewController: UIViewController {
     
     //MARK: - Get directions
     
-    internal func getDirections() {
+    func getDirections() {
         
         let currentLat = manager.location?.coordinate.latitude
         let currentLng = manager.location?.coordinate.longitude
@@ -483,7 +483,7 @@ final class MapViewController: UIViewController {
     
     //MARK: - Get info about place
     
-    internal func getInfoAboutPlace(placeID: String, coordinate: CLLocationCoordinate2D) {
+    func getInfoAboutPlace(placeID: String, coordinate: CLLocationCoordinate2D) {
         placesClient = GMSPlacesClient.shared()
         
         let fields: GMSPlaceField = [.name, .formattedAddress, .phoneNumber, .rating, .website, .photos]

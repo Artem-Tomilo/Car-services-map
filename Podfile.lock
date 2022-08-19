@@ -62,12 +62,12 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleMaps (6.2.1):
-    - GoogleMaps/Maps (= 6.2.1)
-  - GoogleMaps/Base (6.2.1)
-  - GoogleMaps/Maps (6.2.1):
+  - GoogleMaps (7.0.0):
+    - GoogleMaps/Maps (= 7.0.0)
+  - GoogleMaps/Base (7.0.0)
+  - GoogleMaps/Maps (7.0.0):
     - GoogleMaps/Base
-  - GooglePlaces (6.2.1)
+  - GooglePlaces (7.0.0)
   - GoogleSignIn (6.2.2):
     - AppAuth (~> 1.5)
     - GTMAppAuth (~> 1.3)
@@ -106,8 +106,8 @@ DEPENDENCIES:
   - FirebaseDatabase
   - FirebaseStorage
   - Google-Maps-iOS-Utils (~> 4.1.0)
-  - GoogleMaps (= 6.2.1)
-  - GooglePlaces (= 6.2.1)
+  - GoogleMaps (= 7.0.0)
+  - GooglePlaces (= 7.0.0)
   - GoogleSignIn
   - SwiftyJSON
 
@@ -153,8 +153,8 @@ SPEC CHECKSUMS:
   FirebaseStorageInternal: d0e5482946dd483dbb2f6a76ef5750b9b5907049
   Google-Maps-iOS-Utils: 3343332b18dfd5be8f1f44edd7d481ace3da4d9a
   GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
-  GoogleMaps: 20d7b12be49a14287f797e88e0e31bc4156aaeb4
-  GooglePlaces: 94974aa119573d5acc2a35a699948dac838abd73
+  GoogleMaps: 6e9c923ca035989709fcb5771544fda4cc5fa2a4
+  GooglePlaces: 8dba710bed6160a2e4b85e84aaafdbcc0b4010d8
   GoogleSignIn: 3c68388ac221f379676e8f1cb115df3aaf73b93f
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   GTMAppAuth: 4d8f864896f3646f0c33baf38a28362f4c601e15
@@ -164,6 +164,6 @@ SPEC CHECKSUMS:
   PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
   SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
 
-PODFILE CHECKSUM: 7653fc12431f12b87a9c5047baae75285ec3594d
+PODFILE CHECKSUM: fc4923e489565069a2a1b488f3da2345dea607bd
 
 COCOAPODS: 1.11.3

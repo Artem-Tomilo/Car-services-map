@@ -7,11 +7,11 @@ target 'Diplom-project' do
 	
 pod 'FirebaseAuth'
 pod 'FirebaseDatabase'
-pod 'GoogleMaps', '6.2.1'
+pod 'GoogleMaps', '7.0.0'
 pod 'Google-Maps-iOS-Utils', '~> 4.1.0'
 pod 'GoogleSignIn'
 pod 'FirebaseStorage'
-pod 'GooglePlaces', '6.2.1'
+pod 'GooglePlaces', '7.0.0'
 pod 'Alamofire'
 pod 'SwiftyJSON'
 end
